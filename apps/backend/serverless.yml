@@ -1,0 +1,23 @@
+service: backend
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  api:
+    handler: handler.handler
+    events:
+      - httpApi: "*"
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+  - serverless-offline-watcher
+
+custom:
+  serverless-offline:
+    lambdaPort: 5001
+    httpPort: 5000
+    useChildProcesses: true
