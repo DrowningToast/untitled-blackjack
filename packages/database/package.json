@@ -1,0 +1,11 @@
+{
+  "name": "database",
+  "version": "0.0.0",
+  "main": "index.ts",
+  "license": "MIT",
+  "dependencies": {
+    "env": "0.0.0",
+    "mongoose": "^7.0.3"
+  },
+  "types": "index.ts"
+}

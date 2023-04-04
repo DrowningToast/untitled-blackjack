@@ -1,15 +1,34 @@
+org: drowningtoast
+app: untitled-blackjack
 service: backend
 frameworkVersion: "3"
 
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs16.x
+  region: ap-southeast-1
+  websocketsApiName: websockets-api
+  websocketsApiRouteSelectionExpression: $request.body.action
+  iam:
+    role:
+      statements: # permissions for all of your functions can be set here
+        - Effect: Allow
+          Action: # Gives permission to DynamoDB tables
+            - logs:*
+            - states:*
+            - events:*
 
 functions:
   api:
     handler: handler.handler
     events:
       - httpApi: "*"
+      - websocket:
+          route: $disconnect
+      - websocket:
+          route: $connect
+      - websocket:
+          route: broadcast
 
 plugins:
   - serverless-esbuild
@@ -20,4 +39,5 @@ custom:
   serverless-offline:
     lambdaPort: 5001
     httpPort: 5000
+    websocketPort: 6000
     useChildProcesses: true

@@ -6,6 +6,9 @@
     "apps/*",
     "packages/*"
   ],
+  "nohoist": [
+    "*"
+  ],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",

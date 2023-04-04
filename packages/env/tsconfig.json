@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "inlineSources": false,
+    "isolatedModules": true,
+    "moduleResolution": "node",
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "preserveWatchOutput": true,
+    "strict": false,
+    "outDir": "dist",
+    "target": "ES6",
+    "allowJs": true
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.js",
+    "./src/**/*.tsx",
+    "./src/**/*.jsx"
+  ],
+  "exclude": [
+    "dist",
+    "build",
+    "**/node_modules",
+    "**/*.d.ts",
+    "node_modules",
+    ".pnpm",
+    "index.js"
+  ]
+}
