@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Card } from "../static/Card";
+import { Card } from "../utils/Card";
 import { IUser } from "./UserModel";
 import { v4 as uuid } from "uuid";
 
@@ -11,7 +11,7 @@ export interface IGame {
    */
   players: IUser[];
   turnOwner: IUser;
-  remainingCards: Card;
+  remainingCards: Card[];
 }
 
 const GameSchema = new mongoose.Schema({
@@ -19,6 +19,9 @@ const GameSchema = new mongoose.Schema({
     type: String,
     default: uuid,
   },
+  /**
+   * default to false for security reasons
+   */
   onGoing: {
     type: Boolean,
     default: false,
@@ -33,18 +36,20 @@ const GameSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  remainingCard: {
-    display: {
-      type: String,
-      required: true,
-    },
-    values: [
-      {
-        types: Number,
+  remainingCard: [
+    {
+      display: {
+        type: String,
         required: true,
       },
-    ],
-  },
+      values: [
+        {
+          types: Number,
+          required: true,
+        },
+      ],
+    },
+  ],
 });
 
 const Game = mongoose.model<IGame>("Game", GameSchema);

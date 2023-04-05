@@ -1,5 +1,5 @@
 import mongoose, { ObjectId } from "mongoose";
-import { Card } from "../static/Card";
+import { Card } from "../utils/Card";
 import { IGame } from "./GameModel";
 
 export interface IUser {
@@ -14,10 +14,12 @@ const UserSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
+    unqiue: true,
   },
   sessID: {
     type: String,
     required: true,
+    unqiue: true,
   },
   gameScore: {
     type: Number,
@@ -45,7 +47,18 @@ const UserSchema = new mongoose.Schema({
    */
   game: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: "Game",
   },
+  /**
+   * Trump Cards
+   */
+  trumpCards: [
+    {
+      handler: {
+        type: String,
+      },
+    },
+  ],
 });
 
 const User = mongoose.model<IUser>("User", UserSchema);

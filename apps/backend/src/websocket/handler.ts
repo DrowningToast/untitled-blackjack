@@ -1,6 +1,7 @@
 import { sendWSData } from "./send";
 
 export const onConnect = async (event, context) => {
+  console.log(event);
   const sessID = event.requestContext.sessID;
 
   try {

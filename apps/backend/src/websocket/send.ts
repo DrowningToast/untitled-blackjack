@@ -1,4 +1,5 @@
 import * as AWS from "aws-sdk";
+import env from "env";
 
 export const sendWSData = async (event, message: string) => {
   let connectionData;
@@ -6,10 +7,10 @@ export const sendWSData = async (event, message: string) => {
   const apigwManagementApi = new AWS.ApiGatewayManagementApi({
     apiVersion: "2018-11-29",
     // Must configure the endpoint later
-    endpoint: "cz1312nzoj.execute-api.ap-southeast-1.amazonaws.com/dev",
-    // process.env.NODE_ENV === "development"
-    //   ? "http://localhost:4001"
-    //   : event?.requestContext.domainName + "/" + event?.requestContext.stage,
+    endpoint:
+      env.NODE_ENV === "development"
+        ? "http://localhost:4001"
+        : event?.requestContext.domainName + "/" + event?.requestContext.stage,
   });
   try {
     const postData = JSON.parse(message!);

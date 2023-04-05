@@ -68,6 +68,22 @@ const kingCard: Card = {
   values: [10],
 };
 
+const sortedAllCards: Card[] = [
+  aceCard,
+  twoCard,
+  threeCard,
+  fourCard,
+  fiveCard,
+  sixCard,
+  sevenCard,
+  eightCard,
+  nineCard,
+  tenCard,
+  jackCard,
+  queenCard,
+  kingCard,
+];
+
 export {
   aceCard,
   twoCard,
@@ -82,4 +98,5 @@ export {
   jackCard,
   queenCard,
   kingCard,
+  sortedAllCards,
 };

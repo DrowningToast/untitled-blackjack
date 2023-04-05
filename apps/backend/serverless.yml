@@ -1,5 +1,5 @@
 org: drowningtoast
-app: untitled-blackjack
+app: tobeit-backend
 service: backend
 frameworkVersion: "3"
 
@@ -9,14 +9,6 @@ provider:
   region: ap-southeast-1
   websocketsApiName: websockets-api
   websocketsApiRouteSelectionExpression: $request.body.action
-  iam:
-    role:
-      statements: # permissions for all of your functions can be set here
-        - Effect: Allow
-          Action: # Gives permission to DynamoDB tables
-            - logs:*
-            - states:*
-            - events:*
 
 functions:
   api:
