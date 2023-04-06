@@ -5,7 +5,8 @@ import { v4 as uuid } from "uuid";
 
 export interface IGame {
   gameId: string;
-  onGoing: boolean;
+  gameState: "onGoing" | "ended" | "notStarted";
+  passcode: string;
   /**
    * Only supported 2 players, no less, no more
    */
@@ -22,9 +23,14 @@ const GameSchema = new mongoose.Schema({
   /**
    * default to false for security reasons
    */
-  onGoing: {
-    type: Boolean,
-    default: false,
+  gameState: {
+    type: String,
+    enum: ["onGoing", "ended", "notStarted"],
+    default: "notStarted",
+  },
+  passcode: {
+    type: String,
+    required: true,
   },
   players: [
     {
@@ -45,7 +51,6 @@ const GameSchema = new mongoose.Schema({
       values: [
         {
           types: Number,
-          required: true,
         },
       ],
     },

@@ -6,24 +6,23 @@ const mongooseMiddleware = async (req, res, next) => {
     return next();
   }
   try {
-    await mongoose.connect(
-      `mongodb+srv://${process.env.db_username}:${process.env.db_password}@itggmongodb.ppba9ee.mongodb.net/?retryWrites=true&w=majority`
-    );
+    await connectDB();
     next();
   } catch (e) {
     console.log(e);
   }
 };
 
+const registerMongoose = (app: ) => {}
+
 let connection;
 
-const connectDB = async (App: Function) => {
+const connectDB = async () => {
   try {
     connection = await mongoose.connect(
       `mongodb+srv://${env.DB_USERNAME}:${env.DB_PASSWORD}@${env.DB_URL}/?retryWrites=true&w=majority`
     );
     console.log("Connected to the server");
-    return App;
   } catch (e) {
     console.error("Could not connect to MongoDB...");
     throw e;

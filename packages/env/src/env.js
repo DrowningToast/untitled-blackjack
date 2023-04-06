@@ -11,7 +11,7 @@ dotenv.config({
  */
 const server = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
-  DB_URL: z.string().url(),
+  DB_URL: z.string().min(1),
   DB_USERNAME: z.string().min(1),
   DB_PASSWORD: z.string().min(1),
 });
@@ -31,7 +31,7 @@ const client = z.object({
  * @type {Record<keyof z.infer<typeof server> | keyof z.infer<typeof client>, string | undefined>}
  */
 const processEnv = {
-  NODE_ENV: process.env.NODE_ENV,
+  NODE_ENV: process.env.NODE_ENV ?? "production",
   DB_URL: process.env.DB_URL,
   DB_USERNAME: process.env.DB_USERNAME,
   DB_PASSWORD: process.env.DB_PASSWORD,

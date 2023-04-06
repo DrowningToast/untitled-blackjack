@@ -1,4 +1,5 @@
-import { Game } from "../models/GameModel";
+import { FilterQuery, UpdateQuery } from "mongoose";
+import { Game, IGame } from "../models/GameModel";
 import { IUser } from "../models/UserModel";
 import {
   aceCard,
@@ -17,6 +18,7 @@ import {
   twoCard,
 } from "../utils/Card";
 import { asyncTransaction } from "../utils/Transaction";
+import { getUserMeta } from "./UserController";
 
 /**
  * There should be no function that updates the game instance data directly for security reasons
@@ -25,37 +27,39 @@ import { asyncTransaction } from "../utils/Transaction";
 /**
  * @description This function create a new game instance
  */
-export const createGame = asyncTransaction(async (playersIDs: string[]) => {
-  /**
-   * Ensure there are only 2 players
-   */
-  if (playersIDs.length !== 2) {
-    throw new Error("Only 2 players are allowed");
-  }
+export const createGame = asyncTransaction(
+  async (playersIDs: string[], passcode: string) => {
+    /**
+     * Ensure there is at least one player
+     */
+    if (playersIDs.length !== 1) {
+      throw new Error("There should be at least one player");
+    }
 
-  const _ = new Game({
-    players: playersIDs,
-    onGoing: true,
-    // the instance starts with all cards
-    remainingCards: [
-      aceCard,
-      twoCard,
-      threeCard,
-      fourCard,
-      fiveCard,
-      sixCard,
-      sevenCard,
-      eightCard,
-      nineCard,
-      tenCard,
-      jackCard,
-      queenCard,
-      kingCard,
-    ],
-  });
-  const res = await _.save();
-  return res;
-});
+    const _ = new Game({
+      players: playersIDs,
+      gameState: "notStarted",
+      // the instance starts with all cards
+      remainingCards: [
+        aceCard,
+        twoCard,
+        threeCard,
+        fourCard,
+        fiveCard,
+        sixCard,
+        sevenCard,
+        eightCard,
+        nineCard,
+        tenCard,
+        jackCard,
+        queenCard,
+        kingCard,
+      ],
+    });
+    const res = await _.save();
+    return res;
+  }
+);
 
 /**
  * @description reset the remaining cards to the initial state
@@ -149,12 +153,25 @@ export const getTurnOwner = asyncTransaction(async (gameId: string) => {
 /**
  * @description Get the game instance non-sensitive data (exclude remainingCards, player.cards)
  */
-export const getGame = asyncTransaction(async (gameId: string) => {
+export const getGame = asyncTransaction(async (arg: FilterQuery<IGame>) => {
   // Get the game instance and populate the players
-  const _ = await Game.findOne({
-    gameId,
-  })
+  const _ = await Game.findOne(arg)
     .populate("players")
     .select("-remainingCards -players.cards");
   return _;
 });
+
+/**
+ * @description Join another game instance
+ */
+export const joinGame = asyncTransaction(
+  async (gameId: string, userId: string) => {
+    // Get the game instance
+    const _ = await Game.findByIdAndUpdate(gameId, {
+      $push: {
+        players: userId,
+      },
+    });
+    return _;
+  }
+);
