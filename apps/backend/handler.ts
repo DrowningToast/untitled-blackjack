@@ -1,29 +1,19 @@
-import { Context } from "aws-lambda";
-import serverless, { Application } from "serverless-http";
+import { Callback, Context } from "aws-lambda";
 import app from "./src/app";
-import { connectToDatabase } from "database/src/connection";
 
 import awsLambdaFastify from "@fastify/aws-lambda";
+import { connectToDatabase } from "./src/connection";
 
 const proxy = awsLambdaFastify(app());
 
-// export const handler = (event: string, context: Context) => {
-//   return connectToDatabase().then(() => {
-//     return serverless(app() as Application, {
-//       request: (request, event, context) => {
-//         context.callbackWaitsForEmptyEventLoop = false;
-//         request.context = context;
-//         request.event = event;
-//       },
-//     })(event, context);
-//   });
-// };
-
-let isConnected;
-
-export const handler = (event: string, context: Context) => {
+export const handler = (
+  event: string,
+  context: Context,
+  callback: Callback
+) => {
   context.callbackWaitsForEmptyEventLoop = false;
-  return connectToDatabase().then((db) => {
-    return proxy(event, context);
+  return connectToDatabase().then(() => {
+    // proxy
+    return callback(null, proxy(event, context));
   });
 };

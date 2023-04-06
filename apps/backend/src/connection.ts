@@ -1,4 +1,7 @@
-const mongoose = require("mongoose");
+import env from "env";
+
+import mongoose from "mongoose";
+
 mongoose.Promise = global.Promise;
 let isConnected;
 
@@ -9,9 +12,13 @@ const connectToDatabase = () => {
   }
 
   console.log("=> using new database connection");
-  return mongoose.connect(process.env.DB).then((db) => {
-    isConnected = db.connections[0].readyState;
-  });
+  return mongoose
+    .connect(
+      `mongodb+srv://${env.DB_USERNAME}:${env.DB_PASSWORD}@${env.DB_URL}/?retryWrites=true&w=majority`
+    )
+    .then((db) => {
+      isConnected = db.connections[0].readyState;
+    });
 };
 
 export { connectToDatabase };

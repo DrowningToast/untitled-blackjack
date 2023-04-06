@@ -14,7 +14,10 @@ functions:
   api:
     handler: handler.handler
     events:
-      - httpApi: "*"
+      - http:
+          path: /
+          method: any
+          cors: true
       - websocket:
           route: $disconnect
       - websocket:
@@ -25,7 +28,6 @@ functions:
 plugins:
   - serverless-esbuild
   - serverless-offline
-  - serverless-offline-watcher
 
 custom:
   serverless-offline:
