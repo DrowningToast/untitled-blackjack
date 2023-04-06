@@ -5,7 +5,7 @@ import { v4 as uuid } from "uuid";
 
 export interface IUser {
   username: string;
-  sessId: string;
+  sessID: string;
   gameScore: number;
   cards: Card[];
   game: IGame;

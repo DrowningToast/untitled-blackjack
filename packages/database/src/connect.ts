@@ -1,8 +1,11 @@
+import { FastifyInstance } from "fastify";
 import mongoose from "mongoose";
 import env from "env";
 
+let connection: any | null = null;
+
 const mongooseMiddleware = async (req, res, next) => {
-  if (mongoose.connections[0].readyState) {
+  if (connection) {
     return next();
   }
   try {
@@ -13,16 +16,22 @@ const mongooseMiddleware = async (req, res, next) => {
   }
 };
 
-const registerMongoose = (app: ) => {}
-
-let connection;
+export const registerMongoose = (app: FastifyInstance) => {
+  app.register(mongooseMiddleware, { prefix: "/api" });
+};
 
 const connectDB = async () => {
   try {
-    connection = await mongoose.connect(
-      `mongodb+srv://${env.DB_USERNAME}:${env.DB_PASSWORD}@${env.DB_URL}/?retryWrites=true&w=majority`
-    );
-    console.log("Connected to the server");
+    connection = mongoose
+      .connect(
+        `mongodb+srv://${env.DB_USERNAME}:${env.DB_PASSWORD}@${env.DB_URL}/?retryWrites=true&w=majority`,
+        {
+          serverSelectionTimeoutMS: 5000,
+        }
+      )
+      .then(() => mongoose);
+    await connection;
+    console.log("Connected to DB.");
   } catch (e) {
     console.error("Could not connect to MongoDB...");
     throw e;

@@ -42,7 +42,7 @@ const GameSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  remainingCard: [
+  remainingCards: [
     {
       display: {
         type: String,
@@ -50,7 +50,7 @@ const GameSchema = new mongoose.Schema({
       },
       values: [
         {
-          types: Number,
+          type: Number,
         },
       ],
     },

@@ -16,11 +16,11 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
       /**
        * Initialize a new game instance
        */
-      api.post<{ Body: { sessId: string; passcode: string } }>(
+      api.post<{ Body: { sessID: string; passcode: string } }>(
         "/create",
         async (request, reply) => {
-          const { sessId, passcode } = request.body;
-          const [user, isError] = await getUserMeta({ sessId });
+          const { sessID, passcode } = request.body;
+          const [user, isError] = await getUserMeta({ sessID });
           if (isError) {
             return reply.status(500).send(ERR_INTERNAL);
           } else if (!user) {
@@ -29,7 +29,7 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
             return reply.status(400).send(ERR_INVALID_PASSCODE);
           } else {
             // Check if there is already an active game with the same passcode or user inside
-            const [existGame] = await getGame({ passcode, players: sessId });
+            const [existGame] = await getGame({ passcode, players: sessID });
             if (existGame) {
               return reply.status(400).send(ERR_EXISTED_GAME);
             }
@@ -65,11 +65,11 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
       /**
        * Join the game
        */
-      api.post<{ Body: { sessId: string; passcode: string } }>(
+      api.post<{ Body: { sessID: string; passcode: string } }>(
         "/join",
         async (request, reply) => {
-          const { sessId, passcode } = request.body;
-          const [user, isError] = await getUserMeta({ sessId });
+          const { sessID, passcode } = request.body;
+          const [user, isError] = await getUserMeta({ sessID });
           if (isError) {
             return reply.status(500).send(ERR_INTERNAL);
           } else if (!user) {
@@ -78,7 +78,7 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
             return reply.status(400).send(ERR_INVALID_PASSCODE);
           } else {
             // Check if the game found or not
-            const [existGame] = await getGame({ passcode, players: sessId });
+            const [existGame] = await getGame({ passcode, players: sessID });
             if (!existGame) {
               return reply.status(400).send(ERR_INVALID_PASSCODE);
             }

@@ -14,9 +14,9 @@ export interface TrumpCard {
 
 export const demoTrump: TrumpCard = {
   handler: "demo",
-  onUse: async (sessId, gameId) => {
+  onUse: async (sessID, gameId) => {
     const [user] = await getUserMeta({
-      sessId,
+      sessID,
     });
     const [game] = await getGame({ gameId });
     console.log(user?.username);

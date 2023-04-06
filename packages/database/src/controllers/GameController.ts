@@ -39,6 +39,7 @@ export const createGame = asyncTransaction(
     const _ = new Game({
       players: playersIDs,
       gameState: "notStarted",
+      passcode: passcode,
       // the instance starts with all cards
       remainingCards: [
         aceCard,
