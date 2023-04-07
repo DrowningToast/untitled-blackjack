@@ -18,7 +18,7 @@ import {
   twoCard,
 } from "../utils/Card";
 import { asyncTransaction } from "../utils/Transaction";
-import { getUserMeta } from "./UserController";
+import { UserController } from "./UserController";
 
 /**
  * There should be no function that updates the game instance data directly for security reasons
@@ -27,7 +27,7 @@ import { getUserMeta } from "./UserController";
 /**
  * @description This function create a new game instance
  */
-export const createGame = asyncTransaction(
+const createGame = asyncTransaction(
   async (playersIDs: string[], passcode: string) => {
     /**
      * Ensure there is at least one player
@@ -63,87 +63,9 @@ export const createGame = asyncTransaction(
 );
 
 /**
- * @description reset the remaining cards to the initial state
- */
-export const resetRemainingCards = asyncTransaction(async (gameId: string) => {
-  const _ = await Game.findOneAndUpdate(
-    {
-      gameId,
-    },
-    {
-      remainingCards: sortedAllCards,
-    }
-  );
-  return _;
-});
-
-/**
- * @description Shuffle the remaining cards
- */
-export const shuffleRemainingCards = asyncTransaction(
-  async (gameId: string) => {
-    const game = await Game.findOne({
-      gameId,
-    }).select("remainingCards");
-
-    const shuffledCards = game?.remainingCards.sort(() => Math.random() - 0.5);
-
-    // Update the shuffled cards back to the game instance
-    const _ = await Game.findOneAndUpdate(
-      {
-        gameId,
-      },
-      {
-        remainingCards: shuffledCards,
-      }
-    );
-    return _;
-  }
-);
-
-/**
- * @description Switch the player turn
- */
-export const switchPlayerTurn = asyncTransaction(async (gameId: string) => {
-  // Get the game instance
-  const game = await Game.findOne({
-    gameId,
-  }).select("players turnOwner");
-  // Get the current turn owner
-  const currentTurnOwner = game?.turnOwner;
-
-  // If the current turn owner is undefined, random the first turn owner
-  if (currentTurnOwner === undefined) {
-    const randomPlayer = Math.floor(Math.random() * 2);
-    const _ = await Game.findOneAndUpdate(
-      {
-        gameId,
-      },
-      {
-        turnOwner: game?.players[randomPlayer],
-      }
-    );
-    return _;
-  } else {
-    // If the current turn owner is not undefined, switch the turn owner
-    const _ = await Game.findOneAndUpdate(
-      {
-        gameId,
-      },
-      {
-        turnOwner: game?.players.filter(
-          (player) => player !== currentTurnOwner
-        )[0],
-      }
-    );
-    return _;
-  }
-});
-
-/**
  * @description Get the current turn owner
  */
-export const getTurnOwner = asyncTransaction(async (gameId: string) => {
+const getTurnOwner = asyncTransaction(async (gameId: string) => {
   // Get the game owner
   const _ = await Game.findOne({
     gameId,
@@ -154,7 +76,7 @@ export const getTurnOwner = asyncTransaction(async (gameId: string) => {
 /**
  * @description Get the game instance non-sensitive data (exclude remainingCards, player.cards)
  */
-export const getGame = asyncTransaction(async (arg: FilterQuery<IGame>) => {
+const getGame = asyncTransaction(async (arg: FilterQuery<IGame>) => {
   // Get the game instance and populate the players
   const _ = await Game.findOne(arg)
     .populate("players")
@@ -165,14 +87,40 @@ export const getGame = asyncTransaction(async (arg: FilterQuery<IGame>) => {
 /**
  * @description Join another game instance
  */
-export const joinGame = asyncTransaction(
-  async (gameId: string, userId: string) => {
-    // Get the game instance
-    const _ = await Game.findByIdAndUpdate(gameId, {
-      $push: {
-        players: userId,
+const joinGame = asyncTransaction(async (gameId: string, userId: string) => {
+  // Get the game instance
+  const _ = await Game.findByIdAndUpdate(gameId, {
+    $push: {
+      players: userId,
+    },
+  });
+  return _;
+});
+
+/**
+ * @description Change the player ready state in the game instance
+ */
+const changePlayerReadyState = asyncTransaction(
+  async (sessID: string, ready: boolean) => {
+    const [userMeta] = await UserController.getUserMeta({ sessID });
+    const _ = await Game.findOneAndUpdate(
+      {
+        players: userMeta?.id,
       },
-    });
+      {
+        $set: {
+          [`players.$.ready`]: ready,
+        },
+      }
+    );
     return _;
   }
 );
+
+export const GameController = {
+  createGame,
+  getTurnOwner,
+  getGame,
+  joinGame,
+  changePlayerReadyState,
+};

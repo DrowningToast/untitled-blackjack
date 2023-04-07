@@ -1,4 +1,4 @@
-export * from "./src/connect";
+export * from "./src/connection";
 
 export * from "./src/models/GameModel";
 export * from "./src/models/UserModel";

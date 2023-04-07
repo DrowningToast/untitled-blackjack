@@ -1,58 +1,20 @@
-import { sendWSData } from "./send";
+import { APIGatewayProxyEvent } from "aws-lambda";
 
-export const onConnect = async (event, context) => {
-  console.log(event);
-  const sessID = event.requestContext.sessID;
+export type Handler<T> = (event: APIGatewayProxyEvent) => Promise<T>;
 
-  try {
-    // Create a user session in DB
-  } catch (error) {
-    console.log(error);
+export const handlers = {
+  debug: async (event: APIGatewayProxyEvent) => {
+    console.log(event);
     return {
-      statusCode: 500,
-      body: JSON.stringify(error),
+      statusCode: 200,
+      body: JSON.stringify({
+        connected: true,
+        hello: "world",
+      }),
     };
-  }
-  return {
-    statusCode: 200,
-  };
+  },
 };
 
-export const onDisconnect = async (event, context) => {
-  console.log(event);
-
-  const sessID = event.requestContext.sessID;
-
-  try {
-    // Delete a user session from DB
-  } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify(error),
-    };
-  }
-  return {
-    statusCode: 200,
-  };
-};
-
-export const onBroadcast = async (event, context) => {
-  const body = JSON.parse(event.body!);
-
-  await sendWSData(event, event.body);
-
-  return { statusCode: 200, body: "Data sent." };
-};
-
-export const onDefault = async (event) => {
-  try {
-    console.log(typeof event.body);
-    const body = JSON.parse(event.body);
-    console.log(body);
-  } catch (e) {
-    console.log(e);
-  }
-  return {
-    statusCode: 200,
-  };
+export const getHandler = (handlerId: keyof typeof handlers) => {
+  return handlers[handlerId];
 };

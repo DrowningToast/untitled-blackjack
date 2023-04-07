@@ -1,7 +1,6 @@
 import fastify from "fastify";
 import { userRouter } from "./http/v1/user";
 import { gameRouter } from "./http/v1/game";
-import { mongooseMiddleware, registerMongoose } from "database";
 
 function init() {
   const app = fastify();

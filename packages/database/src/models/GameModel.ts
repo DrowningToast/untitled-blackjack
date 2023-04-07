@@ -34,8 +34,14 @@ const GameSchema = new mongoose.Schema({
   },
   players: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      player: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+      ready: {
+        type: Boolean,
+        default: false,
+      },
     },
   ],
   turnOwner: {

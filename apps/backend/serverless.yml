@@ -11,13 +11,19 @@ provider:
   websocketsApiRouteSelectionExpression: $request.body.action
 
 functions:
-  api:
+  http:
     handler: handler.handler
     events:
-      - http:
-          path: /
-          method: any
-          cors: true
+      - httpApi: "*"
+      - websocket:
+          route: $disconnect
+      - websocket:
+          route: $connect
+      - websocket:
+          route: broadcast
+  websocket:
+    handler: handler.ws
+    events:
       - websocket:
           route: $disconnect
       - websocket:

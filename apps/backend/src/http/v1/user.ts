@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
-import { createUser, getUserMeta } from "database";
 import { ERR_EXISTED_USER, ERR_INTERNAL } from "database/src/utils/Error";
+import { UserController } from "database";
 
 const userRouter = (app: FastifyInstance, prefix: string) => {
   return app.register(
@@ -12,11 +12,11 @@ const userRouter = (app: FastifyInstance, prefix: string) => {
         "/create",
         async (request, reply) => {
           const { username } = request.body;
-          const [user] = await getUserMeta({ username });
+          const [user] = await UserController.getUserMeta({ username });
 
           if (!user) {
             // Create the user
-            const [user, error] = await createUser({ username });
+            const [user, error] = await UserController.createUser({ username });
             if (error) {
               reply.status(500).send(ERR_INTERNAL);
             }
