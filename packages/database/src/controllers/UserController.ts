@@ -1,4 +1,4 @@
-import mongoose, { FilterQuery, UpdateQuery } from "mongoose";
+import { FilterQuery, UpdateQuery } from "mongoose";
 import { IUser, User } from "../models/UserModel";
 import { asyncTransaction } from "../utils/Transaction";
 
@@ -33,9 +33,7 @@ const deleteUser = asyncTransaction(async (args: FilterQuery<IUser>) => {
  * @param args
  */
 const getUserMeta = asyncTransaction(async (args: FilterQuery<IUser>) => {
-  const _ = await User.findOne({
-    sessID: "5ed728fe-88bd-4723-ac71-19c3dd99af49",
-  }).select(["-cards", "-sessID"]);
+  const _ = await User.findOne(args).select(["-cards", "-sessID"]);
   return _;
 });
 

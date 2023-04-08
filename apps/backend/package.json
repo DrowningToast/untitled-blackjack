@@ -16,6 +16,7 @@
   "name": "backend",
   "dependencies": {
     "@aws-sdk/client-apigatewaymanagementapi": "^3.306.0",
+    "aws-sdk": "^2.1353.0",
     "cors": "^2.8.5",
     "database": "0.0.0",
     "env": "0.0.0",
