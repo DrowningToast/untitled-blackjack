@@ -5,3 +5,7 @@ export * from "./src/models/UserModel";
 
 export * from "./src/controllers/GameController";
 export * from "./src/controllers/UserController";
+
+export * from "./src/utils/Error";
+
+export * from "mongoose";

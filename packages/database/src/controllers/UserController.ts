@@ -12,10 +12,14 @@ const createUser = asyncTransaction(async (args: FilterQuery<IUser>) => {
 
 /**
  * @description Update a user instance
+ * TRY NOT TO USE THIS FOR SECURITY REASONS
  */
 const updateUser = asyncTransaction(
   async (target: FilterQuery<IUser>, value: UpdateQuery<IUser>) => {
-    const _ = await User.updateOne(target, value);
+    const _ = await User.findOneAndUpdate(target, value);
+    if (!_?.id) {
+      return new Error("User not found");
+    }
     return _;
   }
 );

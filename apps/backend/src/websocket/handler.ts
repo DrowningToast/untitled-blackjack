@@ -1,42 +1,24 @@
-import { APIGatewayProxyEvent } from "aws-lambda";
-import { ApiGatewayManagementApi } from "aws-sdk";
-import env from "env";
+import { authHandler } from "./handlers/auth";
+import { WebsocketHandler } from "./utils/type";
+import { $connectHandler } from "./handlers/$connect";
+import { $disconnectHandler } from "./handlers/$disconnect";
+import { debugHandler } from "./handlers/debug";
+import { $defaultHandler } from "./handlers/default";
 
-export type Handler<T> = (event: APIGatewayProxyEvent) => Promise<T>;
-export type wsContext = {
-  routeKey: string;
-  connectionId: string | undefined;
-};
+export const handlers: Record<string, WebsocketHandler> = {
+  $connect: $connectHandler,
 
-export const handlers = {
-  debug: async (event: APIGatewayProxyEvent, context: wsContext) => {
-    const api = new ApiGatewayManagementApi({
-      apiVersion: "2018-11-29",
-      endpoint:
-        process.env.NODE_ENV === "development"
-          ? "http://localhost:6000"
-          : event.requestContext.domainName + "/" + event.requestContext.stage,
-    });
+  auth: authHandler,
 
-    if (!context.connectionId) {
-      throw new Error("No connectionId found");
-    }
+  $disconnect: $disconnectHandler,
 
-    console.log(context.connectionId);
+  debug: debugHandler,
 
-    try {
-      const res = await api
-        .postToConnection({
-          ConnectionId: context.connectionId,
-          Data: "hi",
-        })
-        .promise();
-    } catch (e) {
-      console.log(e);
-    }
-  },
+  $default: $defaultHandler,
 };
 
 export const getHandler = (handlerId: keyof typeof handlers) => {
+  console.log(`Finding handler of ${handlerId}`);
+
   return handlers[handlerId];
 };

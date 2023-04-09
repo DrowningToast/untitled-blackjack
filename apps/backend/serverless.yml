@@ -21,6 +21,8 @@ functions:
           route: $connect
       - websocket:
           route: broadcast
+      - websocket:
+          route: $default
 
   websocket:
     handler: handler.ws

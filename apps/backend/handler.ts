@@ -3,35 +3,58 @@ import app from "./src/app";
 
 import awsLambdaFastify from "@fastify/aws-lambda";
 import { connectToDatabase } from "database";
-import { getHandler } from "./src/websocket/handler";
+import { getHandler, handlers } from "./src/websocket/handler";
+import { getAPIG } from "./src/websocket/connection";
 
 const proxy = awsLambdaFastify(app());
 // const handler = awsLambdaFastify(app());
 
+/**
+ * @description HTTP Connection Handler
+ * @param event
+ * @param context
+ * @param callback
+ * @returns
+ */
 const handler = (event: Event, context: Context, callback: Callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
   return connectToDatabase().then(() => proxy(event, context));
 };
 
-const ws: Handler<APIGatewayEvent, { statusCode: 200; body: string }> = async (
-  event: APIGatewayEvent,
-  context: Context,
-  callback: Callback
-) => {
+/**
+ * @description Websocket Connection router
+ * @param event
+ * @param context
+ * @param callback
+ * @returns
+ */
+const ws: Handler<
+  APIGatewayEvent,
+  { statusCode: number; body: string }
+> = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
   const {
     requestContext: { routeKey, connectionId },
   } = event;
-  console.log(routeKey);
+
+  console.log("incoming");
+
+  if (!connectionId) {
+    throw new Error("No connectionId found");
+  }
+
+  let body;
 
   switch (routeKey) {
     case "$connect":
+      await getHandler("$connect")(event, { routeKey, connectionId });
+
       return {
         statusCode: 200,
         body: JSON.stringify({
           connected: true,
+          hello: "world2",
         }),
       };
-      break;
 
     case "$disconnect":
       return {
@@ -43,9 +66,23 @@ const ws: Handler<APIGatewayEvent, { statusCode: 200; body: string }> = async (
       break;
 
     case "broadcast":
-      const body = JSON.parse(event?.body ?? "");
+      body = JSON.parse(event?.body ?? "");
 
-      await getHandler(body.handler)(event, { routeKey, connectionId });
+      /**
+       * Check for invalid route handler
+       */
+      if (!Object.keys(handlers).includes(body.handler as string)) {
+        const { send } = getAPIG(event, { connectionId, routeKey });
+        await send({
+          status: "REQUEST_ERROR",
+          handler: "INVALID_HANDLER",
+        });
+      } else {
+        await getHandler(body.handler as string)(event, {
+          routeKey,
+          connectionId,
+        });
+      }
 
       return {
         statusCode: 200,
@@ -57,8 +94,14 @@ const ws: Handler<APIGatewayEvent, { statusCode: 200; body: string }> = async (
       break;
 
     default:
+      console.log("default case");
+      await getHandler("$default")(event, {
+        connectionId,
+        routeKey: "default",
+      });
+
       return {
-        statusCode: 200,
+        statusCode: 400,
         body: JSON.stringify({
           connected: undefined,
         }),
