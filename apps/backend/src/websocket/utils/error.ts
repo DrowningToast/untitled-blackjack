@@ -2,6 +2,11 @@ import { ErrorMessage } from "database";
 
 export * from "database/src/utils/Error";
 
+export const ERR_BAD_REQUEST: ErrorMessage = {
+  error: "bad-request",
+  description: "Bad request, check your payload",
+};
+
 export const ERR_INVALID_HANDLER: ErrorMessage = {
   error: "invalid-handler",
   description: "Given handler doesn't match any from the server",
@@ -25,5 +30,5 @@ export const ERR_UNAUTHORIZED_ACTION: ErrorMessage = {
 export const ERR_INVALID_AUTHORIZE_CONNECTION_INSTANCE: ErrorMessage = {
   error: "invalid-authorize-connection-instance",
   description:
-    "The username you're trying to authorized is already tied to another connection",
+    "The username you're trying to authorized is already tied to a connection",
 };

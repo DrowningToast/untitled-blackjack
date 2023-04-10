@@ -3,7 +3,6 @@ import { IUser, User } from "../models/UserModel";
 import { asyncTransaction } from "../utils/Transaction";
 
 const createUser = asyncTransaction(async (args: FilterQuery<IUser>) => {
-  console.log(args);
   const _ = new User(args);
   const res = await _.save();
 
@@ -37,7 +36,7 @@ const deleteUser = asyncTransaction(async (args: FilterQuery<IUser>) => {
  * @param args
  */
 const getUserMeta = asyncTransaction(async (args: FilterQuery<IUser>) => {
-  const _ = await User.findOne(args).select(["-cards", "-sessID"]);
+  const _ = await User.findOne(args).select(["-cards", "-sessId"]);
   return _;
 });
 
@@ -47,7 +46,7 @@ const getUserMeta = asyncTransaction(async (args: FilterQuery<IUser>) => {
  * @returns
  */
 const getUserSession = asyncTransaction(async (args: FilterQuery<IUser>) => {
-  const _ = await User.findOne(args).select(["sessID"]);
+  const _ = await User.findOne(args).select(["sessId"]);
   return _;
 });
 

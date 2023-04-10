@@ -1,4 +1,4 @@
-import { FilterQuery, UpdateQuery } from "mongoose";
+import { FilterQuery, ObjectId, Types, UpdateQuery } from "mongoose";
 import { Game, IGame } from "../models/GameModel";
 import { IUser } from "../models/UserModel";
 import {
@@ -19,6 +19,7 @@ import {
 } from "../utils/Card";
 import { asyncTransaction } from "../utils/Transaction";
 import { UserController } from "./UserController";
+import { ERR_INVALID_GAME, ERR_INVALID_USER } from "../utils/Error";
 
 /**
  * There should be no function that updates the game instance data directly for security reasons
@@ -28,7 +29,7 @@ import { UserController } from "./UserController";
  * @description This function create a new game instance
  */
 const createGame = asyncTransaction(
-  async (playersIDs: string[], passcode: string) => {
+  async (playersIDs: Types.ObjectId[], passcode: string) => {
     /**
      * Ensure there is at least one player
      */
@@ -57,8 +58,14 @@ const createGame = asyncTransaction(
         kingCard,
       ],
     });
+
     const res = await _.save();
-    return res;
+
+    const game = await Game.findOne({
+      gameId: res.gameId,
+    }).select("-remainingCards");
+
+    return game;
   }
 );
 
@@ -101,8 +108,8 @@ const joinGame = asyncTransaction(async (gameId: string, userId: string) => {
  * @description Change the player ready state in the game instance
  */
 const changePlayerReadyState = asyncTransaction(
-  async (sessID: string, ready: boolean) => {
-    const [userMeta] = await UserController.getUserMeta({ sessID });
+  async (sessId: string, ready: boolean) => {
+    const [userMeta] = await UserController.getUserMeta({ sessId });
     const _ = await Game.findOneAndUpdate(
       {
         players: userMeta?.id,
@@ -117,10 +124,60 @@ const changePlayerReadyState = asyncTransaction(
   }
 );
 
+/**
+ * Make player leave the game
+ */
+const leaveGame = asyncTransaction(
+  async (sessId: string, connectionId: string) => {
+    const [userMeta] = await UserController.getUserMeta({
+      sessId,
+      connectionId,
+    });
+
+    // Ensure the user is valid
+    if (!userMeta) {
+      throw ERR_INVALID_USER;
+    }
+
+    // Ensure the game instance is valid
+    let [game] = await getGame({ players: [userMeta?._id] });
+
+    if (!game) {
+      throw ERR_INVALID_GAME;
+    }
+
+    const _ = await Game.findOneAndUpdate(
+      {
+        players: [userMeta?._id],
+      },
+      {
+        $pull: {
+          players: userMeta?.id,
+        },
+      }
+    );
+
+    [game] = await getGame({ players: [userMeta?._id] });
+
+    /**
+     * If the game players is empty, delete the game instance
+     */
+    if (game!.players?.length <= 0) {
+      await Game.deleteOne({
+        _id: game!._id,
+      });
+      return null;
+    } else {
+      return game;
+    }
+  }
+);
+
 export const GameController = {
   createGame,
   getTurnOwner,
   getGame,
   joinGame,
   changePlayerReadyState,
+  leaveGame,
 };

@@ -3,6 +3,7 @@ import {
   ERR_EXISTED_GAME,
   ERR_ILLEGAL_OPERATION,
   ERR_INTERNAL,
+  ERR_INVALID_CONNECTION_ID,
   ERR_INVALID_GAME,
   ERR_INVALID_PASSCODE,
   ERR_INVALID_SESSID,
@@ -15,41 +16,45 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
     function (api, opts, done) {
       /**
        * Initialize a new game instance
+       * The user creating the game must be authorized
        */
-      api.post<{ Body: { sessID: string; passcode: string } }>(
-        "/create",
-        async (request, reply) => {
-          const { sessID, passcode } = request.body;
-          const [user, isError] = await UserController.getUserMeta({ sessID });
-          if (isError) {
-            return reply.status(500).send(ERR_INTERNAL);
-          } else if (!user) {
-            return reply.status(400).send(ERR_INVALID_SESSID);
-          } else if (!passcode) {
-            return reply.status(400).send(ERR_INVALID_PASSCODE);
-          } else {
-            // Check if there is already an active game with the same passcode or user inside
-            const [existGame] = await GameController.getGame({
-              passcode,
-              players: sessID,
-            });
-            if (existGame) {
-              return reply.status(400).send(ERR_EXISTED_GAME);
-            }
+      api.post<{
+        Body: { sessId: string; connectionId: string; passcode: string };
+      }>("/create", async (request, reply) => {
+        const { sessId, connectionId, passcode } = request.body;
+        const [user, isError] = await UserController.getUserMeta({
+          sessId,
+          connectionId,
+        });
+        if (isError) {
+          return reply.status(500).send(ERR_INTERNAL);
+        } else if (!user) {
+          return reply.status(400).send(ERR_INVALID_USER);
+        } else if (!passcode) {
+          return reply.status(400).send(ERR_INVALID_PASSCODE);
+        } else {
+          // Check if there is already an active game with the same passcode or user inside
+          const [existGame] = await GameController.getGame({
+            passcode,
+            players: [user._id],
+          });
 
-            // Create the game
-            const [game, error] = await GameController.createGame(
-              [user.id],
-              passcode
-            );
-            if (error) {
-              reply.status(500).send(ERR_INTERNAL);
-            }
-
-            return game;
+          if (existGame) {
+            return reply.status(400).send(ERR_EXISTED_GAME);
           }
+
+          // Create the game
+          const [game, error] = await GameController.createGame(
+            [user._id],
+            passcode
+          );
+          if (error) {
+            reply.status(500).send(ERR_INTERNAL);
+          }
+
+          return game;
         }
-      );
+      });
 
       /**
        * Check does the game exist
@@ -71,11 +76,11 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
       /**
        * Join the game
        */
-      api.post<{ Body: { sessID: string; passcode: string } }>(
+      api.post<{ Body: { sessId: string; passcode: string } }>(
         "/join",
         async (request, reply) => {
-          const { sessID, passcode } = request.body;
-          const [user, isError] = await UserController.getUserMeta({ sessID });
+          const { sessId, passcode } = request.body;
+          const [user, isError] = await UserController.getUserMeta({ sessId });
           if (isError) {
             return reply.status(500).send(ERR_INTERNAL);
           } else if (!user) {
@@ -86,7 +91,7 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
             // Check if the game found or not
             const [existGame] = await GameController.getGame({
               passcode,
-              players: sessID,
+              players: sessId,
             });
             if (!existGame) {
               return reply.status(400).send(ERR_INVALID_PASSCODE);

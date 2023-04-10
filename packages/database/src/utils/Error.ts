@@ -19,6 +19,11 @@ export const ERR_INVALID_SESSID: ErrorMessage = {
   description: "Session ID not found",
 };
 
+export const ERR_INVALID_CONNECTION_ID: ErrorMessage = {
+  error: "invalid-connection-id",
+  description: "Connection ID not found",
+};
+
 export const ERR_INVALID_PASSCODE: ErrorMessage = {
   error: "invalid-passcode",
   description: "Passcode not found",

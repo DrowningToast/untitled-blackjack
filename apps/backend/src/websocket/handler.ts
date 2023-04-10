@@ -7,10 +7,9 @@ import { $defaultHandler } from "./handlers/default";
 
 export const handlers: Record<string, WebsocketHandler> = {
   $connect: $connectHandler,
+  $disconnect: $disconnectHandler,
 
   auth: authHandler,
-
-  $disconnect: $disconnectHandler,
 
   debug: debugHandler,
 

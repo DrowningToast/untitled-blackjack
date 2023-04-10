@@ -2,8 +2,12 @@ import { APIGatewayProxyEvent } from "aws-lambda";
 import { ApiGatewayManagementApi } from "aws-sdk";
 import env from "env";
 import { WebsocketResponse } from "./utils/type";
+import { WebsocketContext } from "./utils/websocket";
 
-export const getAPIG = (event: APIGatewayProxyEvent, context: any) => {
+export const getAPIG = (
+  event: APIGatewayProxyEvent,
+  context: WebsocketContext
+) => {
   try {
     const api = new ApiGatewayManagementApi({
       apiVersion: "2018-11-29",

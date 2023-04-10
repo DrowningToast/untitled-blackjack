@@ -6,7 +6,7 @@ export interface TrumpCard {
   // Handle the effeec of the card
   onUse: (
     // The user who used the card
-    sessID: string,
+    sessId: string,
     // The game the user is in
     gameId: string
   ) => Promise<void>;
@@ -14,9 +14,9 @@ export interface TrumpCard {
 
 export const demoTrump: TrumpCard = {
   handler: "demo",
-  onUse: async (sessID, gameId) => {
+  onUse: async (sessId, gameId) => {
     const [user] = await UserController.getUserMeta({
-      sessID,
+      sessId,
     });
     const [game] = await GameController.getGame({ gameId });
     console.log(user?.username);

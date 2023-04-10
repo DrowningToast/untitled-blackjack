@@ -1,4 +1,4 @@
-import { UserController } from "database";
+import { GameController, UserController } from "database";
 import { WebsocketHandler } from "../utils/type";
 
 export const $disconnectHandler: WebsocketHandler = async (event, context) => {
@@ -17,6 +17,15 @@ export const $disconnectHandler: WebsocketHandler = async (event, context) => {
         connectionId: null,
       }
     );
+
+    // If the user is in a game, remove the user from the game
+    const [game] = await GameController.getGame({
+      players: [user._id],
+    });
+
+    if (game) {
+      await GameController.leaveGame(user.sessId, context.connectionId);
+    }
   }
 
   return;

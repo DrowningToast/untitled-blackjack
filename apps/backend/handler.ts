@@ -5,6 +5,7 @@ import awsLambdaFastify from "@fastify/aws-lambda";
 import { connectToDatabase } from "database";
 import { getHandler, handlers } from "./src/websocket/handler";
 import { getAPIG } from "./src/websocket/APIGateway";
+import { ERR_INVALID_HANDLER } from "./src/websocket/utils/error";
 
 const proxy = awsLambdaFastify(app());
 // const handler = awsLambdaFastify(app());
@@ -32,11 +33,11 @@ const ws: Handler<
   APIGatewayEvent,
   { statusCode: number; body: string }
 > = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
+  await connectToDatabase();
+
   const {
     requestContext: { routeKey, connectionId },
   } = event;
-
-  console.log("incoming");
 
   if (!connectionId) {
     throw new Error("No connectionId found");
@@ -57,6 +58,8 @@ const ws: Handler<
       };
 
     case "$disconnect":
+      await getHandler("$disconnect")(event, { routeKey, connectionId });
+
       return {
         statusCode: 200,
         body: JSON.stringify({
@@ -75,7 +78,7 @@ const ws: Handler<
         const { send } = getAPIG(event, { connectionId, routeKey });
         await send({
           status: "REQUEST_ERROR",
-          handler: "INVALID_HANDLER",
+          error: ERR_INVALID_HANDLER,
         });
       } else {
         await getHandler(body.handler as string)(event, {
@@ -88,7 +91,6 @@ const ws: Handler<
         statusCode: 200,
         body: JSON.stringify({
           connected: true,
-          hello: "world2",
         }),
       };
       break;
