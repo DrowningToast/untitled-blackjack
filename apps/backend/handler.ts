@@ -4,7 +4,7 @@ import app from "./src/app";
 import awsLambdaFastify from "@fastify/aws-lambda";
 import { connectToDatabase } from "database";
 import { getHandler, handlers } from "./src/websocket/handler";
-import { getAPIG } from "./src/websocket/connection";
+import { getAPIG } from "./src/websocket/APIGateway";
 
 const proxy = awsLambdaFastify(app());
 // const handler = awsLambdaFastify(app());
