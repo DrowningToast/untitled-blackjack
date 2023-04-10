@@ -40,6 +40,10 @@ export const getAPIG = (
        * Send data to client
        */
       send,
+      /**
+       * Shorthand for getting connectionId
+       */
+      connectionId: context.connectionId,
     };
   } catch (e) {
     console.log(e);

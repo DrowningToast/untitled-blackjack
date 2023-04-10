@@ -1,17 +1,16 @@
-import { authHandler } from "./handlers/auth";
 import { WebsocketHandler } from "./utils/type";
 import { $connectHandler } from "./handlers/$connect";
 import { $disconnectHandler } from "./handlers/$disconnect";
 import { debugHandler } from "./handlers/debug";
 import { $defaultHandler } from "./handlers/default";
+import { authHandler } from "./handlers/auth";
 
 export const handlers: Record<string, WebsocketHandler> = {
   $connect: $connectHandler,
   $disconnect: $disconnectHandler,
 
-  auth: authHandler,
-
   debug: debugHandler,
+  auth: authHandler,
 
   $default: $defaultHandler,
 };

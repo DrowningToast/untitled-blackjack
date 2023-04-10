@@ -1,5 +1,9 @@
 import { FastifyInstance } from "fastify";
-import { ERR_EXISTED_USER, ERR_INTERNAL } from "database/src/utils/Error";
+import {
+  ERR_EXISTED_USER,
+  ERR_INTERNAL,
+  ERR_INVALID_CONNECTION_ID,
+} from "database/src/utils/Error";
 import { UserController } from "database";
 
 /**
@@ -16,25 +20,28 @@ const userRouter = (app: FastifyInstance, prefix: string) => {
       /**
        * Initialize the user loggin in
        */
-      api.post<{ Body: { username: string } }>(
-        "/create",
+      api.post<{ Body: { username: string; connectionId: string } }>(
+        "/authenticate",
         async (request, reply) => {
-          const { username } = request.body;
+          const { username, connectionId } = request.body;
           const [user] = await UserController.getUserMeta({ username });
 
           /**
-           * Initialize the user loggin in
-           *
-           * If the user already exists
-           * The Session ID will be replaced, if the document doesn't have connectionID
-           *
-           * @description Create new user document in the database with the username and session ID
-           * if the user with the same name already exists, the session ID will be replaced.
-           * but if the user already has a connection ID, the session ID will not be replaced.
+           * Validate the username and connectionId
+           */
+          if (!username || !connectionId) {
+            reply.status(400).send(ERR_INVALID_CONNECTION_ID);
+          }
+
+          /**
+           * If the username is taken, reply with an error
            */
           if (!user) {
             // Create the user
-            const [user, error] = await UserController.createUser({ username });
+            const [user, error] = await UserController.createUser({
+              username,
+              connectionId,
+            });
             if (error) {
               reply.status(500).send(ERR_INTERNAL);
             }

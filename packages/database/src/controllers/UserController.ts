@@ -36,7 +36,8 @@ const deleteUser = asyncTransaction(async (args: FilterQuery<IUser>) => {
  * @param args
  */
 const getUserMeta = asyncTransaction(async (args: FilterQuery<IUser>) => {
-  const _ = await User.findOne(args).select(["-cards", "-sessId"]);
+  console.log(args);
+  const _ = await User.findOne(args).select(["-cards"]);
   return _;
 });
 
@@ -45,10 +46,12 @@ const getUserMeta = asyncTransaction(async (args: FilterQuery<IUser>) => {
  * @param args
  * @returns
  */
-const getUserSession = asyncTransaction(async (args: FilterQuery<IUser>) => {
-  const _ = await User.findOne(args).select(["sessId"]);
-  return _;
-});
+const getUserConnectionId = asyncTransaction(
+  async (args: FilterQuery<IUser>) => {
+    const _ = await User.findOne(args).select(["connectionId"]);
+    return _;
+  }
+);
 
 /**
  * @description Get all of the target user cards (the first one should be hidden from opponenet)
@@ -66,6 +69,6 @@ export const UserController = {
   updateUser,
   deleteUser,
   getUserMeta,
-  getUserSession,
+  getUserConnectionId,
   getUserCards,
 };

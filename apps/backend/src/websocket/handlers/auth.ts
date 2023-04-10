@@ -1,73 +1,70 @@
-import { ERR_INTERNAL, UserController } from "database";
+import { ERR_EXISTED_USER, ERR_INTERNAL, UserController } from "database";
+import { WebsocketHandler, websocketHandlerCode } from "../utils/type";
+import z from "zod";
 import { getAPIG } from "../APIGateway";
-import { authBody } from "../utils/zod";
-import { APIGatewayProxyEvent } from "aws-lambda";
-import { WebsocketContext } from "../utils/websocket";
-import { WebsocketHandler } from "../utils/type";
-import {
-  ERR_BAD_REQUEST,
-  ERR_INVALID_AUTHORIZE_CONNECTION_INSTANCE,
-} from "../utils/error";
+import { ERR_INVALID_BODY } from "../utils/error";
+
+const bodyValdiation = z.object({
+  username: z.string(),
+});
 
 /**
  *
- * @description Link the user document to the connection
+ * @description Authenticate the connection and make a new user document
  *
  * @param event
  * @param context
  * @returns
  */
-export const authHandler: WebsocketHandler = async (
-  event: APIGatewayProxyEvent,
-  context: WebsocketContext
-) => {
-  const { send } = getAPIG(event, context);
+export const authHandler: WebsocketHandler = async (event, context) => {
+  const { send, connectionId } = getAPIG(event, context);
 
-  if (!authBody.safeParse(JSON.parse(event.body!)).success) {
+  const json = JSON.parse(event.body!);
+
+  if (bodyValdiation.safeParse(json).success === false) {
+    console.log(event.body);
     return await send({
       status: "REQUEST_ERROR",
-      error: ERR_BAD_REQUEST,
+      error: ERR_INVALID_BODY,
     });
   }
 
-  const body = authBody.parse(JSON.parse(event.body!));
+  const body = bodyValdiation.parse(json);
 
-  // Find if the user with connection ID already exists
-  const [_] = await UserController.getUserMeta({
-    sessId: body.sessId,
-    connectionId: {
-      $ne: null,
-    },
-  });
+  const { username } = body;
+  const [user] = await UserController.getUserMeta({ username });
 
-  if (_) {
+  /**
+   * If the username is taken, reply with an error
+   */
+  if (user) {
+    // The username is already taken
     return await send({
       status: "REQUEST_ERROR",
-      error: ERR_INVALID_AUTHORIZE_CONNECTION_INSTANCE,
+      error: ERR_EXISTED_USER,
     });
-  }
-
-  const [user, isError] = await UserController.updateUser(
-    {
-      sessId: body.sessId,
-    },
-    {
-      connectionId: context.connectionId,
+  } else if (user) {
+    // The username is already taken
+    return await send({
+      status: "REQUEST_ERROR",
+      error: ERR_EXISTED_USER,
+    });
+  } else {
+    // Create new user
+    const [user, error] = await UserController.createUser({
+      username,
+      connectionId,
+    });
+    if (error) {
+      return await send({
+        status: "INTERNAL_ERROR",
+        error: ERR_INTERNAL,
+      });
     }
-  );
-
-  if (isError) {
-    return await send({
-      status: "INTERNAL_ERROR",
-      error: ERR_INTERNAL,
+    return send({
+      status: "OK",
+      error: null,
+      content: user,
     });
   }
-
-  const res = await send({
-    status: "OK",
-    handler: "CONNECTION_AUTHROIZED",
-    error: null,
-    content: { user, connectionId: context.connectionId },
-  });
-  return res;
 };

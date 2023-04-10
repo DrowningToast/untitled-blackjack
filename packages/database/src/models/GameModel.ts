@@ -10,7 +10,7 @@ export interface IGame {
   /**
    * Only supported 2 players, no less, no more
    */
-  players: IUser[];
+  players: { player: IUser; ready: boolean }[];
   turnOwner: IUser;
   remainingCards: Card[];
 }
@@ -28,6 +28,9 @@ const GameSchema = new mongoose.Schema({
     enum: ["onGoing", "ended", "notStarted"],
     default: "notStarted",
   },
+  /**
+   * @protected Sensitive information
+   */
   passcode: {
     type: String,
     required: true,
@@ -48,6 +51,9 @@ const GameSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  /**
+   * @protected Sensitive information
+   */
   remainingCards: [
     {
       display: {

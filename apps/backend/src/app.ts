@@ -1,7 +1,7 @@
 import fastify from "fastify";
 import { userRouter } from "./http/v1/user";
 import { gameRouter } from "./http/v1/game";
-import { UserController } from "database";
+import { Game, UserController } from "database";
 
 function init() {
   const app = fastify();
@@ -13,11 +13,13 @@ function init() {
   app.get("/verbose", (req, rep) => rep.send(req));
 
   app.get("/test", async (req, rep) => {
-    const [user] = await UserController.getUserMeta({
-      username: "Gus",
-    });
+    const _ = await Game.find({
+      passcode: "testing_ground",
 
-    rep.send(user);
+      "players.player": "64347175af7ea6291d05b0cf",
+    }).populate("players.player", "-cards -connectionId");
+
+    rep.send(_);
   });
 
   userRouter(app, "/user");

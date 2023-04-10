@@ -15,14 +15,6 @@ functions:
     handler: handler.handler
     events:
       - httpApi: "*"
-      - websocket:
-          route: $disconnect
-      - websocket:
-          route: $connect
-      - websocket:
-          route: broadcast
-      - websocket:
-          route: $default
 
   websocket:
     handler: handler.ws
@@ -32,7 +24,7 @@ functions:
       - websocket:
           route: $connect
       - websocket:
-          route: broadcast
+          route: $default
 
 plugins:
   - serverless-esbuild

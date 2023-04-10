@@ -17,7 +17,12 @@ const proxy = awsLambdaFastify(app());
  * @param callback
  * @returns
  */
-const handler = (event: Event, context: Context, callback: Callback) => {
+const handler = (
+  event: APIGatewayEvent,
+  context: Context,
+  callback: Callback
+) => {
+  console.log(event.body);
   context.callbackWaitsForEmptyEventLoop = false;
   return connectToDatabase().then(() => proxy(event, context));
 };
@@ -47,7 +52,7 @@ const ws: Handler<
 
   switch (routeKey) {
     case "$connect":
-      await getHandler("$connect")(event, { routeKey, connectionId });
+      await getHandler("$connect")(event, { connectionId });
 
       return {
         statusCode: 200,
@@ -58,34 +63,7 @@ const ws: Handler<
       };
 
     case "$disconnect":
-      await getHandler("$disconnect")(event, { routeKey, connectionId });
-
-      return {
-        statusCode: 200,
-        body: JSON.stringify({
-          connected: true,
-        }),
-      };
-      break;
-
-    case "broadcast":
-      body = JSON.parse(event?.body ?? "");
-
-      /**
-       * Check for invalid route handler
-       */
-      if (!Object.keys(handlers).includes(body.handler as string)) {
-        const { send } = getAPIG(event, { connectionId, routeKey });
-        await send({
-          status: "REQUEST_ERROR",
-          error: ERR_INVALID_HANDLER,
-        });
-      } else {
-        await getHandler(body.handler as string)(event, {
-          routeKey,
-          connectionId,
-        });
-      }
+      await getHandler("$disconnect")(event, { connectionId });
 
       return {
         statusCode: 200,
@@ -96,16 +74,27 @@ const ws: Handler<
       break;
 
     default:
-      console.log("default case");
-      await getHandler("$default")(event, {
-        connectionId,
-        routeKey: "default",
-      });
+      body = JSON.parse(event?.body ?? "");
+
+      /**
+       * Check for invalid route handler
+       */
+      if (!Object.keys(handlers).includes(body.handler as string)) {
+        const { send } = getAPIG(event, { connectionId });
+        await send({
+          status: "REQUEST_ERROR",
+          error: ERR_INVALID_HANDLER,
+        });
+      } else {
+        await getHandler(body.handler as string)(event, {
+          connectionId,
+        });
+      }
 
       return {
-        statusCode: 400,
+        statusCode: 200,
         body: JSON.stringify({
-          connected: undefined,
+          connected: true,
         }),
       };
       break;

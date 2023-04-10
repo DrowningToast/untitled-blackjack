@@ -19,11 +19,10 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
        * The user creating the game must be authorized
        */
       api.post<{
-        Body: { sessId: string; connectionId: string; passcode: string };
+        Body: { connectionId: string; passcode: string };
       }>("/create", async (request, reply) => {
-        const { sessId, connectionId, passcode } = request.body;
+        const { connectionId, passcode } = request.body;
         const [user, isError] = await UserController.getUserMeta({
-          sessId,
           connectionId,
         });
         if (isError) {
@@ -48,6 +47,8 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
             [user._id],
             passcode
           );
+
+          console.log(game);
           if (error) {
             reply.status(500).send(ERR_INTERNAL);
           }
@@ -76,11 +77,16 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
       /**
        * Join the game
        */
-      api.post<{ Body: { sessId: string; passcode: string } }>(
+      api.post<{ Body: { passcode: string; connectionId: string } }>(
         "/join",
         async (request, reply) => {
-          const { sessId, passcode } = request.body;
-          const [user, isError] = await UserController.getUserMeta({ sessId });
+          const { connectionId, passcode } = request.body;
+          const [user, isError] = await UserController.getUserMeta({
+            connectionId,
+          });
+          console.log(passcode);
+          console.log(!passcode);
+
           if (isError) {
             return reply.status(500).send(ERR_INTERNAL);
           } else if (!user) {
@@ -88,13 +94,19 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
           } else if (!passcode) {
             return reply.status(400).send(ERR_INVALID_PASSCODE);
           } else {
-            // Check if the game found or not
-            const [existGame] = await GameController.getGame({
+            // The same player cannot join the game instance themselves
+            let [existGame] = await GameController.getGame({
               passcode,
-              players: sessId,
+              "players.player": user._id,
             });
+            if (existGame) {
+              return reply.status(400).send(ERR_ILLEGAL_OPERATION);
+            }
+
+            // Check if the game exist
+            [existGame] = await GameController.getGame({ passcode });
             if (!existGame) {
-              return reply.status(400).send(ERR_INVALID_PASSCODE);
+              return reply.status(400).send(ERR_INVALID_GAME);
             }
 
             // Check if the game is full or already active?
@@ -105,15 +117,12 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
               return reply.status(400).send(ERR_INVALID_GAME);
             }
 
-            // Check if the player who created the session is trying to join the game
-            if (existGame.players[0] === user.id) {
-              return reply.status(400).send(ERR_ILLEGAL_OPERATION);
-            }
+            console.log(user.id);
 
             // Join the game
             const [game, error] = await GameController.joinGame(
-              existGame.gameId,
-              user.id
+              existGame.id,
+              user._id
             );
             if (error) {
               reply.status(500).send(ERR_INTERNAL);
