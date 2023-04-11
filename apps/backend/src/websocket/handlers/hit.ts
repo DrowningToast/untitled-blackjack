@@ -1,6 +1,11 @@
-import { z } from "zod";
 import { WebsocketHandler } from "../utils/type";
-import { ERR_INVALID_GAME, ERR_INVALID_USER, UserController } from "database";
+import {
+  ERR_INVALID_GAME,
+  ERR_INVALID_USER,
+  GameActionController,
+  GameController,
+  UserController,
+} from "database";
 import { getAPIG } from "../APIGateway";
 
 export const hitHandler: WebsocketHandler = async (event, context) => {
@@ -21,6 +26,8 @@ export const hitHandler: WebsocketHandler = async (event, context) => {
       error: ERR_INVALID_GAME,
     });
   }
+
+  // const game = await GameActionController.drawCard()
 
   return await send({
     status: "OK",

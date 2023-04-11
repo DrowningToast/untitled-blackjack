@@ -17,11 +17,14 @@ export const getAPIG = (
           : event.requestContext.domainName + "/" + event.requestContext.stage,
     });
 
-    const send = async <T>(data?: WebsocketResponse<T>) => {
+    const send = async <T>(
+      data?: WebsocketResponse<T>,
+      connectionId?: string
+    ) => {
       try {
         return await api
           .postToConnection({
-            ConnectionId: context.connectionId,
+            ConnectionId: connectionId ?? context.connectionId,
             Data: JSON.stringify(data),
           })
           .promise();

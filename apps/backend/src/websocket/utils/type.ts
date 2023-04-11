@@ -5,23 +5,22 @@ import { ErrorMessage } from "database";
 
 export type websocketHandlerCode =
   | "PONG"
+  /**
+   * Backend has acknowledged the connection
+   */
   | "CONNECTION_SUCCESS"
-  | "CONNECTION_AUTHROIZED";
-
-/**
- * @description PONG
- */
-export type PING = "PONG";
-
-/**
- * @description Successful websocket connection estabilshed. (Still unauthorized)
- */
-export type SUCCESS_CONN = "CONNECTION_SUCCESS";
-
-/**
- * @description Websocket connection authroized
- */
-export type AUTHROIZED = "CONNECTION_AUTHROIZED";
+  /**
+   * User document created
+   */
+  | "CONNECTION_AUTHROIZED"
+  /**
+   * Game started
+   */
+  | "GAME_STARTED"
+  /**
+   * reply that backend acknowledged the request that request is true
+   */
+  | "READY_STATE";
 
 export interface WebsocketResponse<T = undefined> {
   /**

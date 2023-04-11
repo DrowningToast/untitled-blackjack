@@ -50,7 +50,7 @@ const getUserMeta = asyncTransaction(async (args: FilterQuery<IUser>) => {
 const getUserConnectionId = asyncTransaction(
   async (args: FilterQuery<IUser>) => {
     const _ = await User.findOne(args).select(["connectionId"]);
-    return _;
+    return _.connectionId;
   }
 );
 
