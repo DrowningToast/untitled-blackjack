@@ -1,4 +1,3 @@
-org: drowningtoast
 app: tobeit-backend
 service: backend
 frameworkVersion: "3"
