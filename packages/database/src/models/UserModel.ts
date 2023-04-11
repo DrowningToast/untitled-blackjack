@@ -5,10 +5,13 @@ import { v4 as uuid } from "uuid";
 
 export interface IUser {
   username: string;
-  connectionId?: string;
+  connectionId: string;
   gameScore: number;
   cards: Card[];
   game: IGame;
+  ready: boolean;
+  stand: boolean;
+  // trumpCards: Trump[];
 }
 
 const UserSchema = new mongoose.Schema({
@@ -67,6 +70,20 @@ const UserSchema = new mongoose.Schema({
       },
     },
   ],
+  /**
+   * Is the player ready for the game to starts?
+   */
+  ready: {
+    type: Boolean,
+    default: false,
+  },
+  /**
+   * Is the player choosing the stand?
+   */
+  stand: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const User = mongoose.model<IUser>("User", UserSchema);

@@ -32,8 +32,3 @@ export const ERR_INVALID_AUTHORIZE_CONNECTION_INSTANCE: ErrorMessage = {
   description:
     "The username you're trying to authorized is already tied to a connection",
 };
-
-export const ERR_INVALID_BODY: ErrorMessage = {
-  error: "invalid-body",
-  description: "The body is invalid",
-};

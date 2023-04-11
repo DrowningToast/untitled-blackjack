@@ -59,3 +59,8 @@ export const ERR_ILLEGAL_OPERATION: ErrorMessage = {
   description:
     "What you're trying to do is illegal and would break the game system",
 };
+
+export const ERR_INGAME_PLAYERS: ErrorMessage = {
+  error: "invalid-ingame-players",
+  description: "Players in the game instance is invalid and maybe broken",
+};

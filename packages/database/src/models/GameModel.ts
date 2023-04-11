@@ -10,7 +10,7 @@ export interface IGame {
   /**
    * Only supported 2 players, no less, no more
    */
-  players: { player: IUser; ready: boolean }[];
+  players: IUser[];
   turnOwner: IUser;
   remainingCards: Card[];
 }
@@ -37,14 +37,8 @@ const GameSchema = new mongoose.Schema({
   },
   players: [
     {
-      player: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-      ready: {
-        type: Boolean,
-        default: false,
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
   ],
   turnOwner: {
@@ -65,6 +59,7 @@ const GameSchema = new mongoose.Schema({
           type: Number,
         },
       ],
+      default: [],
     },
   ],
 });

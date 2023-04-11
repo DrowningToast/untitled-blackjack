@@ -40,7 +40,7 @@ const createGame = asyncTransaction(
     }
 
     const _ = new Game({
-      players: { player: playersIDs },
+      players: playersIDs,
       gameState: "notStarted",
       passcode: passcode,
       // the instance starts with all cards
@@ -63,100 +63,105 @@ const createGame = asyncTransaction(
 
     const res = await _.save();
 
-    console.log(res);
-
     const [game] = await getGame({ gameId: res.gameId });
 
-    console.log(res);
-
-    return [game];
+    return game;
   }
 );
 
-/**
- * @access Players in the game
- *
- * @description Get the current turn owner
- */
-const getTurnOwner = asyncTransaction(
-  async (connectionId: string, gameId: string) => {
-    // Get the game owner
-    const _ = await Game.findOne({
-      connectionId,
-      gameId,
-    }).select("turnOwner");
-    return _;
-  }
-);
-
-/**
- * @access Any users
- *
- * @description Get the game instance non-sensitive data (exclude remainingCards, player.cards)
- */
 const getGame = asyncTransaction(async (arg: FilterQuery<IGame>) => {
   // Get the game instance and populate the players
   const _ = await Game.findOne(arg)
-    .populate("players.player", "-cards -connectionId -trumpCards")
-    .select("-remainingCards -passcode");
+    .populate("players", { cards: 0, connectionId: 0, trumpCards: 0 })
+    .select({
+      remainingCards: 0,
+      passcode: 0,
+    });
 
   return _;
 });
 
-/**
- * @access User themselves
- *
- * @description Join another game instance
- */
 const joinGame = asyncTransaction(
   async (_id: string, userId: Types.ObjectId) => {
     // Get the game instance
     const _ = await Game.findByIdAndUpdate(_id, {
-      players: { $push: { player: userId } },
+      $push: { players: userId },
     });
-    return _;
+
+    const [updated, err] = await getGame({ _id });
+
+    if (err) {
+      throw ERR_INVALID_GAME;
+    }
+
+    return updated;
   }
 );
 
-/**
- * @access User themselves
- *
- * @description Change the player ready state in the game instance
- */
-const changePlayerReadyState = asyncTransaction(
-  async (connectionId: string, ready: boolean) => {
-    const [userMeta] = await UserController.getUserMeta({ connectionId });
-    const _ = await Game.findOneAndUpdate(
-      {
-        players: userMeta?.id,
-      },
-      {
-        $set: {
-          [`players.$.ready`]: ready,
+const leaveGame = asyncTransaction(
+  async (connectionId: string, gameId: string) => {
+    const [userMeta] = await UserController.getUserMeta({
+      connectionId,
+    });
+
+    // Ensure the user is valid
+    if (!userMeta?._id) {
+      throw ERR_INVALID_USER;
+    }
+
+    // Ensure the game instance is valid
+    let [game] = await getGame({ gameId });
+
+    if (
+      !game ||
+      !game.players.find((player) => player.username === userMeta.username)
+    ) {
+      throw ERR_INVALID_GAME;
+    }
+
+    console.log(game?.players);
+    console.log(game!.players?.length);
+    console.log(game!.players?.length <= 1);
+
+    /**
+     * If the game players is empty, delete the game instance
+     */
+    if (game!.players?.length <= 1) {
+      await Game.deleteOne({
+        _id: game!._id,
+      });
+      return null;
+    } else {
+      const _ = await Game.findOneAndUpdate(
+        {
+          gameId: game.gameId,
         },
-      }
-    );
-    return _;
+        {
+          $pull: {
+            players: [{ _id: userMeta?._id }],
+          },
+        }
+      );
+      console.log(_);
+      return _;
+    }
   }
 );
 
-/**
- * @access User themselves
- *
- * Make player leave the game, if the game instance is empty, delete the instance.
- */
-const leaveGame = asyncTransaction(async (connectionId: string) => {
-  const [userMeta] = await UserController.getUserMeta({
-    connectionId,
-  });
+const getPlayers = asyncTransaction(async (gameId: string) => {
+  const [game] = await getGame({ gameId });
 
-  // Ensure the user is valid
-  if (!userMeta) {
-    throw ERR_INVALID_USER;
+  if (!game) {
+    throw ERR_INVALID_GAME;
   }
 
-  // Ensure the game instance is valid
-  let [game] = await getGame({ players: [userMeta?._id] });
+  const [doc] = await getGame({ gameId });
+
+  return doc?.players ?? [];
+});
+
+const startGame = asyncTransaction(async (gameId: string) => {
+  const [game] = await getGame({ gameId });
 
   if (!game) {
     throw ERR_INVALID_GAME;
@@ -164,35 +169,55 @@ const leaveGame = asyncTransaction(async (connectionId: string) => {
 
   const _ = await Game.findOneAndUpdate(
     {
-      players: [userMeta?._id],
+      gameId,
     },
     {
-      $pull: {
-        players: userMeta?.id,
-      },
+      gameState: "onGoing",
     }
   );
 
-  [game] = await getGame({ players: [userMeta?._id] });
-
-  /**
-   * If the game players is empty, delete the game instance
-   */
-  if (game!.players?.length <= 0) {
-    await Game.deleteOne({
-      _id: game!._id,
-    });
-    return null;
-  } else {
-    return game;
-  }
+  return _;
 });
 
 export const GameController = {
+  /**
+   * @access Any authorized users
+   *
+   * - Create a new game instance
+   *
+   * 1. Passcode must be unqiue
+   */
   createGame,
-  getTurnOwner,
+  /**
+   * @access Any users
+   *
+   * @description Get the game instance non-sensitive data (exclude remainingCards, player.cards)
+   */
   getGame,
+  /**
+   * @access User themselves
+   *
+   * @description Join another game instance
+   */
   joinGame,
-  changePlayerReadyState,
+  /**
+   * @access User themselves
+   *
+   * Make player leave the game, if the game instance is empty, delete the instance.
+   */
   leaveGame,
+
+  /**
+   * @access User themselves, System Level
+   *
+   * Get the players in the game
+   */
+  getPlayers,
+
+  /**
+   * @access System level
+   *
+   * Change the state of game to started
+   */
+  startGame,
 };

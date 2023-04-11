@@ -16,8 +16,8 @@ function init() {
     const _ = await Game.find({
       passcode: "testing_ground",
 
-      "players.player": "64347175af7ea6291d05b0cf",
-    }).populate("players.player", "-cards -connectionId");
+      players: "64347175af7ea6291d05b0cf",
+    }).populate("players", "-cards -connectionId");
 
     rep.send(_);
   });

@@ -2,7 +2,7 @@ import { ERR_EXISTED_USER, ERR_INTERNAL, UserController } from "database";
 import { WebsocketHandler, websocketHandlerCode } from "../utils/type";
 import z from "zod";
 import { getAPIG } from "../APIGateway";
-import { ERR_INVALID_BODY } from "../utils/error";
+import { ERR_BAD_REQUEST } from "../utils/error";
 
 const bodyValdiation = z.object({
   username: z.string(),
@@ -22,10 +22,9 @@ export const authHandler: WebsocketHandler = async (event, context) => {
   const json = JSON.parse(event.body!);
 
   if (bodyValdiation.safeParse(json).success === false) {
-    console.log(event.body);
     return await send({
       status: "REQUEST_ERROR",
-      error: ERR_INVALID_BODY,
+      error: ERR_BAD_REQUEST,
     });
   }
 
