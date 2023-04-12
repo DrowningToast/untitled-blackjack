@@ -1,7 +1,10 @@
 import { GameController, UserController } from "database";
 import { WebsocketHandler } from "../utils/type";
+import { getAPIG } from "../APIGateway";
 
 export const $disconnectHandler: WebsocketHandler = async (event, context) => {
+  const { connectionId } = getAPIG(event, context);
+
   // Find if the user is authorized in the DB or not
   const [user, e] = await UserController.getUserMeta({
     connectionId: context.connectionId,
@@ -14,7 +17,7 @@ export const $disconnectHandler: WebsocketHandler = async (event, context) => {
     });
 
     if (game) {
-      await GameController.leaveGame(user.connectionId, game.gameId);
+      await GameController.leaveGame(connectionId, game.gameId);
     }
 
     // If the user is authorized, update the DB to remove the connectionId

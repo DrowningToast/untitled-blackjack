@@ -50,27 +50,13 @@ const userRouter = (app: FastifyInstance, prefix: string) => {
             }
 
             return user;
-          } else if (user.connectionId) {
+          } else {
             // The username is already taken
             reply.status(400).send(ERR_EXISTED_USER);
-          } else {
-            // Delete old user
-            await UserController.deleteUser({ username });
-
-            // create a new user with the same username but different session ID
-            const [user, error] = await UserController.createUser({ username });
-            if (error) {
-              reply.status(500).send(ERR_INTERNAL);
-            }
-
-            return user;
           }
         }
       );
 
-      api.patch<{
-        Body: { connectionId: string; ready: boolean; gameId: string };
-      }>("/ready", async (request, reply) => {});
       done();
     },
 

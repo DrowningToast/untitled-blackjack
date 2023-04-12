@@ -1,4 +1,5 @@
 import {
+  ERR_ILLEGAL_OPERATION,
   ERR_INTERNAL,
   ERR_INVALID_GAME,
   ERR_INVALID_USER,
@@ -10,17 +11,17 @@ import { getAPIG } from "../APIGateway";
 import { ERR_BAD_REQUEST } from "../utils/error";
 import { WebsocketHandler } from "../utils/type";
 import z from "zod";
+import { gameStartMessage } from "../utils/ResponseGenerator";
 
 const bodyValidation = z.object({
-  connectionId: z.string(),
   ready: z.boolean(),
-  gameId: z.string(),
+  gameId: z.string().min(1),
 });
 
 export const readyHandler: WebsocketHandler = async (event, context) => {
-  const { send } = getAPIG(event, context);
+  const { connectionId, send } = getAPIG(event, context);
 
-  // const { connectionId, ready, gameId } = request.body;
+  // const { ready, gameId } = request.body;
 
   if (!event.body) {
     return await send({
@@ -37,7 +38,9 @@ export const readyHandler: WebsocketHandler = async (event, context) => {
   }
 
   const body = bodyValidation.parse(JSON.parse(event.body));
-  const { connectionId, ready, gameId } = body;
+  const { ready, gameId } = body;
+
+  console.log(event.body);
 
   const [user, isError] = await UserController.getUserMeta({
     connectionId,
@@ -55,9 +58,13 @@ export const readyHandler: WebsocketHandler = async (event, context) => {
     });
   }
 
-  const [game, error] = await GameController.getGame({
+  console.log(gameId);
+
+  let [game, error] = await GameController.getGame({
     gameId,
   });
+
+  console.log(game);
 
   if (error) {
     // Unknown error
@@ -73,11 +80,13 @@ export const readyHandler: WebsocketHandler = async (event, context) => {
     });
   } else if (
     // Find if the player saying ready is in the game or not?
-    !game.players.find((player) => player.username === user.username)
+    !game.players.find((player) => player.username === user.username) ||
+    // There must be 2 players in the game to press ready
+    game.players.length != 2
   ) {
     return await send({
       status: "REQUEST_ERROR",
-      error: ERR_INVALID_GAME,
+      error: ERR_ILLEGAL_OPERATION,
     });
   }
 
@@ -90,20 +99,27 @@ export const readyHandler: WebsocketHandler = async (event, context) => {
     });
   }
 
-  const [res] = await GameController.getGame({ gameId });
+  [game] = await GameController.getGame({ gameId });
 
-  if (!res) {
+  if (!game) {
     return await send({
       status: "INTERNAL_ERROR",
       error: ERR_INTERNAL,
     });
   }
 
+  await send({
+    status: "OK",
+    handler: "READY_STATE",
+
+    content: ready,
+  });
+
   /**
    * If the player choose to be ready, check if all players are ready
    */
-  if (ready) {
-    const allReady = res.players.every((player) => {
+  if (ready && game.players.length >= 2) {
+    const allReady = game.players.every((player) => {
       return player.ready;
     });
 
@@ -113,13 +129,11 @@ export const readyHandler: WebsocketHandler = async (event, context) => {
       // init the game
       await GameActionController.initGame(gameId);
 
-      // TODO: Notify the first player the game has started
-
-      const [playerA, playerB] = res.players;
-      const [connectionA] = await UserController.getUserConnectionId({
+      const [playerA, playerB] = game.players;
+      const [connectionA] = await UserController.getConnectionId({
         username: playerA.username,
       });
-      const [connectionB] = await UserController.getUserConnectionId({
+      const [connectionB] = await UserController.getConnectionId({
         username: playerB.username,
       });
       if (!connectionA || !connectionB) {
@@ -129,34 +143,21 @@ export const readyHandler: WebsocketHandler = async (event, context) => {
         });
       }
 
+      let [res, e] = await GameController.getGame({
+        gameId,
+      });
+
+      if (!e)
+        return await send({
+          status: "INTERNAL_ERROR",
+          error: ERR_INTERNAL,
+        });
+
       // send to A
-      await send(
-        {
-          status: "OK",
-          handler: "GAME_STARTED",
-          content: res,
-          error: null,
-        },
-        connectionA
-      );
+      await send(gameStartMessage(game), connectionA);
 
       // send to be B
-      return await send(
-        {
-          status: "OK",
-          handler: "GAME_STARTED",
-          content: res,
-          error: null,
-        },
-        connectionB
-      );
+      return await send(gameStartMessage(game), connectionB);
     }
   }
-
-  return await send({
-    status: "OK",
-    handler: "READY_STATE",
-    error: null,
-    content: ready,
-  });
 };

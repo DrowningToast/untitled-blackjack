@@ -1,7 +1,11 @@
-export interface Card {
-  display: string;
-  values: number[];
-}
+import z from "zod";
+
+export const ZodCard = z.object({
+  display: z.string().min(1),
+  values: z.array(z.number().min(0)),
+});
+
+export type Card = z.infer<typeof ZodCard>;
 
 const aceCard: Card = {
   display: "A",

@@ -7,7 +7,6 @@ export const debugHandler: WebsocketHandler = async (event, context) => {
   const res = await send({
     status: "OK",
     handler: "PONG",
-    error: null,
   });
   return res;
 };

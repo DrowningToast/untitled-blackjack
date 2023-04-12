@@ -27,9 +27,7 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
           connectionId,
         });
         if (isError) {
-          return reply.status(500).send(ERR_INTERNAL);
-        } else if (!user) {
-          return reply.status(400).send(ERR_INVALID_USER);
+          return reply.status(500).send(ERR_INVALID_USER);
         } else if (!passcode) {
           return reply.status(400).send(ERR_INVALID_PASSCODE);
         } else {
@@ -47,11 +45,10 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
 
           // Create the game
           const [game, error] = await GameController.createGame(
-            [user.id],
+            [user._id],
             passcode
           );
 
-          console.log(game);
           if (error) {
             reply.status(500).send(ERR_INTERNAL);
           }
@@ -87,8 +84,6 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
         const [user, isError] = await UserController.getUserMeta({
           connectionId,
         });
-        console.log(passcode);
-        console.log(!passcode);
 
         if (isError) {
           return reply.status(500).send(ERR_INTERNAL);
@@ -134,6 +129,51 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
           // Send the game back
           return game;
         }
+      });
+
+      /**
+       * Leave the game
+       */
+      api.post<{
+        Body: { connectionId: string; gameId: string };
+      }>("/leave", async (request, reply) => {
+        const { connectionId, gameId } = request.body;
+        const [user, isError] = await UserController.getUserMeta({
+          connectionId,
+        });
+
+        if (isError) {
+          return reply.status(500).send(ERR_INTERNAL);
+        } else if (!user) {
+          return reply.status(400).send(ERR_INVALID_USER);
+        } else if (!gameId) {
+          return reply.status(400).send(ERR_BAD_REQUEST);
+        }
+
+        const [existGame] = await GameController.getGame({ gameId });
+
+        if (!existGame) {
+          return reply.status(400).send(ERR_INVALID_GAME);
+        }
+
+        console.log(existGame);
+
+        // Check if the user is in the game
+        if (!existGame.players.find((p) => p.username === user.username)) {
+          return reply.status(400).send(ERR_ILLEGAL_OPERATION);
+        }
+
+        // Leave the game
+        const [game, error] = await GameController.leaveGame(
+          connectionId,
+          gameId
+        );
+
+        if (error) {
+          reply.status(500).send(ERR_INTERNAL);
+        }
+
+        return game;
       });
 
       done();

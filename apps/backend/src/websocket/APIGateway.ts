@@ -17,7 +17,7 @@ export const getAPIG = (
           : event.requestContext.domainName + "/" + event.requestContext.stage,
     });
 
-    const send = async <T>(
+    const send = async <T = undefined>(
       data?: WebsocketResponse<T>,
       connectionId?: string
     ) => {

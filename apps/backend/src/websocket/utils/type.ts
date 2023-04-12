@@ -3,6 +3,8 @@ import { WebsocketContext } from "./websocket";
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { ErrorMessage } from "database";
 
+export type ConnectionId = string;
+
 export type websocketHandlerCode =
   | "PONG"
   /**
@@ -22,20 +24,16 @@ export type websocketHandlerCode =
    */
   | "READY_STATE";
 
-export interface WebsocketResponse<T = undefined> {
+export interface BaseWebsocketResponse<T = undefined> {
   /**
    * INTERNAL_ERROR: An internal error occurred.
    * REQUEST_ERROR: The request was invalid.
    */
   status: "OK" | "INTERNAL_ERROR" | "REQUEST_ERROR";
-  /**
-   * Handler code when an action is performed successfully
-   */
-  handler?: websocketHandlerCode;
-  /**
-   * Response content
-   */
-  content?: T;
+}
+
+export interface ErrorWebsocketResponse<T> extends BaseWebsocketResponse<T> {
+  status: "INTERNAL_ERROR" | "REQUEST_ERROR";
   /**
    * Error message
    * @description Only available when status is "REQUEST_ERROR"
@@ -43,6 +41,22 @@ export interface WebsocketResponse<T = undefined> {
    */
   error: ErrorMessage | null;
 }
+
+export interface HandledWebsocketResponse<T> extends BaseWebsocketResponse<T> {
+  status: "OK";
+  /**
+   * Handler code when an action is performed successfully
+   */
+  handler: string;
+  /**
+   * Response content
+   */
+  content?: T;
+}
+
+export type WebsocketResponse<T = undefined> =
+  | HandledWebsocketResponse<T>
+  | ErrorWebsocketResponse<T>;
 
 export type Handler<T> = (event: APIGatewayProxyEvent) => Promise<T>;
 

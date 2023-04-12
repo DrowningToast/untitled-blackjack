@@ -1,6 +1,5 @@
 import { FilterQuery, ObjectId, Types, UpdateQuery } from "mongoose";
-import { Game, IGame } from "../models/GameModel";
-import { IUser } from "../models/UserModel";
+import { Game, IGame, ZodGameStrip } from "../models/GameModel";
 import {
   aceCard,
   eightCard,
@@ -12,7 +11,6 @@ import {
   queenCard,
   sevenCard,
   sixCard,
-  sortedAllCards,
   tenCard,
   threeCard,
   twoCard,
@@ -35,9 +33,8 @@ const createGame = asyncTransaction(
     /**
      * Ensure there is at least one player
      */
-    if (playersIDs.length !== 1) {
+    if (playersIDs.length !== 1)
       throw new Error("There should be at least one player");
-    }
 
     const _ = new Game({
       players: playersIDs,
@@ -64,8 +61,10 @@ const createGame = asyncTransaction(
     const res = await _.save();
 
     const [game] = await getGame({ gameId: res.gameId });
+    console.log();
+    if (!game) throw ERR_INVALID_GAME;
 
-    return game;
+    return ZodGameStrip.parse(game);
   }
 );
 
@@ -73,13 +72,32 @@ const getGame = asyncTransaction(async (arg: FilterQuery<IGame>) => {
   // Get the game instance and populate the players
   const _ = await Game.findOne(arg)
     .populate("players", { cards: 0, connectionId: 0, trumpCards: 0 })
+    .populate("turnOwner", { cards: 0, connection: 0, trumpCards: 0 })
     .select({
       remainingCards: 0,
       passcode: 0,
     });
 
-  return _;
+  if (!_) throw ERR_INVALID_GAME;
+
+  const game = ZodGameStrip.parse(_);
+
+  return game;
 });
+
+const updateGame = asyncTransaction(
+  async (query: FilterQuery<IGame>, update: UpdateQuery<IGame>) => {
+    // Get the game instance and populate the players
+    let _ = await Game.findOneAndUpdate(query, update);
+
+    if (!_) throw ERR_INVALID_GAME;
+
+    const [game, err] = await getGame({ gameId: _.gameId });
+    if (err) throw ERR_INVALID_GAME;
+
+    return game;
+  }
+);
 
 const joinGame = asyncTransaction(
   async (_id: string, userId: Types.ObjectId) => {
@@ -90,11 +108,9 @@ const joinGame = asyncTransaction(
 
     const [updated, err] = await getGame({ _id });
 
-    if (err) {
-      throw ERR_INVALID_GAME;
-    }
+    if (err) throw ERR_INVALID_GAME;
 
-    return updated;
+    return ZodGameStrip.parse(updated);
   }
 );
 
@@ -105,9 +121,7 @@ const leaveGame = asyncTransaction(
     });
 
     // Ensure the user is valid
-    if (!userMeta?._id) {
-      throw ERR_INVALID_USER;
-    }
+    if (!userMeta) throw ERR_INVALID_USER;
 
     // Ensure the game instance is valid
     let [game] = await getGame({ gameId });
@@ -115,20 +129,15 @@ const leaveGame = asyncTransaction(
     if (
       !game ||
       !game.players.find((player) => player.username === userMeta.username)
-    ) {
+    )
       throw ERR_INVALID_GAME;
-    }
-
-    console.log(game?.players);
-    console.log(game!.players?.length);
-    console.log(game!.players?.length <= 1);
 
     /**
      * If the game players is empty, delete the game instance
      */
     if (game!.players?.length <= 1) {
       await Game.deleteOne({
-        _id: game!._id,
+        id: game.id,
       });
       return null;
     } else {
@@ -138,12 +147,16 @@ const leaveGame = asyncTransaction(
         },
         {
           $pull: {
-            players: [{ _id: userMeta?._id }],
+            players: userMeta?._id,
           },
         }
       );
-      console.log(_);
-      return _;
+
+      const [res, e] = await getGame({ gameId });
+
+      if (e) throw ERR_INVALID_GAME;
+
+      return res;
     }
   }
 );
@@ -151,21 +164,15 @@ const leaveGame = asyncTransaction(
 const getPlayers = asyncTransaction(async (gameId: string) => {
   const [game] = await getGame({ gameId });
 
-  if (!game) {
-    throw ERR_INVALID_GAME;
-  }
+  if (!game) throw ERR_INVALID_GAME;
 
-  const [doc] = await getGame({ gameId });
-
-  return doc?.players ?? [];
+  return game?.players ?? [];
 });
 
 const startGame = asyncTransaction(async (gameId: string) => {
   const [game] = await getGame({ gameId });
 
-  if (!game) {
-    throw ERR_INVALID_GAME;
-  }
+  if (!game) throw ERR_INVALID_GAME;
 
   const _ = await Game.findOneAndUpdate(
     {
@@ -176,7 +183,9 @@ const startGame = asyncTransaction(async (gameId: string) => {
     }
   );
 
-  return _;
+  if (!_) throw ERR_INVALID_GAME;
+
+  return ZodGameStrip.parse(_);
 });
 
 export const GameController = {
@@ -191,9 +200,17 @@ export const GameController = {
   /**
    * @access Any users
    *
-   * @description Get the game instance non-sensitive data (exclude remainingCards, player.cards)
+   * @description Get the game instance non-sensitive data (exclude remainingCards, player.cards and connectionIds)
    */
   getGame,
+  /**
+   * @access System level
+   * @description Update the game instance directly
+   * @param query
+   * @param update
+   * @returns
+   */
+  updateGame,
   /**
    * @access User themselves
    *
@@ -217,7 +234,7 @@ export const GameController = {
   /**
    * @access System level
    *
-   * Change the state of game to started
+   * Change the state of game to started.
    */
   startGame,
 };

@@ -13,7 +13,6 @@ export const $connectHandler: WebsocketHandler = async (event, context) => {
       status: "OK",
       handler: "CONNECTION_SUCCESS",
       content: context.connectionId,
-      error: null,
     });
   } catch (e) {
     console.log(e);

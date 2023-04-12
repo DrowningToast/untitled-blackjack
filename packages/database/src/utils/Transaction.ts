@@ -10,7 +10,7 @@ export const asyncTransaction = <T, K extends any[]>(
     try {
       const response = await callback(...args);
       return [response, false];
-    } catch (e) {
+    } catch (e: unknown) {
       console.log(e);
       return [undefined, true];
     }

@@ -4,6 +4,7 @@ import { $disconnectHandler } from "./handlers/$disconnect";
 import { debugHandler } from "./handlers/debug";
 import { $defaultHandler } from "./handlers/default";
 import { authHandler } from "./handlers/auth";
+import { readyHandler } from "./handlers/ready";
 
 export const handlers: Record<string, WebsocketHandler> = {
   $connect: $connectHandler,
@@ -11,6 +12,7 @@ export const handlers: Record<string, WebsocketHandler> = {
 
   debug: debugHandler,
   auth: authHandler,
+  ready: readyHandler,
 
   $default: $defaultHandler,
 };

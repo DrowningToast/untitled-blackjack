@@ -62,7 +62,7 @@ export const authHandler: WebsocketHandler = async (event, context) => {
     }
     return send({
       status: "OK",
-      error: null,
+
       content: user,
     });
   }
