@@ -18,13 +18,13 @@ export const ZodGameStrip = z.object({
   ]),
   // passcode: z.string().min(1),
   players: z.array(ZodUserStrip),
-  turnOwner: ZodUserStrip,
-  remainingCards: z.array(
-    z.object({
-      display: z.string().min(1),
-      values: z.array(z.number().min(0)),
-    })
-  ),
+  turnOwner: ZodUserStrip.optional(),
+  // remainingCards: z.array(
+  //   z.object({
+  //     display: z.string().min(1),
+  //     values: z.array(z.number().min(0)),
+  //   })
+  // ),
 });
 
 export type IGame = z.infer<typeof ZodGameStrip>;
@@ -32,6 +32,7 @@ export type IGame = z.infer<typeof ZodGameStrip>;
 export type _IGame = IGame & {
   players: _IUser[];
   turnOwner: _IUser;
+  remainingCards: Card[];
 };
 
 const GameSchema = new mongoose.Schema({

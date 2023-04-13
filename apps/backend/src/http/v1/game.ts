@@ -26,6 +26,7 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
         const [user, isError] = await UserController.getUserMeta({
           connectionId,
         });
+
         if (isError) {
           return reply.status(500).send(ERR_INVALID_USER);
         } else if (!passcode) {
@@ -38,6 +39,7 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
           });
 
           console.log(existGame);
+          console.log(!!existGame);
 
           if (existGame) {
             return reply.status(400).send(ERR_EXISTED_GAME);
@@ -52,6 +54,8 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
           if (error) {
             reply.status(500).send(ERR_INTERNAL);
           }
+
+          console.log(game);
 
           return game;
         }
@@ -122,6 +126,7 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
             existGame.id,
             user._id
           );
+          console.log(game);
           if (error) {
             reply.status(500).send(ERR_INTERNAL);
           }

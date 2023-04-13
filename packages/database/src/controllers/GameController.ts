@@ -60,11 +60,11 @@ const createGame = asyncTransaction(
 
     const res = await _.save();
 
-    const [game] = await getGame({ gameId: res.gameId });
-    console.log();
+    const [game] = await getGame({ passcode });
+
     if (!game) throw ERR_INVALID_GAME;
 
-    return ZodGameStrip.parse(game);
+    return game;
   }
 );
 
@@ -135,9 +135,9 @@ const leaveGame = asyncTransaction(
     /**
      * If the game players is empty, delete the game instance
      */
-    if (game!.players?.length <= 1) {
+    if (game.players?.length <= 1) {
       await Game.deleteOne({
-        id: game.id,
+        gameId: game.gameId,
       });
       return null;
     } else {
@@ -164,6 +164,8 @@ const leaveGame = asyncTransaction(
 const getPlayers = asyncTransaction(async (gameId: string) => {
   const [game] = await getGame({ gameId });
 
+  console.log(game);
+
   if (!game) throw ERR_INVALID_GAME;
 
   return game?.players ?? [];
@@ -185,7 +187,9 @@ const startGame = asyncTransaction(async (gameId: string) => {
 
   if (!_) throw ERR_INVALID_GAME;
 
-  return ZodGameStrip.parse(_);
+  const [res, e] = await getGame({ gameId });
+
+  return ZodGameStrip.parse(res);
 });
 
 export const GameController = {

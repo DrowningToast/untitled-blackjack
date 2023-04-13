@@ -21,8 +21,6 @@ const bodyValidation = z.object({
 export const readyHandler: WebsocketHandler = async (event, context) => {
   const { connectionId, send } = getAPIG(event, context);
 
-  // const { ready, gameId } = request.body;
-
   if (!event.body) {
     return await send({
       status: "REQUEST_ERROR",
@@ -45,6 +43,8 @@ export const readyHandler: WebsocketHandler = async (event, context) => {
   const [user, isError] = await UserController.getUserMeta({
     connectionId,
   });
+
+  console.log(user);
 
   if (isError) {
     return await send({
@@ -101,6 +101,9 @@ export const readyHandler: WebsocketHandler = async (event, context) => {
 
   [game] = await GameController.getGame({ gameId });
 
+  console.log("BBBBBBBBBBBBBBB");
+  console.log(game);
+
   if (!game) {
     return await send({
       status: "INTERNAL_ERROR",
@@ -124,11 +127,7 @@ export const readyHandler: WebsocketHandler = async (event, context) => {
     });
 
     if (allReady) {
-      // start the game
-      await GameController.startGame(gameId);
-      // init the game
-      await GameActionController.initGame(gameId);
-
+      // player connections
       const [playerA, playerB] = game.players;
       const [connectionA] = await UserController.getConnectionId({
         username: playerA.username,
@@ -136,6 +135,24 @@ export const readyHandler: WebsocketHandler = async (event, context) => {
       const [connectionB] = await UserController.getConnectionId({
         username: playerB.username,
       });
+
+      // start the game
+      const [_1, err] = await GameController.startGame(gameId);
+
+      // init the game
+      const [_2, err2] = await GameActionController.initGame(gameId);
+
+      if (err || err2) {
+        await send(
+          { status: "INTERNAL_ERROR", error: ERR_INTERNAL },
+          connectionA
+        );
+        return await send(
+          { status: "INTERNAL_ERROR", error: ERR_INTERNAL },
+          connectionB
+        );
+      }
+
       if (!connectionA || !connectionB) {
         return await send({
           status: "INTERNAL_ERROR",
@@ -143,21 +160,23 @@ export const readyHandler: WebsocketHandler = async (event, context) => {
         });
       }
 
-      let [res, e] = await GameController.getGame({
+      console.log("made apss it!");
+
+      const [res, e] = await GameController.getGame({
         gameId,
       });
 
-      if (!e)
+      if (e)
         return await send({
           status: "INTERNAL_ERROR",
           error: ERR_INTERNAL,
         });
 
       // send to A
-      await send(gameStartMessage(game), connectionA);
+      await send(gameStartMessage(res), connectionA);
 
       // send to be B
-      return await send(gameStartMessage(game), connectionB);
+      return await send(gameStartMessage(res), connectionB);
     }
   }
 };

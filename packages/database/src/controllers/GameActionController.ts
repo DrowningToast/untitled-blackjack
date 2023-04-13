@@ -1,7 +1,6 @@
-import { Game, ZodGameStrip } from "../models/GameModel";
+import { Game, ZodGameStrip, _IGame } from "../models/GameModel";
 import { sortedAllCards } from "../utils/Card";
 import {
-  ERR_INGAME_PLAYERS,
   ERR_INTERNAL,
   ERR_INVALID_GAME,
   ERR_INVALID_USER,
@@ -12,12 +11,16 @@ import { GameController } from "./GameController";
 import { UserController } from "./UserController";
 
 const initGame = asyncTransaction(async (gameId: string) => {
+  console.log("INITING GAME");
+
   const [game] = await GameController.getGame({ gameId, gameState: "onGoing" });
 
   if (!game) throw ERR_INVALID_GAME;
 
   const [players, err] = await GameController.getPlayers(gameId);
   if (err) throw err;
+
+  console.log(players);
 
   const [playerA, playerB] = players;
   const [connectionA, errA] = await UserController.getConnectionId({
@@ -28,6 +31,9 @@ const initGame = asyncTransaction(async (gameId: string) => {
   });
 
   if (errA || errB) throw ERR_INTERNAL;
+
+  console.log(connectionA);
+  console.log(connectionB);
 
   // Reset the cards
   await resetRemainingCards(gameId);
@@ -50,9 +56,7 @@ const initGame = asyncTransaction(async (gameId: string) => {
   const [newGame, e] = await setTurnOwner(gameId);
   if (e) throw ERR_INTERNAL;
 
-  const [res] = await GameController.getGame({ gameId });
-
-  return res;
+  return newGame;
 });
 
 const drawCard = asyncTransaction(
@@ -66,12 +70,14 @@ const drawCard = asyncTransaction(
     }
 
     // Get the game instance
-    const [game] = await GameController.getGame({ gameId });
+    const [game, err] = await GameController.getGame({ gameId });
+    if (err) throw ERR_INVALID_GAME;
 
-    if (!game) throw ERR_INVALID_GAME;
+    const [cards, err2] = await getRemainingCards(gameId);
+    if (err2) throw ERR_INTERNAL;
 
-    const remaining = game?.remainingCards.slice(amount);
-    const drawn = game?.remainingCards.slice(0, amount);
+    const remaining = cards.slice(amount);
+    const drawn = cards.slice(0, amount);
 
     // Update the remaining cards back to the game instance
     const _ = await Game.findOneAndUpdate(
@@ -86,6 +92,18 @@ const drawCard = asyncTransaction(
     return drawn;
   }
 );
+
+const getRemainingCards = asyncTransaction(async (gameId: string) => {
+  const game = (await Game.findOne({
+    gameId,
+  }).select("remainingCards")) as unknown as _IGame;
+
+  console.log(game);
+
+  if (!game.remainingCards) throw ERR_INTERNAL;
+
+  return game.remainingCards;
+});
 
 const getTurnOwner = asyncTransaction(
   async (connectionId: string, gameId: string) => {
@@ -130,7 +148,7 @@ const setTurnOwner = asyncTransaction(
 
     if (!user) throw ERR_INVALID_USER;
 
-    const updatedGame = await Game.findOneAndUpdate(
+    await Game.findOneAndUpdate(
       {
         gameId,
       },
@@ -138,6 +156,12 @@ const setTurnOwner = asyncTransaction(
         turnOwner: user._id,
       }
     );
+
+    const [updatedGame, err] = await GameController.getGame({
+      gameId,
+    });
+
+    if (err) throw ERR_INVALID_GAME;
 
     return updatedGame;
   }
@@ -197,15 +221,23 @@ const resetRemainingCards = asyncTransaction(async (gameId: string) => {
       remainingCards: sortedAllCards,
     }
   );
-  return ZodGameStrip.parse(_);
+
+  const [game, err] = await GameController.getGame({ gameId });
+  if (err) throw ERR_INVALID_GAME;
+  return ZodGameStrip.parse(game);
 });
 
 const shuffleRemainingCards = asyncTransaction(async (gameId: string) => {
-  const game = await Game.findOne({
-    gameId,
-  }).select("remainingCards");
+  const [cards, err] = await getRemainingCards(gameId);
+  console.log("CCCCCCCCCCCCCCCCC");
+  console.log(cards);
+  console.log(err);
+  if (err) throw ERR_INTERNAL;
 
-  const shuffledCards = game?.remainingCards.sort(() => Math.random() - 0.5);
+  console.log("DDDDDDDDDDDDDDDDD");
+  console.log(cards);
+
+  const shuffledCards = cards.sort(() => Math.random() - 0.5);
 
   // Update the shuffled cards back to the game instance
   const _ = await Game.findOneAndUpdate(
@@ -217,21 +249,20 @@ const shuffleRemainingCards = asyncTransaction(async (gameId: string) => {
     }
   );
 
-  const [newGame, err] = await GameController.getGame({ gameId });
+  // const [newGame, err2] = await GameController.getGame({ gameId });
+  const [newCards, err2] = await getRemainingCards(gameId);
 
-  if (err) throw ERR_INTERNAL;
+  if (err2) throw ERR_INTERNAL;
 
-  return newGame.remainingCards;
+  return newCards;
 });
 
 const getAmountOfRemainingCards = asyncTransaction(async (gameId: string) => {
-  const game = await Game.findOne({
-    gameId,
-  }).select("remainingCards");
+  const [cards, err] = await getRemainingCards(gameId);
 
-  if (!game) throw ERR_INVALID_GAME;
+  if (err) throw ERR_INTERNAL;
 
-  return game.remainingCards.length;
+  return cards.length;
 });
 
 const switchPlayerTurn = asyncTransaction(async (gameId: string) => {
@@ -308,6 +339,12 @@ export const GameActionController = {
    * @access User themselves
    */
   drawRandomTrumpCard,
+  /**
+   * @access System Level
+   *
+   * @description Get the remaining cards of the game instance
+   */
+  getRemainingCards,
   /**
    * @access Public
    *
