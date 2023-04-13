@@ -20,8 +20,6 @@ const initGame = asyncTransaction(async (gameId: string) => {
   const [players, err] = await GameController.getPlayers(gameId);
   if (err) throw err;
 
-  console.log(players);
-
   const [playerA, playerB] = players;
   const [connectionA, errA] = await UserController.getConnectionId({
     username: playerA.username,
@@ -31,9 +29,6 @@ const initGame = asyncTransaction(async (gameId: string) => {
   });
 
   if (errA || errB) throw ERR_INTERNAL;
-
-  console.log(connectionA);
-  console.log(connectionB);
 
   // Reset the cards
   await resetRemainingCards(gameId);
@@ -97,8 +92,6 @@ const getRemainingCards = asyncTransaction(async (gameId: string) => {
   const game = (await Game.findOne({
     gameId,
   }).select("remainingCards")) as unknown as _IGame;
-
-  console.log(game);
 
   if (!game.remainingCards) throw ERR_INTERNAL;
 
@@ -229,13 +222,8 @@ const resetRemainingCards = asyncTransaction(async (gameId: string) => {
 
 const shuffleRemainingCards = asyncTransaction(async (gameId: string) => {
   const [cards, err] = await getRemainingCards(gameId);
-  console.log("CCCCCCCCCCCCCCCCC");
-  console.log(cards);
-  console.log(err);
-  if (err) throw ERR_INTERNAL;
 
-  console.log("DDDDDDDDDDDDDDDDD");
-  console.log(cards);
+  if (err) throw ERR_INTERNAL;
 
   const shuffledCards = cards.sort(() => Math.random() - 0.5);
 

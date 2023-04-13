@@ -38,9 +38,6 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
             players: [user.id],
           });
 
-          console.log(existGame);
-          console.log(!!existGame);
-
           if (existGame) {
             return reply.status(400).send(ERR_EXISTED_GAME);
           }
@@ -54,8 +51,6 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
           if (error) {
             reply.status(500).send(ERR_INTERNAL);
           }
-
-          console.log(game);
 
           return game;
         }
@@ -119,14 +114,12 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
             return reply.status(400).send(ERR_INVALID_GAME);
           }
 
-          console.log(user.id);
-
           // Join the game
           const [game, error] = await GameController.joinGame(
             existGame.id,
             user._id
           );
-          console.log(game);
+
           if (error) {
             reply.status(500).send(ERR_INTERNAL);
           }
@@ -160,8 +153,6 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
         if (!existGame) {
           return reply.status(400).send(ERR_INVALID_GAME);
         }
-
-        console.log(existGame);
 
         // Check if the user is in the game
         if (!existGame.players.find((p) => p.username === user.username)) {

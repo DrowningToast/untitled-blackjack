@@ -38,13 +38,9 @@ export const readyHandler: WebsocketHandler = async (event, context) => {
   const body = bodyValidation.parse(JSON.parse(event.body));
   const { ready, gameId } = body;
 
-  console.log(event.body);
-
   const [user, isError] = await UserController.getUserMeta({
     connectionId,
   });
-
-  console.log(user);
 
   if (isError) {
     return await send({
@@ -58,13 +54,9 @@ export const readyHandler: WebsocketHandler = async (event, context) => {
     });
   }
 
-  console.log(gameId);
-
   let [game, error] = await GameController.getGame({
     gameId,
   });
-
-  console.log(game);
 
   if (error) {
     // Unknown error
@@ -100,9 +92,6 @@ export const readyHandler: WebsocketHandler = async (event, context) => {
   }
 
   [game] = await GameController.getGame({ gameId });
-
-  console.log("BBBBBBBBBBBBBBB");
-  console.log(game);
 
   if (!game) {
     return await send({
@@ -159,8 +148,6 @@ export const readyHandler: WebsocketHandler = async (event, context) => {
           error: ERR_INTERNAL,
         });
       }
-
-      console.log("made apss it!");
 
       const [res, e] = await GameController.getGame({
         gameId,

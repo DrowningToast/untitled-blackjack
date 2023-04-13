@@ -164,8 +164,6 @@ const leaveGame = asyncTransaction(
 const getPlayers = asyncTransaction(async (gameId: string) => {
   const [game] = await getGame({ gameId });
 
-  console.log(game);
-
   if (!game) throw ERR_INVALID_GAME;
 
   return game?.players ?? [];
