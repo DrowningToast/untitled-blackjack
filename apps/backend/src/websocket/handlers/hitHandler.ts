@@ -10,7 +10,7 @@ import {
 import { getAPIG } from "../APIGateway";
 import { ERR_GAME_STATE, ERR_ILLEGAL_ACTION } from "../utils/error";
 import { cardStateMessage, hitEventMessage } from "../utils/websocketReponses";
-import { hitEventScript } from "../event/hitEventScript";
+import { hitEventScript } from "../scripts/hitEventScript";
 
 export const hitHandler: WebsocketHandler = async (event, context) => {
   const api = getAPIG(event, context);

@@ -12,7 +12,7 @@ import { ERR_BAD_REQUEST } from "../utils/error";
 import { WebsocketHandler } from "../utils/type";
 import z from "zod";
 import { gameStartMessage } from "../utils/websocketReponses";
-import { initGameScript } from "../event/initGameScript";
+import { initGameScript } from "../scripts/initGameScript";
 
 const bodyValidation = z.object({
   ready: z.boolean(),
