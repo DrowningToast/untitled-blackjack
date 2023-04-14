@@ -9,10 +9,12 @@ import {
 } from "database";
 import { getAPIG } from "../APIGateway";
 import { ERR_GAME_STATE, ERR_ILLEGAL_ACTION } from "../utils/error";
-import { cardStateMessage } from "../utils/ResponseGenerator";
+import { cardStateMessage, hitEventMessage } from "../utils/websocketReponses";
+import { hitEventScript } from "../event/hitEventScript";
 
 export const hitHandler: WebsocketHandler = async (event, context) => {
-  const { send, connectionId } = getAPIG(event, context);
+  const api = getAPIG(event, context);
+  const { send, connectionId } = api;
 
   let [user, err] = await UserController.getUserMeta({
     connectionId,
@@ -30,7 +32,7 @@ export const hitHandler: WebsocketHandler = async (event, context) => {
     });
   }
 
-  let [game, err2] = await GameController.getGame({
+  const [game, err2] = await GameController.getGame({
     players: user._id,
   });
 
@@ -49,6 +51,11 @@ export const hitHandler: WebsocketHandler = async (event, context) => {
       status: "REQUEST_ERROR",
       error: ERR_GAME_STATE,
     });
+  } else if (!game.turnOwner) {
+    return await send({
+      status: "REQUEST_ERROR",
+      error: ERR_ILLEGAL_ACTION,
+    });
   }
 
   // Check turn owner
@@ -62,10 +69,14 @@ export const hitHandler: WebsocketHandler = async (event, context) => {
   // DONE CHECKING
 
   // Draw
-  const [drawnCards] = await GameActionController.drawCard(game.gameId, 1);
+  const [drawnCards, err5] = await GameActionController.drawCard(
+    game.gameId,
+    1
+  );
+  if (err5) throw err5;
   let [cards] = await UserController.addCards(connectionId, drawnCards ?? []);
 
-  const [visibleCards, err3] = await GameActionController.getPlayersCards(
+  const [visibleCards, err3] = await GameActionController.getAllPlayersCards(
     game.gameId,
     false
   );
@@ -78,5 +89,8 @@ export const hitHandler: WebsocketHandler = async (event, context) => {
     });
   }
 
-  return await send(cardStateMessage(myCards, visibleCards, false));
+  // Send hit event
+  await hitEventScript(api, user.username, drawnCards[0]);
+
+  // return await send(cardStateMessage(myCards, visibleCards));
 };

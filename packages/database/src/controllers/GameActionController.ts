@@ -160,7 +160,7 @@ const setTurnOwner = asyncTransaction(
   }
 );
 
-const getPlayersCards = asyncTransaction(
+const getAllPlayersCards = asyncTransaction(
   async (gameId: string, includeHidden: boolean = false) => {
     const [players, err] = await GameController.getPlayers(gameId);
     if (err) throw ERR_INVALID_GAME;
@@ -202,6 +202,37 @@ const getPlayersCards = asyncTransaction(
         cards: cardsB,
       },
     ];
+  }
+);
+
+const getPlayerCards = asyncTransaction(
+  async (
+    gameId: string,
+    connectionId: string,
+    includeHidden: boolean = true
+  ) => {
+    const [game, err] = await GameController.getGame({
+      gameId,
+    });
+    if (err) throw ERR_INVALID_GAME;
+
+    const [user, err2] = await UserController.getUserMeta({
+      connectionId,
+    });
+    if (err2) throw ERR_INVALID_USER;
+
+    if (game.players.find((p) => p.username === user.username) === undefined)
+      throw ERR_INVALID_USER;
+
+    const [cards, err3] = await UserController.getCards(
+      {
+        connectionId,
+      },
+      includeHidden
+    );
+    if (err3) throw ERR_INVALID_USER;
+
+    return cards;
   }
 );
 
@@ -344,7 +375,13 @@ export const GameActionController = {
    *
    * @description Get the players cards of the game instance
    */
-  getPlayersCards,
+  getAllPlayersCards,
+  /**
+   * @access System Level
+   *
+   * @description Get the player cards of the game instance, include hidden by default
+   */
+  getPlayerCards,
   /**
    * @access System level
    *

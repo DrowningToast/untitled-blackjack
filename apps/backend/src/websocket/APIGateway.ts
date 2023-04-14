@@ -2,7 +2,12 @@ import { APIGatewayProxyEvent } from "aws-lambda";
 import { ApiGatewayManagementApi } from "aws-sdk";
 import env from "env";
 import { WebsocketResponse } from "./utils/type";
-import { WebsocketContext } from "./utils/websocket";
+
+export type APIG = ReturnType<typeof getAPIG>;
+
+export type WebsocketContext = {
+  connectionId: string;
+};
 
 export const getAPIG = (
   event: APIGatewayProxyEvent,
@@ -34,6 +39,22 @@ export const getAPIG = (
       }
     };
 
+    const broadcast = async <T>(
+      data: WebsocketResponse<T>,
+      connectionIds: string[]
+    ) => {
+      try {
+        return await Promise.all(
+          connectionIds.map((connectionId) => {
+            return send(data, connectionId);
+          })
+        );
+      } catch (e) {
+        console.log(e);
+        throw e;
+      }
+    };
+
     return {
       /**
        * ApiGatewayManagementApi instance
@@ -43,6 +64,10 @@ export const getAPIG = (
        * Send data to client
        */
       send,
+      /**
+       * Send data to multiple clients
+       */
+      broadcast,
       /**
        * Shorthand for getting connectionId
        */

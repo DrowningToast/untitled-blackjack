@@ -1,6 +1,7 @@
 import { FilterQuery, ObjectId, Types, UpdateQuery } from "mongoose";
 import { Game, IGame, ZodGameStrip } from "../models/GameModel";
 import {
+  Card,
   aceCard,
   eightCard,
   fiveCard,
@@ -18,6 +19,7 @@ import {
 import { asyncTransaction } from "../utils/Transaction";
 import { UserController } from "./UserController";
 import { ERR_INVALID_GAME, ERR_INVALID_USER } from "../utils/Error";
+import { GameActionController } from "./GameActionController";
 
 /**
  * There should be no function that updates the game instance data directly for security reasons

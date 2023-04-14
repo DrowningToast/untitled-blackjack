@@ -1,10 +1,10 @@
 import { WebsocketHandler } from "./utils/type";
-import { $connectHandler } from "./handlers/$connect";
-import { $disconnectHandler } from "./handlers/$disconnect";
-import { debugHandler } from "./handlers/debug";
-import { $defaultHandler } from "./handlers/default";
-import { authHandler } from "./handlers/auth";
-import { readyHandler } from "./handlers/ready";
+import { $connectHandler } from "./handlers/$connectHandler";
+import { $disconnectHandler } from "./handlers/$disconnectHandler";
+import { debugHandler } from "./handlers/debugHandler";
+import { $defaultHandler } from "./handlers/defaultHandler";
+import { authHandler } from "./handlers/authHandler";
+import { readyHandler } from "./handlers/readyHandler";
 
 export const handlers: Record<string, WebsocketHandler> = {
   $connect: $connectHandler,

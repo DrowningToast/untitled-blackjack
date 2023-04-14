@@ -11,7 +11,8 @@ import { getAPIG } from "../APIGateway";
 import { ERR_BAD_REQUEST } from "../utils/error";
 import { WebsocketHandler } from "../utils/type";
 import z from "zod";
-import { gameStartMessage } from "../utils/ResponseGenerator";
+import { gameStartMessage } from "../utils/websocketReponses";
+import { initGameScript } from "../event/initGameScript";
 
 const bodyValidation = z.object({
   ready: z.boolean(),
@@ -19,7 +20,8 @@ const bodyValidation = z.object({
 });
 
 export const readyHandler: WebsocketHandler = async (event, context) => {
-  const { connectionId, send } = getAPIG(event, context);
+  const api = getAPIG(event, context);
+  const { connectionId, send, broadcast } = api;
 
   if (!event.body) {
     return await send({
@@ -116,54 +118,7 @@ export const readyHandler: WebsocketHandler = async (event, context) => {
     });
 
     if (allReady) {
-      // player connections
-      const [playerA, playerB] = game.players;
-      const [connectionA] = await UserController.getConnectionId({
-        username: playerA.username,
-      });
-      const [connectionB] = await UserController.getConnectionId({
-        username: playerB.username,
-      });
-
-      // start the game
-      const [_1, err] = await GameController.startGame(gameId);
-
-      // init the game
-      const [_2, err2] = await GameActionController.initGame(gameId);
-
-      if (err || err2) {
-        await send(
-          { status: "INTERNAL_ERROR", error: ERR_INTERNAL },
-          connectionA
-        );
-        return await send(
-          { status: "INTERNAL_ERROR", error: ERR_INTERNAL },
-          connectionB
-        );
-      }
-
-      if (!connectionA || !connectionB) {
-        return await send({
-          status: "INTERNAL_ERROR",
-          error: ERR_INTERNAL,
-        });
-      }
-
-      const [res, e] = await GameController.getGame({
-        gameId,
-      });
-
-      if (e)
-        return await send({
-          status: "INTERNAL_ERROR",
-          error: ERR_INTERNAL,
-        });
-
-      // send to A
-      await send(gameStartMessage(res), connectionA);
-
-      // send to be B
-      return await send(gameStartMessage(res), connectionB);
+      await initGameScript(api, gameId);
     }
   }
 };

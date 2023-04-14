@@ -1,7 +1,6 @@
 import { Card } from "database/src/utils/Card";
 import { ConnectionId, WebsocketResponse } from "./type";
 import { IGame, IUser } from "database";
-import { Document, Types } from "mongoose";
 
 export const pingMessage = (): WebsocketResponse => {
   return {
@@ -74,7 +73,6 @@ interface cardState {
     username: string;
     cards: Card[];
   }[];
-  showAll: boolean;
 }
 
 /**
@@ -85,8 +83,7 @@ interface cardState {
  */
 export const cardStateMessage = (
   cards: cardState["cards"],
-  gameCards: cardState["gameCards"],
-  showAll: boolean = false
+  gameCards: cardState["gameCards"]
 ): WebsocketResponse<cardState> => {
   return {
     status: "OK",
@@ -94,7 +91,28 @@ export const cardStateMessage = (
     content: {
       cards,
       gameCards,
-      showAll,
     },
+  };
+};
+
+interface hitEvent {
+  username: string;
+  card: Card | undefined;
+}
+
+/**
+ * @description Send to the both sides of the game. When someone draw a card.
+ *
+ * @param cards
+ * @returns
+ */
+export const hitEventMessage = (
+  username: string,
+  card: Card | undefined
+): WebsocketResponse<hitEvent> => {
+  return {
+    status: "OK",
+    handler: "HIT_EVENT",
+    content: { card: undefined, username },
   };
 };

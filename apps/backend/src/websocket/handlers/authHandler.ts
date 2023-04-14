@@ -3,6 +3,7 @@ import { WebsocketHandler, websocketHandlerCode } from "../utils/type";
 import z from "zod";
 import { getAPIG } from "../APIGateway";
 import { ERR_BAD_REQUEST } from "../utils/error";
+import { connectionAuthorizedMessage } from "../utils/websocketReponses";
 
 const bodyValdiation = z.object({
   username: z.string(),
@@ -42,28 +43,20 @@ export const authHandler: WebsocketHandler = async (event, context) => {
       status: "REQUEST_ERROR",
       error: ERR_EXISTED_USER,
     });
-  } else if (user) {
-    // The username is already taken
-    return await send({
-      status: "REQUEST_ERROR",
-      error: ERR_EXISTED_USER,
-    });
   } else {
     // Create new user
     const [user, error] = await UserController.createUser({
       username,
       connectionId,
     });
+
     if (error) {
       return await send({
         status: "INTERNAL_ERROR",
-        error: ERR_INTERNAL,
+        error: error,
       });
     }
-    return send({
-      status: "OK",
 
-      content: user,
-    });
+    return send(connectionAuthorizedMessage(user.username, connectionId));
   }
 };

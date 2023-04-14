@@ -1,0 +1,1 @@
+import { getAPIG } from "../APIGateway";

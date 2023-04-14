@@ -10,7 +10,7 @@ import {
   ERR_INVALID_USER,
 } from "database/src/utils/Error";
 import { FastifyInstance } from "fastify";
-import { ERR_BAD_REQUEST } from "../../websocket/utils/error";
+import { ERR_BAD_REQUEST, ERR_GAME_FULL } from "../../websocket/utils/error";
 
 const gameRouter = (app: FastifyInstance, prefix: string) => {
   return app.register(
@@ -28,7 +28,7 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
         });
 
         if (isError) {
-          return reply.status(500).send(ERR_INVALID_USER);
+          return reply.status(500).send(isError);
         } else if (!passcode) {
           return reply.status(400).send(ERR_INVALID_PASSCODE);
         } else {
@@ -49,7 +49,7 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
           );
 
           if (error) {
-            reply.status(500).send(ERR_INTERNAL);
+            reply.status(500).send(error);
           }
 
           return game;
@@ -65,9 +65,9 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
         };
       }>("/check/:passcode", async (request, reply) => {
         const { passcode } = request.params;
-        const [game] = await GameController.getGame({ passcode });
-        if (!game) {
-          return reply.status(400).send(ERR_INVALID_GAME);
+        const [game, err] = await GameController.getGame({ passcode });
+        if (err) {
+          return reply.status(500).send(err);
         }
         // Send the game back
         return game;
@@ -80,38 +80,34 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
         Body: { passcode: string; connectionId: string; gameId: string };
       }>("/join", async (request, reply) => {
         const { connectionId, passcode } = request.body;
+
+        if (!connectionId)
+          return reply.status(400).send(ERR_INVALID_CONNECTION_ID);
+
         const [user, isError] = await UserController.getUserMeta({
           connectionId,
         });
 
         if (isError) {
-          return reply.status(500).send(ERR_INTERNAL);
-        } else if (!user) {
-          return reply.status(400).send(ERR_INVALID_USER);
+          return reply.status(500).send(isError);
         } else if (!passcode) {
           return reply.status(400).send(ERR_INVALID_PASSCODE);
         } else {
-          // The same player cannot join the game instance themselves
-          let [existGame] = await GameController.getGame({
-            passcode,
-            players: user._id,
-          });
-          if (existGame) {
-            return reply.status(400).send(ERR_ILLEGAL_OPERATION);
+          const [existGame, err] = await GameController.getGame({ passcode });
+
+          if (err) {
+            return reply.status(500).send(err);
           }
 
-          // Check if the game exist
-          [existGame] = await GameController.getGame({ passcode });
-          if (!existGame) {
-            return reply.status(400).send(ERR_INVALID_GAME);
-          }
+          if (existGame?.players.find((p) => p.username === user.username))
+            return reply.status(400).send(ERR_ILLEGAL_OPERATION);
 
           // Check if the game is full or already active?
           if (
             existGame.players.length >= 2 ||
             existGame.gameState !== "notStarted"
           ) {
-            return reply.status(400).send(ERR_INVALID_GAME);
+            return reply.status(400).send(ERR_GAME_FULL);
           }
 
           // Join the game
@@ -121,7 +117,7 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
           );
 
           if (error) {
-            reply.status(500).send(ERR_INTERNAL);
+            reply.status(500).send(error);
           }
 
           // Send the game back
@@ -136,23 +132,23 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
         Body: { connectionId: string; gameId: string };
       }>("/leave", async (request, reply) => {
         const { connectionId, gameId } = request.body;
+
+        if (!connectionId)
+          return reply.status(400).send(ERR_INVALID_CONNECTION_ID);
+
         const [user, isError] = await UserController.getUserMeta({
           connectionId,
         });
 
         if (isError) {
-          return reply.status(500).send(ERR_INTERNAL);
-        } else if (!user) {
-          return reply.status(400).send(ERR_INVALID_USER);
+          return reply.status(500).send(isError);
         } else if (!gameId) {
           return reply.status(400).send(ERR_BAD_REQUEST);
         }
 
-        const [existGame] = await GameController.getGame({ gameId });
+        const [existGame, err] = await GameController.getGame({ gameId });
 
-        if (!existGame) {
-          return reply.status(400).send(ERR_INVALID_GAME);
-        }
+        if (err) return reply.status(500).send(err);
 
         // Check if the user is in the game
         if (!existGame.players.find((p) => p.username === user.username)) {
@@ -166,7 +162,7 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
         );
 
         if (error) {
-          reply.status(500).send(ERR_INTERNAL);
+          reply.status(500).send(error);
         }
 
         return game;
