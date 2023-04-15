@@ -1,16 +1,19 @@
 import fastify from "fastify";
-import { userRouter } from "./http/v1/user";
-import { gameRouter } from "./http/v1/game";
 import { Game, UserController } from "database";
+import { userRouter } from "./http/v1/userRoute";
+import { gameRouter } from "./http/v1/gameRoute";
 
-function init() {
+function initFastify() {
   const app = fastify();
 
   app.get("/", (request, reply) => reply.send({ hello: "world" }));
 
   app.get("/ping", (request, reply) => reply.send("Pong"));
 
-  app.get("/verbose", (req, rep) => rep.send(req));
+  app.get("/verbose", (req, rep) => {
+    console.log("bruh verbose");
+    rep.send(req);
+  });
 
   app.get("/test", async (req, rep) => {
     const _ = await Game.find({
@@ -28,4 +31,4 @@ function init() {
   return app;
 }
 
-export default init;
+export default initFastify;

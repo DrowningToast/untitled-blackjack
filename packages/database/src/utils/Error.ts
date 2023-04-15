@@ -1,17 +1,16 @@
-export interface ErrorMessage {
-  /**
-   * Error handler code
-   */
-  error: string;
-  /**
-   * Error message
-   */
-  description: string;
-}
+import z from "zod";
+
+export type ErrorMessage = z.infer<typeof ZodErrorMessage>;
+
+export const ZodErrorMessage = z.object({
+  error: z.string(),
+  description: z.string(),
+});
 
 export const ERR_INTERNAL: ErrorMessage = {
   error: "internal-error",
-  description: "An internal error has occured",
+  description:
+    "An unknown internal error has occured. Or Zod validation failed",
 };
 
 export const ERR_INVALID_SESSID: ErrorMessage = {

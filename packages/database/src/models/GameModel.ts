@@ -1,19 +1,39 @@
 import mongoose from "mongoose";
 import { Card } from "../utils/Card";
-import { IUser } from "./UserModel";
+import { IUser, ZodUserStrip, _IUser } from "./UserModel";
 import { v4 as uuid } from "uuid";
+import z from "zod";
 
-export interface IGame {
-  gameId: string;
-  gameState: "onGoing" | "ended" | "notStarted";
-  passcode: string;
-  /**
-   * Only supported 2 players, no less, no more
-   */
-  players: IUser[];
-  turnOwner: IUser;
+/**
+ * @description Remove sensitive data from the model
+ */
+export const ZodGameStrip = z.object({
+  _id: z.any(),
+  id: z.string().min(1),
+  gameId: z.string().min(1),
+  gameState: z.union([
+    z.literal("onGoing"),
+    z.literal("ended"),
+    z.literal("notStarted"),
+  ]),
+  // passcode: z.string().min(1),
+  players: z.array(ZodUserStrip),
+  turnOwner: ZodUserStrip.optional(),
+  // remainingCards: z.array(
+  //   z.object({
+  //     display: z.string().min(1),
+  //     values: z.array(z.number().min(0)),
+  //   })
+  // ),
+});
+
+export type IGame = z.infer<typeof ZodGameStrip>;
+
+export type _IGame = IGame & {
+  players: _IUser[];
+  turnOwner: _IUser;
   remainingCards: Card[];
-}
+};
 
 const GameSchema = new mongoose.Schema({
   gameId: {

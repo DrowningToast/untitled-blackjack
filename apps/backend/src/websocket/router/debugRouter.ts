@@ -1,14 +1,11 @@
 import { getAPIG } from "../APIGateway";
-import { WebsocketHandler } from "../utils/type";
+import { pingMessage } from "../utils/WebsocketReponses";
+import { WebsocketRouter } from "../utils/type";
 
-export const debugHandler: WebsocketHandler = async (event, context) => {
+export const debugRouter: WebsocketRouter = async (event, context) => {
   const { send } = getAPIG(event, context);
 
-  const res = await send({
-    status: "OK",
-    handler: "PONG",
-    error: null,
-  });
+  const res = await send(pingMessage());
   return res;
 };
 

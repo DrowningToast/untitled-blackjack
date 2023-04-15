@@ -1,7 +1,19 @@
-export interface Card {
-  display: string;
-  values: number[];
-}
+import z from "zod";
+
+export const ZodCard = z.object({
+  display: z.string().min(1),
+  values: z.array(z.number().min(0)),
+});
+
+export type GlobalCardsContext = {
+  username: string;
+  cards: {
+    values: number[];
+    display: string;
+  }[];
+}[];
+
+export type Card = z.infer<typeof ZodCard>;
 
 const aceCard: Card = {
   display: "A",
@@ -68,7 +80,7 @@ const kingCard: Card = {
   values: [10],
 };
 
-const sortedAllCards: Card[] = [
+const sortedGlobalCardsContext: Card[] = [
   aceCard,
   twoCard,
   threeCard,
@@ -98,5 +110,5 @@ export {
   jackCard,
   queenCard,
   kingCard,
-  sortedAllCards,
+  sortedGlobalCardsContext,
 };

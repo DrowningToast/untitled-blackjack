@@ -1,13 +1,13 @@
 import { APIGatewayEvent, Callback, Context, Handler } from "aws-lambda";
-import app from "./src/app";
+import initFastify from "./src/fastifyApp";
 
 import awsLambdaFastify from "@fastify/aws-lambda";
 import { connectToDatabase } from "database";
-import { getHandler, handlers } from "./src/websocket/handler";
+import { getEvents, WebsocketRouters } from "./src/websocket/WebsocketRouter";
 import { getAPIG } from "./src/websocket/APIGateway";
-import { ERR_INVALID_HANDLER } from "./src/websocket/utils/error";
+import { ERR_INVALID_HANDLER } from "./src/websocket/utils/ErrorMessages";
 
-const proxy = awsLambdaFastify(app());
+const proxy = awsLambdaFastify(initFastify());
 // const handler = awsLambdaFastify(app());
 
 /**
@@ -34,7 +34,7 @@ const handler = (
  * @param callback
  * @returns
  */
-const ws: Handler<
+const websocket: Handler<
   APIGatewayEvent,
   { statusCode: number; body: string }
 > = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
@@ -52,7 +52,7 @@ const ws: Handler<
 
   switch (routeKey) {
     case "$connect":
-      await getHandler("$connect")(event, { connectionId });
+      await getEvents("$connect")(event, { connectionId });
 
       return {
         statusCode: 200,
@@ -63,7 +63,7 @@ const ws: Handler<
       };
 
     case "$disconnect":
-      await getHandler("$disconnect")(event, { connectionId });
+      await getEvents("$disconnect")(event, { connectionId });
 
       return {
         statusCode: 200,
@@ -79,14 +79,14 @@ const ws: Handler<
       /**
        * Check for invalid route handler
        */
-      if (!Object.keys(handlers).includes(body.handler as string)) {
+      if (!Object.keys(WebsocketRouters).includes(body.handler as string)) {
         const { send } = getAPIG(event, { connectionId });
         await send({
           status: "REQUEST_ERROR",
           error: ERR_INVALID_HANDLER,
         });
       } else {
-        await getHandler(body.handler as string)(event, {
+        await getEvents(body.handler as string)(event, {
           connectionId,
         });
       }
@@ -101,4 +101,4 @@ const ws: Handler<
   }
 };
 
-export { handler, ws };
+export { handler, websocket };

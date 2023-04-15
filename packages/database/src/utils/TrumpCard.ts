@@ -19,9 +19,6 @@ export const demoTrump: TrumpCard = {
       connectionId,
     });
     const [game] = await GameController.getGame({ gameId });
-    console.log(user?.username);
-    console.log(game?.remainingCards);
-    console.log("Demo card used");
   },
 };
 

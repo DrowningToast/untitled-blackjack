@@ -2,17 +2,30 @@ import mongoose, { ObjectId } from "mongoose";
 import { Card } from "../utils/Card";
 import { IGame } from "./GameModel";
 import { v4 as uuid } from "uuid";
+import { z } from "zod";
 
-export interface IUser {
-  username: string;
+/**
+ * @description Remove sensitive data from the model
+ */
+export const ZodUserStrip = z.object({
+  _id: z.any(),
+  id: z.string().min(1),
+  username: z.string().min(1),
+  gameScore: z.number().min(0),
+  ready: z.boolean(),
+  stand: z.boolean(),
+});
+
+export type IUser = z.infer<typeof ZodUserStrip>;
+
+/**
+ * @description Contain sensitive data from the model
+ */
+export type _IUser = IUser & {
+  _id: ObjectId;
   connectionId: string;
-  gameScore: number;
   cards: Card[];
-  game: IGame;
-  ready: boolean;
-  stand: boolean;
-  // trumpCards: Trump[];
-}
+};
 
 const UserSchema = new mongoose.Schema({
   /**
@@ -55,10 +68,7 @@ const UserSchema = new mongoose.Schema({
   /**
    * Game
    */
-  game: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Game",
-  },
+
   /**
    * @protected Sensitive information
    * WS connection ID

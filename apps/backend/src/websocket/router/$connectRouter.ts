@@ -1,7 +1,7 @@
 import { getAPIG } from "../APIGateway";
-import { WebsocketHandler } from "../utils/type";
+import { WebsocketRouter } from "../utils/type";
 
-export const $connectHandler: WebsocketHandler = async (event, context) => {
+export const $connectRouter: WebsocketRouter = async (event, context) => {
   const { api, send } = getAPIG(event, context);
 
   try {
@@ -13,7 +13,6 @@ export const $connectHandler: WebsocketHandler = async (event, context) => {
       status: "OK",
       handler: "CONNECTION_SUCCESS",
       content: context.connectionId,
-      error: null,
     });
   } catch (e) {
     console.log(e);
