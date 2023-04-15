@@ -3,11 +3,8 @@ import {
   ERR_EXISTED_USER,
   ERR_INTERNAL,
   ERR_INVALID_CONNECTION_ID,
-  ERR_INVALID_GAME,
-  ERR_INVALID_USER,
 } from "database/src/utils/Error";
-import { GameActionController, GameController, UserController } from "database";
-import { ERR_BAD_REQUEST } from "../../websocket/utils/error";
+import { UserController } from "database";
 
 /**
  *

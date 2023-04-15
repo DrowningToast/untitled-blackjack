@@ -2,15 +2,14 @@ import { GameController, UserController } from "database";
 import {
   ERR_EXISTED_GAME,
   ERR_ILLEGAL_OPERATION,
-  ERR_INTERNAL,
   ERR_INVALID_CONNECTION_ID,
-  ERR_INVALID_GAME,
   ERR_INVALID_PASSCODE,
-  ERR_INVALID_SESSID,
-  ERR_INVALID_USER,
 } from "database/src/utils/Error";
 import { FastifyInstance } from "fastify";
-import { ERR_BAD_REQUEST, ERR_GAME_FULL } from "../../websocket/utils/error";
+import {
+  ERR_BAD_REQUEST,
+  ERR_GAME_FULL,
+} from "../../websocket/utils/ErrorMessages";
 
 const gameRouter = (app: FastifyInstance, prefix: string) => {
   return app.register(

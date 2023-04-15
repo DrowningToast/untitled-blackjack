@@ -1,5 +1,5 @@
 import { Game, ZodGameStrip, _IGame } from "../models/GameModel";
-import { sortedAllCards } from "../utils/Card";
+import { sortedGlobalCardsContext } from "../utils/Card";
 import {
   ERR_INTERNAL,
   ERR_INVALID_GAME,
@@ -242,7 +242,7 @@ const resetRemainingCards = asyncTransaction(async (gameId: string) => {
       gameId,
     },
     {
-      remainingCards: sortedAllCards,
+      remainingCards: sortedGlobalCardsContext,
     }
   );
 
@@ -292,21 +292,24 @@ const switchPlayerTurn = asyncTransaction(async (gameId: string) => {
 
   // Get the current turn owner
   const currentTurnOwner = game.turnOwner;
+  const newTurnOwner = !currentTurnOwner
+    ? game.players[Math.floor(Math.random() * 2)]
+    : game?.players.filter(
+        (player) => player.username !== currentTurnOwner.username
+      )[0];
 
   const [_, err2] = await GameController.updateGame(
     { gameId },
     {
       // If the current turn owner is undefined, set the turn owner to a random player
       // Else, set the turn owner to the player that is not the current
-      turnOwner: !currentTurnOwner
-        ? game.players[Math.floor(Math.random() * 2)]
-        : game?.players.filter((player) => player !== currentTurnOwner)[0],
+      turnOwner: newTurnOwner._id,
     }
   );
 
   if (err2) throw ERR_INTERNAL;
 
-  return _;
+  return newTurnOwner;
 });
 
 const drawRandomTrumpCard = asyncTransaction(async () => {
@@ -352,6 +355,8 @@ export const GameActionController = {
   getAmountOfRemainingCards,
   /**
    * @access System level, users themselves
+   *
+   * returns new turn owner username
    */
   switchPlayerTurn,
   /**

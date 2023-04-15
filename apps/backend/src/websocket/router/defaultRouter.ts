@@ -1,8 +1,8 @@
 import { getAPIG } from "../APIGateway";
-import { ERR_INVALID_ACTION } from "../utils/error";
-import { WebsocketHandler } from "../utils/type";
+import { ERR_INVALID_ACTION } from "../utils/ErrorMessages";
+import { WebsocketRouter } from "../utils/type";
 
-export const $defaultHandler: WebsocketHandler = async (event, context) => {
+export const $defaultRouter: WebsocketRouter = async (event, context) => {
   // Send the message back tot the client invalid handler
 
   const { send } = getAPIG(event, context);

@@ -33,13 +33,19 @@ export const connectionAuthorizedMessage = (
   };
 };
 
+interface ReadyMessage {
+  username: string;
+  ready: boolean;
+}
+
 export const readyStateMessage = (
+  username: string,
   ready: boolean
-): WebsocketResponse<boolean> => {
+): WebsocketResponse<ReadyMessage> => {
   return {
     status: "OK",
     handler: "READY_STATE",
-    content: ready,
+    content: { username, ready },
   };
 };
 
@@ -67,7 +73,7 @@ export const gameStateMessage = (
   };
 };
 
-interface cardState {
+interface CardState {
   cards: Card[];
   gameCards: {
     username: string;
@@ -82,9 +88,9 @@ interface cardState {
  * @returns
  */
 export const cardStateMessage = (
-  cards: cardState["cards"],
-  gameCards: cardState["gameCards"]
-): WebsocketResponse<cardState> => {
+  cards: CardState["cards"],
+  gameCards: CardState["gameCards"]
+): WebsocketResponse<CardState> => {
   return {
     status: "OK",
     handler: "UPDATE_CARDS",
@@ -95,7 +101,7 @@ export const cardStateMessage = (
   };
 };
 
-interface hitEvent {
+interface HitEvent {
   username: string;
   card: Card | undefined;
 }
@@ -109,10 +115,23 @@ interface hitEvent {
 export const hitEventMessage = (
   username: string,
   card: Card | undefined
-): WebsocketResponse<hitEvent> => {
+): WebsocketResponse<HitEvent> => {
   return {
     status: "OK",
     handler: "HIT_EVENT",
     content: { card: undefined, username },
+  };
+};
+
+/**
+ * @description Send a message that tell the client the game is switching turn
+ */
+export const switchTurnMessage = (
+  username: string
+): WebsocketResponse<string> => {
+  return {
+    status: "OK",
+    handler: "SWITCH_TURN",
+    content: username,
   };
 };

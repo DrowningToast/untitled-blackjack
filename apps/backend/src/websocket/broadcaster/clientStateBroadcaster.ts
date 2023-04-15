@@ -5,8 +5,8 @@ import {
   UserController,
 } from "database";
 import { getAPIG } from "../APIGateway";
-import { cardStateMessage, gameStartMessage } from "../utils/websocketReponses";
-import { ScriptTrigger } from "./ScriptTrigger";
+import { cardStateMessage, gameStartMessage } from "../utils/WebsocketReponses";
+import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
 
 /**
  *
@@ -15,7 +15,7 @@ import { ScriptTrigger } from "./ScriptTrigger";
  * @param api
  * @param gameId
  */
-export const updateClientStateScript = ScriptTrigger(
+export const clientStateBroadcaster = AsyncExceptionHandler(
   async (
     api: ReturnType<typeof getAPIG>,
     gameId: string,

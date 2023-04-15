@@ -1,11 +1,12 @@
-import { AWSError, Request, Response } from "aws-sdk";
-import { WebsocketContext } from "./websocket";
+import { AWSError, Response } from "aws-sdk";
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { ErrorMessage } from "database";
+import { WebsocketContext } from "../APIGateway";
+import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
 
 export type ConnectionId = string;
 
-export type websocketHandlerCode =
+type WebsocketRouterCode =
   | "PONG"
   /**
    * Backend has acknowledged the connection
@@ -60,9 +61,7 @@ export type WebsocketResponse<T = undefined> =
 
 export type Handler<T> = (event: APIGatewayProxyEvent) => Promise<T>;
 
-export type WebsocketHandler = (
+export type WebsocketRouter = (
   event: APIGatewayProxyEvent,
   context: WebsocketContext
-) => Promise<{
-  $response: Response<{}, AWSError>;
-} | void>;
+) => Promise<any>;

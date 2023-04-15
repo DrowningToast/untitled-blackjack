@@ -16,7 +16,7 @@ functions:
       - httpApi: "*"
 
   websocket:
-    handler: handler.ws
+    handler: handler.websocket
     events:
       - websocket:
           route: $disconnect

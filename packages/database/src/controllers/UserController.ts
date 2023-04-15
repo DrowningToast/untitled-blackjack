@@ -55,7 +55,7 @@ const getConnectionId = asyncTransaction(async (args: FilterQuery<IUser>) => {
   const _ = (await User.findOne(args).select([
     "connectionId",
   ])) as unknown as _IUser;
-  if (!_) throw ERR_INVALID_USER;
+  if (!_?.connectionId) throw ERR_INVALID_USER;
   return _.connectionId;
 });
 

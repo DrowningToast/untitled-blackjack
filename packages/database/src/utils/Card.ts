@@ -5,6 +5,14 @@ export const ZodCard = z.object({
   values: z.array(z.number().min(0)),
 });
 
+export type GlobalCardsContext = {
+  username: string;
+  cards: {
+    values: number[];
+    display: string;
+  }[];
+}[];
+
 export type Card = z.infer<typeof ZodCard>;
 
 const aceCard: Card = {
@@ -72,7 +80,7 @@ const kingCard: Card = {
   values: [10],
 };
 
-const sortedAllCards: Card[] = [
+const sortedGlobalCardsContext: Card[] = [
   aceCard,
   twoCard,
   threeCard,
@@ -102,5 +110,5 @@ export {
   jackCard,
   queenCard,
   kingCard,
-  sortedAllCards,
+  sortedGlobalCardsContext,
 };

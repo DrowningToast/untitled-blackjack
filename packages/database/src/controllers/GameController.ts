@@ -1,7 +1,6 @@
 import { FilterQuery, ObjectId, Types, UpdateQuery } from "mongoose";
 import { Game, IGame, ZodGameStrip } from "../models/GameModel";
 import {
-  Card,
   aceCard,
   eightCard,
   fiveCard,
@@ -18,8 +17,11 @@ import {
 } from "../utils/Card";
 import { asyncTransaction } from "../utils/Transaction";
 import { UserController } from "./UserController";
-import { ERR_INVALID_GAME, ERR_INVALID_USER } from "../utils/Error";
-import { GameActionController } from "./GameActionController";
+import {
+  ERR_INGAME_PLAYERS,
+  ERR_INVALID_GAME,
+  ERR_INVALID_USER,
+} from "../utils/Error";
 
 /**
  * There should be no function that updates the game instance data directly for security reasons
@@ -192,6 +194,23 @@ const startGame = asyncTransaction(async (gameId: string) => {
   return ZodGameStrip.parse(res);
 });
 
+const getPlayerConnectionIds = asyncTransaction(async (gameId: string) => {
+  const [game, err] = await getGame({ gameId });
+
+  if (err) throw ERR_INVALID_GAME;
+
+  if (game.players.length !== 2) throw ERR_INGAME_PLAYERS;
+
+  const [[connectionA, errA], [connectionB, errB]] = await Promise.all([
+    UserController.getConnectionId({ username: game.players[0].username }),
+    UserController.getConnectionId({ username: game.players[1].username }),
+  ]);
+
+  if (errA || errB) throw ERR_INVALID_USER;
+
+  return [connectionA, connectionB] as [string, string];
+});
+
 export const GameController = {
   /**
    * @access Any authorized users
@@ -241,4 +260,11 @@ export const GameController = {
    * Change the state of game to started.
    */
   startGame,
+
+  /**
+   * @access System level
+   *
+   * Get both players connection ids
+   */
+  getPlayerConnectionIds,
 };
