@@ -16,15 +16,10 @@ export const ZodGameStrip = z.object({
     z.literal("ended"),
     z.literal("notStarted"),
   ]),
-  // passcode: z.string().min(1),
   players: z.array(ZodUserStrip),
   turnOwner: ZodUserStrip.optional(),
-  // remainingCards: z.array(
-  //   z.object({
-  //     display: z.string().min(1),
-  //     values: z.array(z.number().min(0)),
-  //   })
-  // ),
+  roundCouter: z.number().min(1),
+  cardPointTarget: z.number().min(21),
 });
 
 export type IGame = z.infer<typeof ZodGameStrip>;
@@ -47,6 +42,14 @@ const GameSchema = new mongoose.Schema({
     type: String,
     enum: ["onGoing", "ended", "notStarted"],
     default: "notStarted",
+  },
+  routerCouter: {
+    type: Number,
+    default: 1,
+  },
+  cardPointTarget: {
+    type: Number,
+    default: 1,
   },
   /**
    * @protected Sensitive information

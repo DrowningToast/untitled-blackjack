@@ -61,6 +61,13 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
   );
   if (errIds) throw errIds;
 
+  // Clear stand status on both players
+  const [[p1, errP1], [p2, errP2]] = await Promise.all([
+    UserController.setStandState({ username: game.players[0].username }, false),
+    UserController.setStandState({ username: game.players[1].username }, false),
+  ]);
+  if (errP1 || errP2) throw ERR_INTERNAL;
+
   // Broadcast hit event
   const [_, error] = await hitBroadcaster(
     api,
