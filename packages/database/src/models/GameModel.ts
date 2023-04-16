@@ -43,7 +43,7 @@ const GameSchema = new mongoose.Schema({
     enum: ["onGoing", "ended", "notStarted"],
     default: "notStarted",
   },
-  routerCouter: {
+  roundCounter: {
     type: Number,
     default: 1,
   },
