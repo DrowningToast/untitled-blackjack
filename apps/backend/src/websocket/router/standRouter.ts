@@ -5,6 +5,7 @@ import { WebsocketRouter } from "../utils/type";
 import z from "zod";
 import { ERR_ILLEGAL_ACTION } from "../utils/ErrorMessages";
 import { standEvent } from "../events/standEvent";
+import { checkShowDownEvent } from "../events/checkShowdownEvent";
 
 const bodyValidation = z.object({});
 
@@ -49,14 +50,27 @@ export const standRouter: WebsocketRouter = async (event, context) => {
     });
   }
 
-  console.log("Switching turn");
-  let [_2, err2] = await switchTurnEvent(api);
-  if (err2) {
+  // Check both player stand or not
+  const [result, errStand] = await checkShowDownEvent(game.gameId);
+  if (errStand) {
     return await api.send({
       status: "INTERNAL_ERROR",
-      error: err2,
+      error: errStand,
     });
   }
 
-  console.log(_2);
+  // initiate showdown
+  if (result) {
+  } else {
+    console.log("Switching turn");
+    let [_2, err2] = await switchTurnEvent(api);
+    if (err2) {
+      return await api.send({
+        status: "INTERNAL_ERROR",
+        error: err2,
+      });
+    }
+
+    console.log(_2);
+  }
 };
