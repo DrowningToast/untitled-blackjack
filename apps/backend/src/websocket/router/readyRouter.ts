@@ -50,6 +50,24 @@ export const readyRouter: WebsocketRouter = async (event, context) => {
       error: ERR_INTERNAL,
     });
 
+  // Check if the game already started
+  const [game, errGame] = await GameController.getGame({ gameId });
+  if (errGame)
+    return await send({
+      status: "INTERNAL_ERROR",
+      error: errGame,
+    });
+
+  if (game.gameState === "onGoing") {
+    return await send({
+      status: "REQUEST_ERROR",
+      error: ERR_ILLEGAL_OPERATION,
+    });
+  }
+
+  /**
+   * READY EVENT
+   */
   const [_, err4] = await readyEvent(api, {
     ready,
     gameId,

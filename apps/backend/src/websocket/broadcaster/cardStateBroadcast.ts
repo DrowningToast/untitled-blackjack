@@ -7,7 +7,7 @@ import {
 import { APIG } from "../APIGateway";
 import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
 import { GlobalCardsContext, Card } from "database/src/utils/Card";
-import { cardStateMessage } from "../utils/WebsocketReponses";
+import { cardStateMessage } from "../utils/WebsocketResponses";
 
 interface args {
   cards: GlobalCardsContext;

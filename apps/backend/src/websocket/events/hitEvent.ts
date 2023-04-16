@@ -8,7 +8,10 @@ import {
   GameController,
   UserController,
 } from "database";
-import { hitEventMessage, switchTurnMessage } from "../utils/WebsocketReponses";
+import {
+  hitEventMessage,
+  switchTurnMessage,
+} from "../utils/WebsocketResponses";
 import { ERR_GAME_STATE, ERR_ILLEGAL_ACTION } from "../utils/ErrorMessages";
 import { hitBroadcaster } from "../broadcaster/hitBroadcaster";
 import { cardStateBroadcaster } from "../broadcaster/cardStateBroadcast";
@@ -24,10 +27,7 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
   });
 
   if (err) {
-    return await send({
-      status: "INTERNAL_ERROR",
-      error: ERR_INTERNAL,
-    });
+    throw err;
   }
 
   const [game, err2] = await GameController.getGame({
@@ -35,20 +35,11 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
   });
 
   if (err2) {
-    return await send({
-      status: "INTERNAL_ERROR",
-      error: ERR_INTERNAL,
-    });
+    throw ERR_INTERNAL;
   } else if (game.gameState !== "onGoing") {
-    return await send({
-      status: "REQUEST_ERROR",
-      error: ERR_GAME_STATE,
-    });
+    throw ERR_GAME_STATE;
   } else if (!game.turnOwner || game.turnOwner.username !== user.username) {
-    return await send({
-      status: "REQUEST_ERROR",
-      error: ERR_ILLEGAL_ACTION,
-    });
+    throw ERR_ILLEGAL_ACTION;
   }
 
   // DONE CHECKING
@@ -59,7 +50,11 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
     1
   );
   if (err5) throw err5;
-  let [cards] = await UserController.addCards(connectionId, drawnCards ?? []);
+  let [cards, err6] = await UserController.addCards(
+    connectionId,
+    drawnCards ?? []
+  );
+  if (err6) throw err6;
 
   const [connectionIds, errIds] = await GameController.getPlayerConnectionIds(
     game.gameId
@@ -81,10 +76,7 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
   );
 
   if (err3 || !cards || !visibleCards) {
-    return await send({
-      status: "INTERNAL_ERROR",
-      error: ERR_INTERNAL,
-    });
+    throw ERR_INTERNAL;
   }
 
   // Update the client state

@@ -81,8 +81,11 @@ const setCards = asyncTransaction(
       }
     );
 
-    if (!_) throw ERR_INVALID_USER;
-    return ZodUserStrip.parse(_);
+    const [updated, err] = await getUserMeta({ connectionId });
+    if (err) throw err;
+
+    if (!updated) throw ERR_INVALID_USER;
+    return ZodUserStrip.parse(updated);
   }
 );
 
@@ -92,7 +95,21 @@ const addCards = asyncTransaction(
     if (err) {
       throw ERR_INVALID_USER;
     }
-    const [_] = await setCards(connectionId, [...cards, ...oldCards]);
+
+    await User.findOneAndUpdate(
+      {
+        connectionId,
+      },
+      {
+        $push: {
+          cards: {
+            $each: cards,
+          },
+        },
+      }
+    );
+
+    // const [_] = await setCards(connectionId, [...oldCards, ...cards]);
 
     return [...cards, ...oldCards];
   }

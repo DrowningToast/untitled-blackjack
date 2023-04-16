@@ -5,7 +5,10 @@ import {
   UserController,
 } from "database";
 import { getAPIG } from "../APIGateway";
-import { cardStateMessage, gameStartMessage } from "../utils/WebsocketReponses";
+import {
+  cardStateMessage,
+  gameStartMessage,
+} from "../utils/WebsocketResponses";
 import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
 
 /**

@@ -1,6 +1,6 @@
 import { APIG } from "../APIGateway";
 import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
-import { readyStateMessage } from "../utils/WebsocketReponses";
+import { readyStateMessage } from "../utils/WebsocketResponses";
 
 export const readyStateBroadcaster = AsyncExceptionHandler(
   async (

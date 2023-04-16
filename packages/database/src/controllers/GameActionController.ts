@@ -98,21 +98,19 @@ const getRemainingCards = asyncTransaction(async (gameId: string) => {
   return game.remainingCards;
 });
 
-const getTurnOwner = asyncTransaction(
-  async (connectionId: string, gameId: string) => {
-    // Get the game owner
-    const _ = await Game.findOne({
-      connectionId,
-      gameId,
-    }).select("turnOwner");
+const getTurnOwner = asyncTransaction(async (gameId: string) => {
+  // Get the game owner
+  const _ = await Game.findOne({
+    gameId,
+  }).select("turnOwner");
 
-    const [user] = await UserController.getUserMeta({
-      _id: _?.turnOwner,
-    });
+  const [user, err] = await UserController.getUserMeta({
+    _id: _?.turnOwner,
+  });
+  if (err) throw err;
 
-    return user;
-  }
-);
+  return user;
+});
 
 const setTurnOwner = asyncTransaction(
   async (gameId: string, connId?: string) => {

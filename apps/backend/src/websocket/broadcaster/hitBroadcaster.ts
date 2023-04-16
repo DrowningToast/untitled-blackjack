@@ -7,7 +7,10 @@ import {
   GameController,
   UserController,
 } from "database";
-import { hitEventMessage, switchTurnMessage } from "../utils/WebsocketReponses";
+import {
+  hitEventMessage,
+  switchTurnMessage,
+} from "../utils/WebsocketResponses";
 
 /**
  * @description Handle sending multiple websocket messages to notify the user

@@ -1,6 +1,6 @@
 import { ERR_EXISTED_USER, UserController } from "database";
 import { getAPIG } from "../APIGateway";
-import { connectionAuthorizedMessage } from "../utils/WebsocketReponses";
+import { connectionAuthorizedMessage } from "../utils/WebsocketResponses";
 
 interface args {
   username: string;
@@ -17,10 +17,7 @@ const authEvent = async (event, context, args) => {
    */
   if (user) {
     // The username is already taken
-    return await send({
-      status: "REQUEST_ERROR",
-      error: ERR_EXISTED_USER,
-    });
+    throw ERR_EXISTED_USER;
   } else {
     // Create new user
     const [user, error] = await UserController.createUser({
@@ -29,10 +26,7 @@ const authEvent = async (event, context, args) => {
     });
 
     if (error) {
-      return await send({
-        status: "INTERNAL_ERROR",
-        error: error,
-      });
+      throw error;
     }
 
     return await send(connectionAuthorizedMessage(user.username, connectionId));

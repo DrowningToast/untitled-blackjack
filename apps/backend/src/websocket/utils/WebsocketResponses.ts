@@ -119,7 +119,7 @@ export const hitEventMessage = (
   return {
     status: "OK",
     handler: "HIT_EVENT",
-    content: { card: undefined, username },
+    content: { card, username },
   };
 };
 
@@ -132,6 +132,30 @@ export const switchTurnMessage = (
   return {
     status: "OK",
     handler: "SWITCH_TURN",
+    content: username,
+  };
+};
+
+/**
+ * @description Game stopped mid way due to someone quitting
+ * @param username
+ */
+export const gameStopMessage = (
+  username: string
+): WebsocketResponse<string> => {
+  return {
+    status: "OK",
+    handler: "GAME_STOP",
+    content: username,
+  };
+};
+
+export const standEventMessage = (
+  username: string
+): WebsocketResponse<string> => {
+  return {
+    status: "OK",
+    handler: "STAND_EVENT",
     content: username,
   };
 };
