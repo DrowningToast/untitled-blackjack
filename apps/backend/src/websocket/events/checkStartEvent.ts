@@ -8,7 +8,7 @@ interface args {
 export const checkStartEvent = AsyncExceptionHandler(
   async (event, conext, args) => {
     const [players, err] = await GameController.getPlayers(args.gameId);
-    if (err) return err;
+    if (err) throw err;
 
     const readyPlayers = players.filter((player) => player.ready);
 

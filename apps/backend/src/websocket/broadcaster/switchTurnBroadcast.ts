@@ -1,6 +1,6 @@
 import { APIG } from "../APIGateway";
 import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
-import { switchTurnMessage } from "../utils/WebsocketReponses";
+import { switchTurnMessage } from "../utils/WebsocketResponses";
 
 export const switchTurnBroadcast = AsyncExceptionHandler(
   async (

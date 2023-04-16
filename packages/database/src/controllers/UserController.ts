@@ -81,8 +81,11 @@ const setCards = asyncTransaction(
       }
     );
 
-    if (!_) throw ERR_INVALID_USER;
-    return ZodUserStrip.parse(_);
+    const [updated, err] = await getUserMeta({ connectionId });
+    if (err) throw err;
+
+    if (!updated) throw ERR_INVALID_USER;
+    return ZodUserStrip.parse(updated);
   }
 );
 
@@ -92,7 +95,21 @@ const addCards = asyncTransaction(
     if (err) {
       throw ERR_INVALID_USER;
     }
-    const [_] = await setCards(connectionId, [...cards, ...oldCards]);
+
+    await User.findOneAndUpdate(
+      {
+        connectionId,
+      },
+      {
+        $push: {
+          cards: {
+            $each: cards,
+          },
+        },
+      }
+    );
+
+    // const [_] = await setCards(connectionId, [...oldCards, ...cards]);
 
     return [...cards, ...oldCards];
   }
@@ -124,6 +141,50 @@ const setReadyState = asyncTransaction(
     return ZodUserStrip.parse(_);
   }
 );
+
+const setStandState = asyncTransaction(
+  async (target: FilterQuery<IUser>, stand: boolean) => {
+    // check if the user exists
+    const [userMeta, err] = await getUserMeta(target);
+    if (err) throw err;
+
+    // update the user
+    const _ = await User.findOneAndUpdate(
+      {
+        target,
+      },
+      {
+        stand,
+      }
+    );
+
+    const [updated, err2] = await getUserMeta(target);
+    if (err2) throw err2;
+
+    return ZodUserStrip.parse(updated);
+  }
+);
+
+const getCardsSums = asyncTransaction(async (target: FilterQuery<IUser>) => {
+  const [cards, err] = await getCards(target, true);
+  if (err) throw err;
+
+  const firstSum = cards.reduce((acc, card) => {
+    if (card.display === "A") return acc + 1;
+    if (card.display === "J" || card.display === "Q" || card.display === "K")
+      return acc + 10;
+    return acc + Number(card.values[0]);
+  }, 0);
+
+  const secondSum = cards.reduce((acc, card) => {
+    if (card.display === "A") return acc + 11;
+    if (card.display === "J" || card.display === "Q" || card.display === "K")
+      return acc + 10;
+    return acc + Number(card.values[0]);
+  }, 0);
+
+  return [firstSum, secondSum];
+});
 
 export const UserController = {
   /**
@@ -170,4 +231,16 @@ export const UserController = {
    * @description Set the player ready state
    */
   setReadyState,
+  /**
+   * @access System Level
+   *
+   * @description Set the player stand state
+   */
+  setStandState,
+  /**
+   * @access System Level
+   *
+   * @description Get the sum of the cards
+   */
+  getCardsSums,
 };

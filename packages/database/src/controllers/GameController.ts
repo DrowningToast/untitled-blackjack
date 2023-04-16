@@ -130,11 +130,7 @@ const leaveGame = asyncTransaction(
     // Ensure the game instance is valid
     let [game] = await getGame({ gameId });
 
-    if (
-      !game ||
-      !game.players.find((player) => player.username === userMeta.username)
-    )
-      throw ERR_INVALID_GAME;
+    if (!game) throw ERR_INVALID_GAME;
 
     /**
      * If the game players is empty, delete the game instance
@@ -211,6 +207,14 @@ const getPlayerConnectionIds = asyncTransaction(async (gameId: string) => {
   return [connectionA, connectionB] as [string, string];
 });
 
+const deleteGame = asyncTransaction(async (gameId: string) => {
+  const _ = await Game.deleteOne({
+    gameId,
+  });
+
+  return;
+});
+
 export const GameController = {
   /**
    * @access Any authorized users
@@ -267,4 +271,10 @@ export const GameController = {
    * Get both players connection ids
    */
   getPlayerConnectionIds,
+  /**
+   * @access System level
+   *
+   * Delete the game instance
+   */
+  deleteGame,
 };

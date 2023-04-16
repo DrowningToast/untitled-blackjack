@@ -3,7 +3,7 @@ import { ERR_INIT_GAME } from "../utils/ErrorMessages";
 import { getAPIG } from "../APIGateway";
 import { clientStateBroadcaster } from "./clientStateBroadcaster";
 import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
-import { gameStartMessage } from "../utils/WebsocketReponses";
+import { gameStartMessage } from "../utils/WebsocketResponses";
 
 /**
  * Initialize the game with full setup

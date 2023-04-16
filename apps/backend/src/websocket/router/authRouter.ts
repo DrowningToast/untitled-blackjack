@@ -3,7 +3,7 @@ import { WebsocketRouter } from "../utils/type";
 import z from "zod";
 import { getAPIG } from "../APIGateway";
 import { ERR_BAD_REQUEST } from "../utils/ErrorMessages";
-import { connectionAuthorizedMessage } from "../utils/WebsocketReponses";
+import { connectionAuthorizedMessage } from "../utils/WebsocketResponses";
 import { authEvent } from "../events/authEvent";
 
 const bodyValdiation = z.object({

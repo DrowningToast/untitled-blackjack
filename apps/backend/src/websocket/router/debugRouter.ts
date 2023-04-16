@@ -1,5 +1,5 @@
 import { getAPIG } from "../APIGateway";
-import { pingMessage } from "../utils/WebsocketReponses";
+import { pingMessage } from "../utils/WebsocketResponses";
 import { WebsocketRouter } from "../utils/type";
 
 export const debugRouter: WebsocketRouter = async (event, context) => {

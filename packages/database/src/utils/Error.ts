@@ -63,3 +63,13 @@ export const ERR_INGAME_PLAYERS: ErrorMessage = {
   error: "invalid-ingame-players",
   description: "Players in the game instance is invalid and maybe broken",
 };
+
+export const ERR_USER_STAND: ErrorMessage = {
+  error: "user-stand",
+  description: "Both users aren't in stand state",
+};
+
+export const ERR_NO_WINNER: ErrorMessage = {
+  error: "no-winner",
+  description: "Cannot determine which player wins",
+};

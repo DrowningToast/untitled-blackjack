@@ -1,12 +1,16 @@
+import { ERR_GAME_STATE } from "../../../../apps/backend/src/websocket/utils/ErrorMessages";
 import { Game, ZodGameStrip, _IGame } from "../models/GameModel";
 import { sortedGlobalCardsContext } from "../utils/Card";
 import {
   ERR_INTERNAL,
   ERR_INVALID_GAME,
   ERR_INVALID_USER,
+  ERR_NO_WINNER,
+  ERR_USER_STAND,
 } from "../utils/Error";
 import { asyncTransaction } from "../utils/Transaction";
 import { trumpCards } from "../utils/TrumpCard";
+import { GAME_ROUND_SCORE_MAPPING } from "../utils/config";
 import { GameController } from "./GameController";
 import { UserController } from "./UserController";
 
@@ -98,21 +102,19 @@ const getRemainingCards = asyncTransaction(async (gameId: string) => {
   return game.remainingCards;
 });
 
-const getTurnOwner = asyncTransaction(
-  async (connectionId: string, gameId: string) => {
-    // Get the game owner
-    const _ = await Game.findOne({
-      connectionId,
-      gameId,
-    }).select("turnOwner");
+const getTurnOwner = asyncTransaction(async (gameId: string) => {
+  // Get the game owner
+  const _ = await Game.findOne({
+    gameId,
+  }).select("turnOwner");
 
-    const [user] = await UserController.getUserMeta({
-      _id: _?.turnOwner,
-    });
+  const [user, err] = await UserController.getUserMeta({
+    _id: _?.turnOwner,
+  });
+  if (err) throw err;
 
-    return user;
-  }
-);
+  return user;
+});
 
 const setTurnOwner = asyncTransaction(
   async (gameId: string, connId?: string) => {
@@ -243,6 +245,9 @@ const resetRemainingCards = asyncTransaction(async (gameId: string) => {
     },
     {
       remainingCards: sortedGlobalCardsContext,
+      $set: {
+        cardPointTarget: 21,
+      },
     }
   );
 
@@ -310,6 +315,143 @@ const switchPlayerTurn = asyncTransaction(async (gameId: string) => {
   if (err2) throw ERR_INTERNAL;
 
   return newTurnOwner;
+});
+
+const setTargetPoint = asyncTransaction(
+  async (gameId: string, point: number) => {
+    const [game, err] = await GameController.updateGame(
+      { gameId },
+      {
+        cardPointTarget: point,
+      }
+    );
+    if (err) throw err;
+    return game;
+  }
+);
+
+const nextRound = asyncTransaction(async (gameId: string) => {});
+
+/**
+ * @description Find the winner and ends the game
+ */
+const endRound = asyncTransaction(async (gameId: string) => {
+  const [game, err] = await GameController.getGame({ gameId });
+  if (err) throw ERR_INVALID_GAME;
+
+  // check is the on going game or not
+  if (game.gameState !== "onGoing") throw ERR_GAME_STATE;
+
+  // players
+  const [playerA, playerB] = game.players;
+
+  // check if both players are in stand state
+  if (!playerA.stand || !playerB.stand) throw ERR_USER_STAND;
+
+  // Find out who wins
+  // get points sum
+  const targetPoints = game.cardPointTarget;
+  const [playerASums, errA] = await UserController.getCardsSums({
+    username: playerA.username,
+  });
+  const [playerBSums, errB] = await UserController.getCardsSums({
+    username: playerB.username,
+  });
+  if (errA || errB) throw ERR_INTERNAL;
+
+  let [isAExceed, isBExceed] = [false, false];
+
+  // Check if both players exceed the target points
+  if (playerASums[0] > targetPoints && playerASums[1] > targetPoints) {
+    isAExceed = true;
+  }
+  if (playerBSums[0] > targetPoints && playerBSums[1] > targetPoints) {
+    isBExceed = true;
+  }
+
+  // Get safe best sum
+  let A_sum =
+    Math.max(...playerASums) <= targetPoints
+      ? Math.max(...playerASums)
+      : Math.min(...playerASums);
+  let B_sum =
+    Math.max(...playerBSums) <= targetPoints
+      ? Math.max(...playerBSums)
+      : Math.min(...playerBSums);
+
+  let winner: string = "";
+
+  if (isAExceed && !isBExceed) {
+    winner = "A";
+  } else if (!isAExceed && isBExceed) {
+    winner = "B";
+  } else if (isAExceed && isBExceed) {
+    winner = "AB";
+  } else if (A_sum > B_sum) {
+    winner = "A";
+  } else if (A_sum < B_sum) {
+    winner = "B";
+  } else if (A_sum === B_sum) {
+    winner = "AB";
+  } else {
+    throw ERR_NO_WINNER;
+  }
+
+  // determine how many points the winner gets
+  const winnerPoints = GAME_ROUND_SCORE_MAPPING[game.roundCouter];
+
+  // Update winner points
+  if (winner === "A") {
+    const [_, err] = await UserController.updateUser(
+      { username: playerA.username },
+      {
+        $inc: {
+          points: winnerPoints,
+        },
+      }
+    );
+    if (err) throw err;
+  } else if (winner === "B") {
+    const [_, err] = await UserController.updateUser(
+      { username: playerB.username },
+      {
+        $inc: {
+          points: winnerPoints,
+        },
+      }
+    );
+    if (err) throw err;
+  } else if (winner === "AB") {
+    const [_, err] = await UserController.updateUser(
+      { username: playerA.username },
+      {
+        $inc: {
+          points: winnerPoints,
+        },
+      }
+    );
+    const [_2, err2] = await UserController.updateUser(
+      { username: playerB.username },
+      {
+        $inc: {
+          points: winnerPoints,
+        },
+      }
+    );
+    if (err || err2) throw ERR_INTERNAL;
+  }
+
+  // Get game state
+  const [updatedGame, err2] = await GameController.updateGame(
+    { gameId },
+    {
+      gameState: "end",
+      winner,
+    }
+  );
+  if (err2) throw ERR_INTERNAL;
+
+  return updatedGame;
 });
 
 const drawRandomTrumpCard = asyncTransaction(async () => {
@@ -393,4 +535,10 @@ export const GameActionController = {
    * @description set the turn owner
    */
   setTurnOwner,
+  /**
+   * @access User
+   *
+   * @description Set the target point of the game
+   */
+  setTargetPoint,
 };
