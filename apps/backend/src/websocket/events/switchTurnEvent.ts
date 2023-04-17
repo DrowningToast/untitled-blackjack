@@ -1,7 +1,6 @@
 import { GameActionController, GameController, UserController } from "database";
 import { APIG } from "../APIGateway";
 import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
-import { switchTurnMessage } from "../utils/WebsocketResponses";
 import { switchTurnBroadcast } from "../broadcaster/switchTurnBroadcast";
 
 export const switchTurnEvent = AsyncExceptionHandler(async (api: APIG) => {

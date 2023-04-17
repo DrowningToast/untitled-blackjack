@@ -1,29 +1,8 @@
-import { AWSError, Response } from "aws-sdk";
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { ErrorMessage } from "database";
 import { WebsocketContext } from "../APIGateway";
-import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
 
 export type ConnectionId = string;
-
-type WebsocketRouterCode =
-  | "PONG"
-  /**
-   * Backend has acknowledged the connection
-   */
-  | "CONNECTION_SUCCESS"
-  /**
-   * User document created
-   */
-  | "CONNECTION_AUTHROIZED"
-  /**
-   * Game started
-   */
-  | "GAME_STARTED"
-  /**
-   * reply that backend acknowledged the request that request is true
-   */
-  | "READY_STATE";
 
 export interface BaseWebsocketResponse<T = undefined> {
   /**

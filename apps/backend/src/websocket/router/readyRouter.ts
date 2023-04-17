@@ -80,8 +80,6 @@ export const readyRouter: WebsocketRouter = async (event, context) => {
       error: err4,
     });
 
-  console.log(_);
-
   // Check if the both users are ready
   const [players, err] = await GameController.getPlayers(gameId);
   if (err)

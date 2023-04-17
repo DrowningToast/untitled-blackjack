@@ -1,4 +1,4 @@
-import { Card } from "database/src/utils/Card";
+import { Card, GlobalCardsContext } from "database/src/utils/Card";
 import { ConnectionId, WebsocketResponse } from "./type";
 import { IGame, IUser } from "database";
 
@@ -75,10 +75,7 @@ export const gameStateMessage = (
 
 interface CardState {
   cards: Card[];
-  gameCards: {
-    username: string;
-    cards: Card[];
-  }[];
+  gameCards: GlobalCardsContext;
 }
 
 /**

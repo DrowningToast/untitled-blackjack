@@ -7,10 +7,7 @@ export const ZodCard = z.object({
 
 export type GlobalCardsContext = {
   username: string;
-  cards: {
-    values: number[];
-    display: string;
-  }[];
+  cards: Card[];
 }[];
 
 export type Card = z.infer<typeof ZodCard>;

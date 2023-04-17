@@ -21,16 +21,11 @@ export const initGameEvent = AsyncExceptionHandler(
     const [game, err2] = await GameActionController.initGame(gameId);
     if (err2) throw err2;
 
-    console.log(_1);
-    console.log(game);
-
     // get connection ids
     const [connectionIds, errIds] = await GameController.getPlayerConnectionIds(
       gameId
     );
     if (errIds) throw errIds;
-
-    console.log(connectionIds);
 
     const [GlobalCardsContext, errAll] =
       await GameActionController.getAllPlayersCards(gameId);
