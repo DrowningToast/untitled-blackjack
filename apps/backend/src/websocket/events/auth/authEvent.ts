@@ -1,7 +1,7 @@
 import { ERR_EXISTED_USER, UserController } from "database";
-import { getAPIG } from "../APIGateway";
-import { connectionAuthorizedMessage } from "../utils/WebsocketResponses";
-import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
+import { getAPIG } from "../../APIGateway";
+import { connectionAuthorizedMessage } from "../../utils/WebsocketResponses";
+import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
 
 interface args {
   username: string;

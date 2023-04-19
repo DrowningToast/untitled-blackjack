@@ -1,7 +1,6 @@
 import { GameActionController, GameController, IGame } from "database";
 import { ERR_INIT_GAME } from "../utils/ErrorMessages";
 import { getAPIG } from "../APIGateway";
-import { clientStateBroadcast } from "./clientStateBroadcast";
 import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
 import { initRoundMessage } from "../utils/WebsocketResponses";
 

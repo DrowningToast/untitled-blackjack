@@ -1,7 +1,7 @@
 import { GameActionController, GameController } from "database";
-import { APIG } from "../APIGateway";
-import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
-import { roundWinnerBroadcast } from "../broadcast/roundWinnerBroadcast";
+import { APIG } from "../../APIGateway";
+import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
+import { roundWinnerBroadcast } from "../../broadcast/roundWinnerBroadcast";
 
 /**
  * Possible outcomes:

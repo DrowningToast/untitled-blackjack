@@ -2,7 +2,7 @@ import { WebsocketRouter } from "../utils/type";
 import z from "zod";
 import { getAPIG } from "../APIGateway";
 import { ERR_BAD_REQUEST } from "../utils/ErrorMessages";
-import { authEvent } from "../events/authEvent";
+import { authEvent } from "../events/auth/authEvent";
 
 const bodyValdiation = z.object({
   username: z.string(),

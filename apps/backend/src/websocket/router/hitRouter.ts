@@ -1,7 +1,7 @@
 import { WebsocketRouter } from "../utils/type";
 import { getAPIG } from "../APIGateway";
-import { hitEvent } from "../events/hitEvent";
-import { switchTurnEvent } from "../events/switchTurnEvent";
+import { hitEvent } from "../events/gameplay/hitEvent";
+import { switchTurnEvent } from "../events/gameplay/switchTurnEvent";
 
 export const hitRouter: WebsocketRouter = async (event, context) => {
   const api = getAPIG(event, context);

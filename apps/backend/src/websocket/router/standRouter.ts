@@ -1,14 +1,14 @@
 import { GameActionController, GameController, UserController } from "database";
 import { getAPIG } from "../APIGateway";
-import { switchTurnEvent } from "../events/switchTurnEvent";
 import { WebsocketRouter } from "../utils/type";
 import z from "zod";
 import { ERR_ILLEGAL_ACTION } from "../utils/ErrorMessages";
-import { standEvent } from "../events/standEvent";
-import { checkShowDownEvent } from "../events/checkShowdownEvent";
-import { showdownEvent } from "../events/showdownEvent";
-import { nextRoundEvent } from "../events/nextRoundEvent";
-import { initRoundEvent } from "../events/initRoundEvent";
+import { standEvent } from "../events/gameplay/standEvent";
+import { checkShowDownEvent } from "../events/gameplay/checkShowdownEvent";
+import { showdownEvent } from "../events/gameplay/showdownEvent";
+import { initRoundEvent } from "../events/gameplay/initRoundEvent";
+import { nextRoundEvent } from "../events/gameplay/nextRoundEvent";
+import { switchTurnEvent } from "../events/gameplay/switchTurnEvent";
 
 const bodyValidation = z.object({});
 

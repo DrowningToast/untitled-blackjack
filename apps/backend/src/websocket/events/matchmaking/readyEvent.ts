@@ -4,9 +4,9 @@ import {
   GameController,
   UserController,
 } from "database";
-import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
-import { APIG } from "../APIGateway";
-import { readyStateBroadcast } from "../broadcast/readyStateBroadcast";
+import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
+import { APIG } from "../../APIGateway";
+import { readyStateBroadcast } from "../../broadcast/readyStateBroadcast";
 
 interface args {
   gameId: string;

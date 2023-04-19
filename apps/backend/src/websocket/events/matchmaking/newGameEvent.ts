@@ -1,7 +1,7 @@
 import { GameActionController, GameController } from "database";
-import { APIG } from "../APIGateway";
-import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
-import { newGameBroadcast } from "../broadcast/newGameBroadcast";
+import { APIG } from "../../APIGateway";
+import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
+import { newGameBroadcast } from "../../broadcast/newGameBroadcast";
 
 export const newGameEvent = AsyncExceptionHandler(
   async (api: APIG, gameId: string) => {

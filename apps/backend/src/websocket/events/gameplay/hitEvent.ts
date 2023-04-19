@@ -1,5 +1,5 @@
-import { APIG } from "../APIGateway";
-import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
+import { APIG } from "../../APIGateway";
+import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
 import {
   ERR_INTERNAL,
   GameActionController,
@@ -12,9 +12,9 @@ import {
   ERR_GAME_STATE,
   ERR_ILLEGAL_ACTION,
   ERR_INVALID_USER,
-} from "../utils/ErrorMessages";
-import { hitBroadcast } from "../broadcast/hitBroadcast";
-import { cardStateBroadcast } from "../broadcast/cardStateBroadcast";
+} from "../../utils/ErrorMessages";
+import { hitBroadcast } from "../../broadcast/hitBroadcast";
+import { cardStateBroadcast } from "../../broadcast/cardStateBroadcast";
 
 /**
  * @description Handle sending multiple websocket messages to notify the user
