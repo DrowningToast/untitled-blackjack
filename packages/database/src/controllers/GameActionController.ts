@@ -386,7 +386,7 @@ const nextRound = asyncTransaction(async (gameId: string) => {
   // check if both players are in stand state
   if (!playerA.stand || !playerB.stand) throw ERR_USER_STAND;
 
-  if (game.roundCouter >= GAME_ROUND_PLAYED_MAX) throw ERR_ROUND_COUNTER;
+  if (game.roundCounter >= GAME_ROUND_PLAYED_MAX) throw ERR_ROUND_COUNTER;
 
   // proceed to next round
   const newGame = await Game.findOneAndUpdate(
@@ -395,7 +395,7 @@ const nextRound = asyncTransaction(async (gameId: string) => {
     },
     {
       $inc: {
-        roundCouter: 1,
+        roundCounter: 1,
       },
     }
   );
@@ -491,8 +491,12 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
   }
 
   // determine how many points the winner gets
-  const winnerPoints = GAME_ROUND_SCORE_MAPPING[game.roundCouter];
+  const winnerPoints = GAME_ROUND_SCORE_MAPPING[game.roundCounter];
   if (!winnerPoints) throw ERR_WINNER_POINTS;
+
+  console.log(winner);
+  console.log(game.roundCounter);
+  console.log(winnerPoints);
 
   // Update winner points
   if (winner === "A") {
@@ -500,7 +504,7 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
       { username: playerA.username },
       {
         $inc: {
-          points: winnerPoints,
+          gameScore: winnerPoints,
         },
       }
     );
@@ -510,7 +514,7 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
       { username: playerB.username },
       {
         $inc: {
-          points: winnerPoints,
+          gameScore: winnerPoints,
         },
       }
     );
@@ -520,7 +524,7 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
       { username: playerA.username },
       {
         $inc: {
-          points: winnerPoints,
+          gameScore: winnerPoints,
         },
       }
     );
@@ -528,7 +532,7 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
       { username: playerB.username },
       {
         $inc: {
-          points: winnerPoints,
+          gameScore: winnerPoints,
         },
       }
     );

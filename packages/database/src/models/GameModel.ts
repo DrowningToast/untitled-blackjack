@@ -17,8 +17,8 @@ export const ZodGameStrip = z.object({
     z.literal("notStarted"),
   ]),
   players: z.array(ZodUserStrip),
-  turnOwner: ZodUserStrip.optional(),
-  roundCouter: z.number().min(1),
+  turnOwner: ZodUserStrip.optional().nullable(),
+  roundCounter: z.number().min(1),
   cardPointTarget: z.number().min(21),
 });
 
@@ -49,7 +49,7 @@ const GameSchema = new mongoose.Schema({
   },
   cardPointTarget: {
     type: Number,
-    default: 1,
+    default: 21,
   },
   /**
    * @protected Sensitive information

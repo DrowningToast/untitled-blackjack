@@ -2,20 +2,16 @@ import { GameActionController, GameController } from "database";
 import { ERR_INIT_GAME } from "../utils/ErrorMessages";
 import { getAPIG } from "../APIGateway";
 import { clientStateBroadcast } from "../broadcast/clientStateBroadcast";
-import { initGameBroadcast } from "../broadcast/initGameBroadcast";
+import { initRoundBroadcast } from "../broadcast/initRoundBroadcast";
 import { cardStateBroadcast } from "../broadcast/cardStateBroadcast";
 import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
 
 /**
  * Initialize the game with full setup
  */
-export const initGameEvent = AsyncExceptionHandler(
+export const initRoundEvent = AsyncExceptionHandler(
   async (APIG: ReturnType<typeof getAPIG>, gameId: string) => {
     const api = APIG;
-
-    // start the game
-    const [_1, err] = await GameController.startGame(gameId);
-    if (err) throw err;
 
     // init the game
     const [game, err2] = await GameActionController.initRound(gameId);
@@ -44,7 +40,7 @@ export const initGameEvent = AsyncExceptionHandler(
     );
     if (errA || errB) throw errA || errB;
 
-    const [_, error] = await initGameBroadcast(api, game, connectionIds);
+    const [_, error] = await initRoundBroadcast(api, game, connectionIds);
     const [_2, error2] = await cardStateBroadcast(api, {
       cards: [GlobalCardsContext[0], GlobalCardsContext[1]],
       pov_A: {

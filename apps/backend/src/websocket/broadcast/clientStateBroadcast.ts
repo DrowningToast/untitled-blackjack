@@ -7,7 +7,7 @@ import {
 import { getAPIG } from "../APIGateway";
 import {
   cardStateMessage,
-  gameStartMessage,
+  initRoundMessage,
 } from "../utils/WebsocketResponses";
 import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
 
@@ -61,7 +61,7 @@ export const clientStateBroadcast = AsyncExceptionHandler(
     const { send, broadcast } = api;
 
     // update game client
-    await broadcast(isStart ? gameStartMessage(game) : gameStartMessage(game), [
+    await broadcast(isStart ? initRoundMessage(game) : initRoundMessage(game), [
       connectionA,
       connectionB,
     ]);

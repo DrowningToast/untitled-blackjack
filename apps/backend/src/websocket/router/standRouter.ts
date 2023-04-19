@@ -8,6 +8,7 @@ import { standEvent } from "../events/standEvent";
 import { checkShowDownEvent } from "../events/checkShowdownEvent";
 import { showdownEvent } from "../events/showdownEvent";
 import { nextRoundEvent } from "../events/nextRoundEvent";
+import { initRoundEvent } from "../events/initRoundEvent";
 
 const bodyValidation = z.object({});
 
@@ -72,7 +73,13 @@ export const standRouter: WebsocketRouter = async (event, context) => {
       });
     }
 
+    // announcement of new round
     const [_2, err2] = await nextRoundEvent(api, game.gameId);
+    if (err2) throw err2;
+
+    // actually initing new round
+    const [_3, err3] = await initRoundEvent(api, game.gameId);
+    if (err3) throw err3;
   } else {
     let [_2, err2] = await switchTurnEvent(api);
     if (err2) {

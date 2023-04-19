@@ -16,7 +16,7 @@ export const nextRoundEvent = AsyncExceptionHandler(
 
     const [_, err] = await nextRoundBroadcast(
       api,
-      game.roundCouter,
+      game.roundCounter,
       connectionIds
     );
     if (err) throw err;

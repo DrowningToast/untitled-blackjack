@@ -49,27 +49,19 @@ export const readyStateMessage = (
   };
 };
 
-export const gameStartMessage = (game: IGame): WebsocketResponse<IGame> => {
+export const newGameMessage = (gameId: string): WebsocketResponse<string> => {
   return {
     status: "OK",
-    handler: "GAME_STARTED",
-    content: game,
+    handler: "NEW_GAME",
+    content: gameId,
   };
 };
 
-/**
- * @description Update the score and turn owner.
- *
- * @param gameState
- * @returns
- */
-export const gameStateMessage = (
-  gameState: IGame
-): WebsocketResponse<IGame> => {
+export const initRoundMessage = (game: IGame): WebsocketResponse<IGame> => {
   return {
     status: "OK",
-    handler: "UPDATE_GAME_STATE",
-    content: gameState,
+    handler: "ROUND_STARTED",
+    content: game,
   };
 };
 

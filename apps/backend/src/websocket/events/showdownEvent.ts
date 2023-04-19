@@ -17,9 +17,6 @@ import { roundWinnerBroadcast } from "../broadcast/roundWinnerBroadcast";
 
 export const showdownEvent = AsyncExceptionHandler(
   async (api: APIG, gameId: string) => {
-    const [result, err] = await GameActionController.showdownRound(gameId);
-    if (err) throw err;
-
     const [showdown, errShowdown] = await GameActionController.showdownRound(
       gameId
     );
