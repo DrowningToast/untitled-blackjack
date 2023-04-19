@@ -19,6 +19,9 @@
     },
     "dev": {
       "cache": true
+    },
+    "dev:reload": {
+      "cache": true
     }
   }
 }

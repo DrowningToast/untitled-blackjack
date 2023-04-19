@@ -5,7 +5,10 @@ import awsLambdaFastify from "@fastify/aws-lambda";
 import { connectToDatabase } from "database";
 import { getEvents, WebsocketRouters } from "./src/websocket/WebsocketRouter";
 import { getAPIG } from "./src/websocket/APIGateway";
-import { ERR_INVALID_HANDLER } from "./src/websocket/utils/ErrorMessages";
+import {
+  ERR_INVALID_HANDLER,
+  ERR_INVALID_JSON,
+} from "./src/websocket/utils/ErrorMessages";
 
 const proxy = awsLambdaFastify(initFastify());
 // const handler = awsLambdaFastify(app());
@@ -74,7 +77,21 @@ const websocket: Handler<
       break;
 
     default:
-      body = JSON.parse(event?.body ?? "");
+      try {
+        body = JSON.parse(event?.body ?? "");
+      } catch (e) {
+        const { send } = getAPIG(event, { connectionId });
+        await send({
+          status: "REQUEST_ERROR",
+          error: ERR_INVALID_JSON,
+        });
+        return {
+          statusCode: 400,
+          body: JSON.stringify({
+            connected: true,
+          }),
+        };
+      }
 
       /**
        * Check for invalid route handler

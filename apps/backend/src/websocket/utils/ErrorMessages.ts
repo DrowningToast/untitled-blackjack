@@ -54,3 +54,8 @@ export const ERR_INIT_GAME: ErrorMessage = {
   description:
     "Error while initializing the game. Check console for more information",
 };
+
+export const ERR_INVALID_JSON: ErrorMessage = {
+  error: "invalid-json",
+  description: "Invalid body JSON",
+};
