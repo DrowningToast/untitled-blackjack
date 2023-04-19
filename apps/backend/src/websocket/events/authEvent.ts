@@ -1,12 +1,13 @@
 import { ERR_EXISTED_USER, UserController } from "database";
 import { getAPIG } from "../APIGateway";
 import { connectionAuthorizedMessage } from "../utils/WebsocketResponses";
+import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
 
 interface args {
   username: string;
 }
 
-const authEvent = async (event, context, args) => {
+const authEvent = AsyncExceptionHandler(async (event, context, args) => {
   const { send, connectionId } = getAPIG(event, context);
   const { username } = args;
 
@@ -31,6 +32,6 @@ const authEvent = async (event, context, args) => {
 
     return await send(connectionAuthorizedMessage(user.username, connectionId));
   }
-};
+});
 
 export { authEvent };

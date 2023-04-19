@@ -42,16 +42,22 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
           }
 
           // Create the game
-          const [game, error] = await GameController.createGame(
+          const [_, error] = await GameController.createGame(
             [user._id],
             passcode
           );
 
           if (error) {
-            reply.status(500).send(error);
+            return reply.status(500).send(error);
           }
 
-          return game;
+          const [newGame, err] = await GameController.getGame({
+            players: user._id,
+          });
+          if (err) return reply.status(500).send(err);
+
+          console.log(newGame);
+          return newGame;
         }
       });
 

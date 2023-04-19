@@ -8,8 +8,8 @@ import {
 } from "database";
 
 import { ERR_GAME_STATE, ERR_ILLEGAL_ACTION } from "../utils/ErrorMessages";
-import { hitBroadcaster } from "../broadcaster/hitBroadcaster";
-import { cardStateBroadcaster } from "../broadcaster/cardStateBroadcast";
+import { hitBroadcast } from "../broadcast/hitBroadcast";
+import { cardStateBroadcast } from "../broadcast/cardStateBroadcast";
 
 /**
  * @description Handle sending multiple websocket messages to notify the user
@@ -64,7 +64,7 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
   if (errP1 || errP2) throw ERR_INTERNAL;
 
   // Broadcast hit event
-  const [_, error] = await hitBroadcaster(
+  const [_, error] = await hitBroadcast(
     api,
     user.username,
     drawnCards[0],
@@ -82,7 +82,7 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
   }
 
   // Update the client state
-  return await cardStateBroadcaster(api, {
+  return await cardStateBroadcast(api, {
     cards: visibleCards,
     pov_A: {
       username: game.players[0].username,

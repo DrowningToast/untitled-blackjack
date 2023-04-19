@@ -10,7 +10,7 @@ import { getAPIG } from "../APIGateway";
 import { ERR_BAD_REQUEST } from "../utils/ErrorMessages";
 import { WebsocketRouter } from "../utils/type";
 import z from "zod";
-import { initGameBroadcaster } from "../broadcaster/initGameBroadcaster";
+import { initGameBroadcast } from "../broadcast/initGameBroadcast";
 import { checkStartEvent } from "../events/checkStartEvent";
 import { initGameEvent } from "../events/initGameEvent";
 import { readyEvent } from "../events/readyEvent";

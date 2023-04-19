@@ -1,14 +1,14 @@
 import { GameActionController, GameController, IGame } from "database";
 import { ERR_INIT_GAME } from "../utils/ErrorMessages";
 import { getAPIG } from "../APIGateway";
-import { clientStateBroadcaster } from "./clientStateBroadcaster";
+import { clientStateBroadcast } from "./clientStateBroadcast";
 import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
 import { gameStartMessage } from "../utils/WebsocketResponses";
 
 /**
  * Initialize the game with full setup
  */
-export const initGameBroadcaster = AsyncExceptionHandler(
+export const initGameBroadcast = AsyncExceptionHandler(
   async (
     APIG: ReturnType<typeof getAPIG>,
     gameState: IGame,

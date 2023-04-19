@@ -32,5 +32,11 @@ export const authRouter: WebsocketRouter = async (event, context) => {
 
   const { username } = body;
 
-  return await authEvent(event, context, { username });
+  const [res, err] = await authEvent(event, context, { username });
+  if (err) {
+    return await send({
+      status: "INTERNAL_ERROR",
+      error: err,
+    });
+  }
 };

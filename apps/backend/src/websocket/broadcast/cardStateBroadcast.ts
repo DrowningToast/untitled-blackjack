@@ -19,7 +19,7 @@ interface args {
 /**
  * @description Send card state messages to both players
  */
-export const cardStateBroadcaster = AsyncExceptionHandler(
+export const cardStateBroadcast = AsyncExceptionHandler(
   async (
     api: APIG,
     cardInfo: {

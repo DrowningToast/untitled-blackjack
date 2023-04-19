@@ -1,5 +1,7 @@
+import { GameActionController, GameController } from "database";
 import { APIG } from "../APIGateway";
 import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
+import { roundWinnerBroadcast } from "../broadcast/roundWinnerBroadcast";
 
 /**
  * Possible outcomes:
@@ -14,5 +16,21 @@ import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
  */
 
 export const showdownEvent = AsyncExceptionHandler(
-  async (api: APIG, gameId: string) => {}
+  async (api: APIG, gameId: string) => {
+    const [result, err] = await GameActionController.showdownRound(gameId);
+    if (err) throw err;
+
+    const [showdown, errShowdown] = await GameActionController.showdownRound(
+      gameId
+    );
+    if (errShowdown) throw errShowdown;
+
+    // get connection ids
+    const [connectionIds, errConnectionIds] =
+      await GameController.getPlayerConnectionIds(gameId);
+    if (errConnectionIds) throw errConnectionIds;
+
+    // announce round winner
+    await roundWinnerBroadcast(api, showdown, connectionIds);
+  }
 );

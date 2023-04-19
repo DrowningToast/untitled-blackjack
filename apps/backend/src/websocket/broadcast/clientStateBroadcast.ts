@@ -18,7 +18,7 @@ import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
  * @param api
  * @param gameId
  */
-export const clientStateBroadcaster = AsyncExceptionHandler(
+export const clientStateBroadcast = AsyncExceptionHandler(
   async (
     api: ReturnType<typeof getAPIG>,
     gameId: string,

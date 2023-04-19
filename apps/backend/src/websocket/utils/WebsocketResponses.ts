@@ -156,3 +156,30 @@ export const standEventMessage = (
     content: username,
   };
 };
+
+export interface RoundWinner {
+  winner: IUser | null;
+  pointsEarned: number;
+  game: IGame;
+  cards: GlobalCardsContext;
+}
+
+export const roundWinnerMessage = (
+  args: RoundWinner
+): WebsocketResponse<RoundWinner> => {
+  return {
+    status: "OK",
+    handler: "ROUND_WINNER",
+    content: args,
+  };
+};
+
+export const nextRoundMessage = (
+  roundNumber: number
+): WebsocketResponse<number> => {
+  return {
+    status: "OK",
+    handler: "NEXT_ROUND",
+    content: roundNumber,
+  };
+};

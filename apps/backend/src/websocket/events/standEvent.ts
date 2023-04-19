@@ -1,7 +1,7 @@
 import { GameActionController, GameController, UserController } from "database";
 import { APIG } from "../APIGateway";
 import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
-import { standBroadcast } from "../broadcaster/standBroadcast";
+import { standBroadcast } from "../broadcast/standBroadcast";
 
 export const standEvent = AsyncExceptionHandler(
   async (api: APIG, gameId: string) => {

@@ -64,11 +64,7 @@ const createGame = asyncTransaction(
 
     const res = await _.save();
 
-    const [game] = await getGame({ passcode });
-
-    if (!game) throw ERR_INVALID_GAME;
-
-    return game;
+    return null;
   }
 );
 
@@ -83,6 +79,8 @@ const getGame = asyncTransaction(async (arg: FilterQuery<IGame>) => {
     });
 
   if (!_) throw ERR_INVALID_GAME;
+
+  console.log(_);
 
   const game = ZodGameStrip.parse(_);
 

@@ -1,9 +1,9 @@
 import { GameActionController, GameController } from "database";
 import { ERR_INIT_GAME } from "../utils/ErrorMessages";
 import { getAPIG } from "../APIGateway";
-import { clientStateBroadcaster } from "../broadcaster/clientStateBroadcaster";
-import { initGameBroadcaster } from "../broadcaster/initGameBroadcaster";
-import { cardStateBroadcaster } from "../broadcaster/cardStateBroadcast";
+import { clientStateBroadcast } from "../broadcast/clientStateBroadcast";
+import { initGameBroadcast } from "../broadcast/initGameBroadcast";
+import { cardStateBroadcast } from "../broadcast/cardStateBroadcast";
 import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
 
 /**
@@ -18,7 +18,7 @@ export const initGameEvent = AsyncExceptionHandler(
     if (err) throw err;
 
     // init the game
-    const [game, err2] = await GameActionController.initGame(gameId);
+    const [game, err2] = await GameActionController.initRound(gameId);
     if (err2) throw err2;
 
     // get connection ids
@@ -44,8 +44,8 @@ export const initGameEvent = AsyncExceptionHandler(
     );
     if (errA || errB) throw errA || errB;
 
-    const [_, error] = await initGameBroadcaster(api, game, connectionIds);
-    const [_2, error2] = await cardStateBroadcaster(api, {
+    const [_, error] = await initGameBroadcast(api, game, connectionIds);
+    const [_2, error2] = await cardStateBroadcast(api, {
       cards: [GlobalCardsContext[0], GlobalCardsContext[1]],
       pov_A: {
         username: game.players[0].username,
