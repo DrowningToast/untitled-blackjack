@@ -27,6 +27,8 @@ export const getAPIG = (
       connectionId?: string
     ) => {
       try {
+        // if (!request) throw new Error("Connection not found");
+
         return await api
           .postToConnection({
             ConnectionId: connectionId ?? context.connectionId,
@@ -55,6 +57,17 @@ export const getAPIG = (
       }
     };
 
+    const isConnected = async (connectionId: string) => {
+      try {
+        return !!(await api
+          .getConnection({ ConnectionId: connectionId })
+          .promise());
+      } catch (e) {
+        console.log(e);
+        throw e;
+      }
+    };
+
     return {
       /**
        * ApiGatewayManagementApi instance
@@ -72,6 +85,10 @@ export const getAPIG = (
        * Shorthand for getting connectionId
        */
       connectionId: context.connectionId,
+      /**
+       * @description Check if the connectionId is still connected
+       */
+      isConnected,
     };
   } catch (e) {
     console.log(e);

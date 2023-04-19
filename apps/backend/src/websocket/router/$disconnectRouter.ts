@@ -5,7 +5,10 @@ import { gameStopMessage } from "../utils/WebsocketResponses";
 
 export const $disconnectRouter: WebsocketRouter = async (event, context) => {
   try {
-    const { connectionId, broadcast } = getAPIG(event, context);
+    const { connectionId, broadcast, isConnected, send } = getAPIG(
+      event,
+      context
+    );
 
     // Find if the user is authorized in the DB or not
     const [user, e] = await UserController.getUserMeta({
@@ -39,13 +42,15 @@ export const $disconnectRouter: WebsocketRouter = async (event, context) => {
             console.log("Error in $disconnectRouter 3");
             console.log(e);
           } else {
-            try {
-              // Delete the game
-              const [_, e2] = await GameController.deleteGame(game.gameId);
-              broadcast(gameStopMessage(user.username), connectionIds);
-            } catch (e) {
-              console.log(e);
-            }
+            // Delete the game
+            const [_, e2] = await GameController.deleteGame(game.gameId);
+            if (e2) return console.log(e2);
+
+            connectionIds.forEach(async (connectionId) => {
+              if (await isConnected(connectionId)) {
+                await send(gameStopMessage(user.username), connectionId);
+              }
+            });
           }
         } else {
           const [_, e2] = await GameController.leaveGame(
