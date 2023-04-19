@@ -2,7 +2,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "sls offline start --config serverless.yml --noPrependStageInUrl",
-    "dev:reload": "sls offline srtart --config serverless.yml --reloadHandler --noPrependStageInUrl"
+    "dev:reload": "sls offline start --config serverless.yml --reloadHandler --noPrependStageInUrl"
   },
   "devDependencies": {
     "@fastify/aws-lambda": "^3.2.0",
