@@ -4,6 +4,18 @@ import { asyncTransaction } from "../utils/Transaction";
 import { Card } from "../utils/Card";
 import { ERR_INVALID_USER } from "../utils/Error";
 
+const getAllConnections = asyncTransaction(async () => {
+  const _ = (await User.find().select(["connectionId"])) as unknown as _IUser[];
+  return _.map((user) => user.connectionId);
+});
+
+const clearStaleConnection = asyncTransaction(
+  async (connectionIds: string[]) => {
+    const _ = await User.deleteMany({ connectionId: { $in: connectionIds } });
+    return _;
+  }
+);
+
 const createUser = asyncTransaction(async (args: FilterQuery<IUser>) => {
   const _ = new User(args);
   const res = await _.save();
@@ -109,8 +121,6 @@ const addCards = asyncTransaction(
       }
     );
 
-    // const [_] = await setCards(connectionId, [...oldCards, ...cards]);
-
     return [...cards, ...oldCards];
   }
 );
@@ -182,6 +192,14 @@ const getCardsSums = asyncTransaction(async (target: FilterQuery<IUser>) => {
 });
 
 export const UserController = {
+  /**
+   * @description Get all users' connections
+   */
+  getAllConnections,
+  /**
+   * @description Clear stale connection
+   */
+  clearStaleConnection,
   /**
    * @access Public
    *

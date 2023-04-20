@@ -80,8 +80,6 @@ const getGame = asyncTransaction(async (arg: FilterQuery<IGame>) => {
 
   if (!_) throw ERR_INVALID_GAME;
 
-  console.log(_);
-
   const game = ZodGameStrip.parse(_);
 
   return game;

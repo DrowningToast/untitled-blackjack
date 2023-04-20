@@ -2,6 +2,13 @@ import { Card, GlobalCardsContext } from "database/src/utils/Card";
 import { ConnectionId, WebsocketResponse } from "./type";
 import { IGame, IUser } from "database";
 
+export const healthCheckMessage = (): WebsocketResponse => {
+  return {
+    status: "OK",
+    handler: "HEALTH_CHECK",
+  };
+};
+
 export const pingMessage = (): WebsocketResponse => {
   return {
     status: "OK",
