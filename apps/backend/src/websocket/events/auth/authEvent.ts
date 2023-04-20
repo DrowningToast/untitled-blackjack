@@ -30,13 +30,9 @@ const authEvent = AsyncExceptionHandler(async (event, context, args) => {
 
   const { username } = args;
 
-  // Check if is the user taken or not
-  const [existed, errorExisted] = await UserController.getUserMeta({
-    username,
-  });
-  if (existed) throw errorExisted;
-
   const [user] = await UserController.getUserMeta({ username });
+
+  console.log(user);
 
   /**
    * If the username is taken, reply with an error
