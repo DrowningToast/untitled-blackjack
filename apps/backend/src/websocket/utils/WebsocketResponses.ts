@@ -182,3 +182,23 @@ export const nextRoundMessage = (
     content: roundNumber,
   };
 };
+
+export interface GameWinner {
+  winner: IUser | null;
+  game: IGame;
+}
+
+export const gameWinner = (args: GameWinner): WebsocketResponse<GameWinner> => {
+  return {
+    status: "OK",
+    handler: "GAME_WINNER",
+    content: args,
+  };
+};
+
+export const gameEndMessage = (): WebsocketResponse => {
+  return {
+    status: "OK",
+    handler: "GAME_END",
+  };
+};
