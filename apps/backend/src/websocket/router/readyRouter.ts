@@ -10,10 +10,11 @@ import { getAPIG } from "../APIGateway";
 import { ERR_BAD_REQUEST } from "../utils/ErrorMessages";
 import { WebsocketRouter } from "../utils/type";
 import z from "zod";
-import { initGameBroadcaster } from "../broadcaster/initGameBroadcaster";
-import { checkStartEvent } from "../events/checkStartEvent";
-import { initGameEvent } from "../events/initGameEvent";
-import { readyEvent } from "../events/readyEvent";
+import { initRoundBroadcast } from "../broadcast/initRoundBroadcast";
+import { checkStartEvent } from "../events/matchmaking/checkStartEvent";
+import { initRoundEvent } from "../events/gameplay/initRoundEvent";
+import { readyEvent } from "../events/matchmaking/readyEvent";
+import { newGameEvent } from "../events/matchmaking/newGameEvent";
 
 const bodyValidation = z.object({
   ready: z.boolean(),
@@ -94,7 +95,10 @@ export const readyRouter: WebsocketRouter = async (event, context) => {
   console.log(bothReady);
 
   if (bothReady) {
-    const [_, err] = await initGameEvent(api, gameId);
+    const [newGame, errNew] = await newGameEvent(api, gameId);
+    if (errNew) throw errNew;
+
+    const [_, err] = await initRoundEvent(api, gameId);
     if (err)
       return await send({
         status: "INTERNAL_ERROR",

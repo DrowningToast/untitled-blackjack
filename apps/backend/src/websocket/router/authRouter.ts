@@ -2,7 +2,7 @@ import { WebsocketRouter } from "../utils/type";
 import z from "zod";
 import { getAPIG } from "../APIGateway";
 import { ERR_BAD_REQUEST } from "../utils/ErrorMessages";
-import { authEvent } from "../events/authEvent";
+import { authEvent } from "../events/auth/authEvent";
 
 const bodyValdiation = z.object({
   username: z.string(),
@@ -32,5 +32,11 @@ export const authRouter: WebsocketRouter = async (event, context) => {
 
   const { username } = body;
 
-  return await authEvent(event, context, { username });
+  const [res, err] = await authEvent(event, context, { username });
+  if (err) {
+    return await send({
+      status: "INTERNAL_ERROR",
+      error: err,
+    });
+  }
 };

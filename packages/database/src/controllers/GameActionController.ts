@@ -3,18 +3,26 @@ import { Game, ZodGameStrip, _IGame } from "../models/GameModel";
 import { sortedGlobalCardsContext } from "../utils/Card";
 import {
   ERR_INTERNAL,
+  ERR_INVALID_CARDS,
   ERR_INVALID_GAME,
   ERR_INVALID_USER,
   ERR_NO_WINNER,
+  ERR_ROUND_COUNTER,
   ERR_USER_STAND,
+  ERR_WINNER_POINTS,
 } from "../utils/Error";
 import { asyncTransaction } from "../utils/Transaction";
 import { trumpCards } from "../utils/TrumpCard";
-import { GAME_ROUND_SCORE_MAPPING } from "../utils/config";
+import {
+  GAME_ROUND_PLAYED_MAX,
+  GAME_ROUND_SCORE_MAPPING,
+  GAME_TARGET_POINT,
+  GAME_WIN_SCORE_TARGET,
+} from "../utils/config";
 import { GameController } from "./GameController";
 import { UserController } from "./UserController";
 
-const initGame = asyncTransaction(async (gameId: string) => {
+const initRound = asyncTransaction(async (gameId: string) => {
   console.log("INITING GAME");
 
   const [game] = await GameController.getGame({ gameId, gameState: "onGoing" });
@@ -38,6 +46,8 @@ const initGame = asyncTransaction(async (gameId: string) => {
   await resetRemainingCards(gameId);
   // Shuffle the cards
   await shuffleRemainingCards(gameId);
+  // Reset target card points
+  await resetTargetPoint(gameId);
 
   // Draw 2 cards for each player
   const [cardA, eA] = await drawCard(gameId, 2);
@@ -56,6 +66,17 @@ const initGame = asyncTransaction(async (gameId: string) => {
   if (e) throw ERR_INTERNAL;
 
   return newGame;
+});
+
+const resetTargetPoint = asyncTransaction((gameId: string) => {
+  return Game.findOneAndUpdate(
+    {
+      gameId,
+    },
+    {
+      targetPoint: GAME_TARGET_POINT,
+    }
+  );
 });
 
 const drawCard = asyncTransaction(
@@ -238,6 +259,28 @@ const getPlayerCards = asyncTransaction(
   }
 );
 
+const resetPlayersState = asyncTransaction(async (gameId: string) => {
+  const [game, err] = await GameController.getGame({ gameId });
+  if (err) throw ERR_INVALID_GAME;
+
+  const players = game.players;
+  const [[_1, err2], [_2, err3]] = await Promise.all(
+    players.map(
+      asyncTransaction(async (player) => {
+        const [user, err] = await UserController.setStandState(
+          { username: player.username },
+          false
+        );
+        if (err) throw err;
+        return user;
+      })
+    )
+  );
+  if (err2 || err3) throw ERR_INTERNAL;
+
+  return players;
+});
+
 const resetRemainingCards = asyncTransaction(async (gameId: string) => {
   const _ = await GameController.updateGame(
     {
@@ -330,12 +373,62 @@ const setTargetPoint = asyncTransaction(
   }
 );
 
-const nextRound = asyncTransaction(async (gameId: string) => {});
+const nextRound = asyncTransaction(async (gameId: string) => {
+  const [game, err] = await GameController.getGame({ gameId });
+  if (err) throw err;
+
+  // check is the on going game or not
+  if (game.gameState !== "onGoing") throw ERR_GAME_STATE;
+
+  // players
+  const [playerA, playerB] = game.players;
+
+  // check if both players are in stand state
+  if (!playerA.stand || !playerB.stand) throw ERR_USER_STAND;
+
+  if (game.roundCounter >= GAME_ROUND_PLAYED_MAX) throw ERR_ROUND_COUNTER;
+
+  // proceed to next round
+  const newGame = await Game.findOneAndUpdate(
+    {
+      gameId,
+    },
+    {
+      $inc: {
+        roundCounter: 1,
+      },
+    }
+  );
+
+  const [updatedGame, err2] = await GameController.getGame({ gameId });
+  if (err2) throw err2;
+
+  return updatedGame;
+});
+
+const endGame = asyncTransaction(async (gameId: string) => {
+  const [game, err] = await GameController.getGame({ gameId });
+  if (err) throw err;
+
+  // check is the on going game or not
+  if (game.gameState !== "onGoing") throw ERR_GAME_STATE;
+
+  // players
+  const [playerA, playerB] = game.players;
+
+  if (playerA.gameScore >= GAME_WIN_SCORE_TARGET) {
+    return playerA;
+  } else if (playerB.gameScore >= GAME_WIN_SCORE_TARGET) {
+    return playerB;
+  } else {
+    return null;
+  }
+});
 
 /**
- * @description Find the winner and ends the game
+ * @description Find the winner and ends
  */
-const endRound = asyncTransaction(async (gameId: string) => {
+const showdownRound = asyncTransaction(async (gameId: string) => {
   const [game, err] = await GameController.getGame({ gameId });
   if (err) throw ERR_INVALID_GAME;
 
@@ -398,7 +491,12 @@ const endRound = asyncTransaction(async (gameId: string) => {
   }
 
   // determine how many points the winner gets
-  const winnerPoints = GAME_ROUND_SCORE_MAPPING[game.roundCouter];
+  const winnerPoints = GAME_ROUND_SCORE_MAPPING[game.roundCounter];
+  if (!winnerPoints) throw ERR_WINNER_POINTS;
+
+  console.log(winner);
+  console.log(game.roundCounter);
+  console.log(winnerPoints);
 
   // Update winner points
   if (winner === "A") {
@@ -406,7 +504,7 @@ const endRound = asyncTransaction(async (gameId: string) => {
       { username: playerA.username },
       {
         $inc: {
-          points: winnerPoints,
+          gameScore: winnerPoints,
         },
       }
     );
@@ -416,7 +514,7 @@ const endRound = asyncTransaction(async (gameId: string) => {
       { username: playerB.username },
       {
         $inc: {
-          points: winnerPoints,
+          gameScore: winnerPoints,
         },
       }
     );
@@ -426,7 +524,7 @@ const endRound = asyncTransaction(async (gameId: string) => {
       { username: playerA.username },
       {
         $inc: {
-          points: winnerPoints,
+          gameScore: winnerPoints,
         },
       }
     );
@@ -434,24 +532,41 @@ const endRound = asyncTransaction(async (gameId: string) => {
       { username: playerB.username },
       {
         $inc: {
-          points: winnerPoints,
+          gameScore: winnerPoints,
         },
       }
     );
     if (err || err2) throw ERR_INTERNAL;
   }
 
-  // Get game state
-  const [updatedGame, err2] = await GameController.updateGame(
-    { gameId },
-    {
-      gameState: "end",
-      winner,
-    }
-  );
-  if (err2) throw ERR_INTERNAL;
+  // get cards for the reveal
+  const [[updatedGame, err2], [playerACards, err3], [playerBCards, err4]] =
+    await Promise.all([
+      GameController.getGame({ gameId }),
+      UserController.getCards({ username: playerA.username }, true),
+      UserController.getCards({ username: playerB.username }, true),
+    ]);
 
-  return updatedGame;
+  if (err2 || err3 || err4) throw ERR_INTERNAL;
+  if (!updatedGame) throw ERR_INVALID_GAME;
+  if (!playerACards?.length) throw ERR_INVALID_CARDS;
+  if (!playerBCards?.length) throw ERR_INVALID_CARDS;
+
+  return {
+    game: updatedGame,
+    winner: winner === "A" ? playerA : winner === "B" ? playerB : null,
+    pointsEarned: winnerPoints,
+    cards: [
+      {
+        username: playerA.username,
+        cards: playerACards,
+      },
+      {
+        username: playerB.username,
+        cards: playerBCards,
+      },
+    ],
+  };
 });
 
 const drawRandomTrumpCard = asyncTransaction(async () => {
@@ -470,13 +585,25 @@ export const GameActionController = {
    * 3. Randomize who starts first
    * 4. Deal cards to players
    */
-  initGame,
+  initRound,
   /**
    * @access System level, users themselves
    *
    * @description Return array of cards, and update the remaining cards
    */
   drawCard,
+  /**
+   * @access System level
+   *
+   * @description Reset game card target points
+   */
+  resetTargetPoint,
+  /**
+   * @access System level
+   *
+   * @description Reset players state for stand to false
+   */
+  resetPlayersState,
   /**
    * @access System level
    *
@@ -541,4 +668,23 @@ export const GameActionController = {
    * @description Set the target point of the game
    */
   setTargetPoint,
+  /**
+   * @access System level
+   *
+   * @description increment the round counter by 1
+   */
+  nextRound,
+  /**
+   * @access System level
+   *
+   * @description end the game, returns the winner
+   */
+  endGame,
+  /**
+   * @access System level
+   *
+   * @description determine the winner of the round
+   * returns the winner, points earned, cards and game
+   */
+  showdownRound,
 };

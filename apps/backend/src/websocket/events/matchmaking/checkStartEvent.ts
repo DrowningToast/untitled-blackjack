@@ -1,5 +1,5 @@
 import { GameController } from "database";
-import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
+import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
 
 interface args {
   gameId: string;

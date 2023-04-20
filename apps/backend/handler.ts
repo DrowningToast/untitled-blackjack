@@ -66,8 +66,11 @@ const websocket: Handler<
       };
 
     case "$disconnect":
-      await getEvents("$disconnect")(event, { connectionId });
-
+      try {
+        await getEvents("$disconnect")(event, { connectionId });
+      } catch (e) {
+        console.log(e);
+      }
       return {
         statusCode: 200,
         body: JSON.stringify({

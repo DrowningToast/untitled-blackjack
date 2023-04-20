@@ -4,9 +4,9 @@ import {
   GameController,
   UserController,
 } from "database";
-import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
-import { APIG } from "../APIGateway";
-import { readyStateBroadcaster } from "../broadcaster/readyStateBroadcaster";
+import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
+import { APIG } from "../../APIGateway";
+import { readyStateBroadcast } from "../../broadcast/readyStateBroadcast";
 
 interface args {
   gameId: string;
@@ -54,9 +54,6 @@ export const readyEvent = AsyncExceptionHandler(
     ]);
     if (errA || errB || !connectionA || !connectionB) throw ERR_INTERNAL;
 
-    await readyStateBroadcaster(api, username, ready, [
-      connectionA,
-      connectionB,
-    ]);
+    await readyStateBroadcast(api, username, ready, [connectionA, connectionB]);
   }
 );

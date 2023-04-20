@@ -73,3 +73,18 @@ export const ERR_NO_WINNER: ErrorMessage = {
   error: "no-winner",
   description: "Cannot determine which player wins",
 };
+
+export const ERR_ROUND_COUNTER: ErrorMessage = {
+  error: "round-counter",
+  description: "Round counter is invalid. It may exceed maximum round counter.",
+};
+
+export const ERR_WINNER_POINTS: ErrorMessage = {
+  error: "winner-points",
+  description: "Can't determine how much scores/points the winner should get.",
+};
+
+export const ERR_INVALID_CARDS: ErrorMessage = {
+  error: "invalid-cards",
+  description: "Players cards are invalid",
+};

@@ -1,7 +1,7 @@
 import { GameActionController, GameController, UserController } from "database";
-import { APIG } from "../APIGateway";
-import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
-import { switchTurnBroadcast } from "../broadcaster/switchTurnBroadcast";
+import { APIG } from "../../APIGateway";
+import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
+import { switchTurnBroadcast } from "../../broadcast/switchTurnBroadcast";
 
 export const switchTurnEvent = AsyncExceptionHandler(async (api: APIG) => {
   const { broadcast, connectionId } = api;

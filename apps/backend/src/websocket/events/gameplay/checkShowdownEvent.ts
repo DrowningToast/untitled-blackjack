@@ -1,5 +1,5 @@
 import { GameController } from "database";
-import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
+import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
 
 /**
  * @description Check if both player stands

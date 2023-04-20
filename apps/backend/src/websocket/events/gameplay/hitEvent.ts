@@ -1,15 +1,20 @@
-import { APIG } from "../APIGateway";
-import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
+import { APIG } from "../../APIGateway";
+import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
 import {
   ERR_INTERNAL,
   GameActionController,
   GameController,
+  User,
   UserController,
 } from "database";
 
-import { ERR_GAME_STATE, ERR_ILLEGAL_ACTION } from "../utils/ErrorMessages";
-import { hitBroadcaster } from "../broadcaster/hitBroadcaster";
-import { cardStateBroadcaster } from "../broadcaster/cardStateBroadcast";
+import {
+  ERR_GAME_STATE,
+  ERR_ILLEGAL_ACTION,
+  ERR_INVALID_USER,
+} from "../../utils/ErrorMessages";
+import { hitBroadcast } from "../../broadcast/hitBroadcast";
+import { cardStateBroadcast } from "../../broadcast/cardStateBroadcast";
 
 /**
  * @description Handle sending multiple websocket messages to notify the user
@@ -62,9 +67,10 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
     UserController.setStandState({ username: game.players[1].username }, false),
   ]);
   if (errP1 || errP2) throw ERR_INTERNAL;
+  if (!p1 || !p2) throw ERR_INVALID_USER;
 
   // Broadcast hit event
-  const [_, error] = await hitBroadcaster(
+  const [_, error] = await hitBroadcast(
     api,
     user.username,
     drawnCards[0],
@@ -77,20 +83,25 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
     false
   );
 
-  if (err3 || !cards || !visibleCards) {
+  const [[cards_A, err4], [cards_B, err7]] = await Promise.all([
+    UserController.getCards({ username: p1.username }, true),
+    UserController.getCards({ username: p2.username }, true),
+  ]);
+
+  if (err4 || err7 || !cards || !cards_A || !cards_B || !visibleCards) {
     throw ERR_INTERNAL;
   }
 
   // Update the client state
-  return await cardStateBroadcaster(api, {
+  return await cardStateBroadcast(api, {
     cards: visibleCards,
     pov_A: {
       username: game.players[0].username,
-      cards: visibleCards[0].cards,
+      cards: cards_A,
     },
     pov_B: {
       username: game.players[1].username,
-      cards: visibleCards[1].cards,
+      cards: cards_B,
     },
   });
 });

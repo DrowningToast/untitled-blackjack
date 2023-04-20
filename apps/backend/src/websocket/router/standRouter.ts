@@ -1,11 +1,14 @@
-import { GameController, UserController } from "database";
+import { GameActionController, GameController, UserController } from "database";
 import { getAPIG } from "../APIGateway";
-import { switchTurnEvent } from "../events/switchTurnEvent";
 import { WebsocketRouter } from "../utils/type";
 import z from "zod";
 import { ERR_ILLEGAL_ACTION } from "../utils/ErrorMessages";
-import { standEvent } from "../events/standEvent";
-import { checkShowDownEvent } from "../events/checkShowdownEvent";
+import { standEvent } from "../events/gameplay/standEvent";
+import { checkShowDownEvent } from "../events/gameplay/checkShowdownEvent";
+import { showdownEvent } from "../events/gameplay/showdownEvent";
+import { initRoundEvent } from "../events/gameplay/initRoundEvent";
+import { nextRoundEvent } from "../events/gameplay/nextRoundEvent";
+import { switchTurnEvent } from "../events/gameplay/switchTurnEvent";
 
 const bodyValidation = z.object({});
 
@@ -59,10 +62,25 @@ export const standRouter: WebsocketRouter = async (event, context) => {
     });
   }
 
-  // initiate showdown
+  // Are both parties stand?
   if (result) {
+    // initiate showdown
+    const [_1, err1] = await showdownEvent(api, game.gameId);
+    if (err1) {
+      return await api.send({
+        status: "INTERNAL_ERROR",
+        error: err1,
+      });
+    }
+
+    // announcement of new round
+    const [_2, err2] = await nextRoundEvent(api, game.gameId);
+    if (err2) throw err2;
+
+    // actually initing new round
+    const [_3, err3] = await initRoundEvent(api, game.gameId);
+    if (err3) throw err3;
   } else {
-    console.log("Switching turn");
     let [_2, err2] = await switchTurnEvent(api);
     if (err2) {
       return await api.send({
@@ -70,7 +88,5 @@ export const standRouter: WebsocketRouter = async (event, context) => {
         error: err2,
       });
     }
-
-    console.log(_2);
   }
 };

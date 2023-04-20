@@ -15,7 +15,7 @@ import {
 /**
  * @description Handle sending multiple websocket messages to notify the user
  */
-export const hitBroadcaster = AsyncExceptionHandler(
+export const hitBroadcast = AsyncExceptionHandler(
   async (
     api: APIG,
     username: string,

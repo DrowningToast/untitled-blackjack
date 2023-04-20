@@ -15,6 +15,7 @@ export const asyncTransaction = <T, K extends any[]>(
       const response = await callback(...args);
       return [response, undefined];
     } catch (e: unknown) {
+      console.log(e);
       try {
         const error = ZodErrorMessage.parse(e);
         return [undefined, error];

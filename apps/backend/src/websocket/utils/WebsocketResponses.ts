@@ -49,27 +49,19 @@ export const readyStateMessage = (
   };
 };
 
-export const gameStartMessage = (game: IGame): WebsocketResponse<IGame> => {
+export const newGameMessage = (gameId: string): WebsocketResponse<string> => {
   return {
     status: "OK",
-    handler: "GAME_STARTED",
-    content: game,
+    handler: "NEW_GAME",
+    content: gameId,
   };
 };
 
-/**
- * @description Update the score and turn owner.
- *
- * @param gameState
- * @returns
- */
-export const gameStateMessage = (
-  gameState: IGame
-): WebsocketResponse<IGame> => {
+export const initRoundMessage = (game: IGame): WebsocketResponse<IGame> => {
   return {
     status: "OK",
-    handler: "UPDATE_GAME_STATE",
-    content: gameState,
+    handler: "ROUND_STARTED",
+    content: game,
   };
 };
 
@@ -154,5 +146,32 @@ export const standEventMessage = (
     status: "OK",
     handler: "STAND_EVENT",
     content: username,
+  };
+};
+
+export interface RoundWinner {
+  winner: IUser | null;
+  pointsEarned: number;
+  game: IGame;
+  cards: GlobalCardsContext;
+}
+
+export const roundWinnerMessage = (
+  args: RoundWinner
+): WebsocketResponse<RoundWinner> => {
+  return {
+    status: "OK",
+    handler: "ROUND_WINNER",
+    content: args,
+  };
+};
+
+export const nextRoundMessage = (
+  roundNumber: number
+): WebsocketResponse<number> => {
+  return {
+    status: "OK",
+    handler: "NEXT_ROUND",
+    content: roundNumber,
   };
 };

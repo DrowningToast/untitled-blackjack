@@ -149,14 +149,9 @@ const setStandState = asyncTransaction(
     if (err) throw err;
 
     // update the user
-    const _ = await User.findOneAndUpdate(
-      {
-        target,
-      },
-      {
-        stand,
-      }
-    );
+    const _ = await User.findOneAndUpdate(target, {
+      stand,
+    });
 
     const [updated, err2] = await getUserMeta(target);
     if (err2) throw err2;
