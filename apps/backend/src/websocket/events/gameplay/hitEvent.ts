@@ -68,7 +68,7 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
   ]);
   if (errP1 || errP2) throw ERR_INTERNAL;
   if (!p1 || !p2) throw ERR_INVALID_USER;
-
+  console.log(drawnCards);
   // Broadcast hit event
   const [_, error] = await hitBroadcast(
     api,

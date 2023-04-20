@@ -67,7 +67,7 @@ export const newGameMessage = (gameId: string): WebsocketResponse<string> => {
 export const initRoundMessage = (game: IGame): WebsocketResponse<IGame> => {
   return {
     status: "OK",
-    handler: "ROUND_STARTED",
+    handler: "INIT_ROUND",
     content: game,
   };
 };
@@ -99,7 +99,7 @@ export const cardStateMessage = (
 
 interface HitEvent {
   username: string;
-  card: Card | undefined;
+  card: Card | null;
 }
 
 /**
@@ -115,7 +115,7 @@ export const hitEventMessage = (
   return {
     status: "OK",
     handler: "HIT_EVENT",
-    content: { card, username },
+    content: { card: card ?? null, username },
   };
 };
 
@@ -136,12 +136,12 @@ export const switchTurnMessage = (
  * @description Game stopped mid way due to someone quitting
  * @param username
  */
-export const gameStopMessage = (
+export const gameStopDueQuit = (
   username: string
 ): WebsocketResponse<string> => {
   return {
     status: "OK",
-    handler: "GAME_STOP",
+    handler: "GAME_STOP_DUE_QUITTING",
     content: username,
   };
 };

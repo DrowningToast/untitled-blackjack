@@ -472,6 +472,9 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
       ? Math.max(...playerBSums)
       : Math.min(...playerBSums);
 
+  console.log(`player A sum: ${A_sum}`);
+  console.log(`player B sum: ${B_sum}`);
+
   let winner: string = "";
 
   if (isAExceed && !isBExceed) {
@@ -489,6 +492,8 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
   } else {
     throw ERR_NO_WINNER;
   }
+
+  console.log(`winner: ${winner}`);
 
   // determine how many points the winner gets
   const winnerPoints = GAME_ROUND_SCORE_MAPPING[game.roundCounter];

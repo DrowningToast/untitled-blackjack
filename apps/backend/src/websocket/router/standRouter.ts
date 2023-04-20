@@ -10,8 +10,6 @@ import { initRoundEvent } from "../events/gameplay/initRoundEvent";
 import { nextRoundEvent } from "../events/gameplay/nextRoundEvent";
 import { switchTurnEvent } from "../events/gameplay/switchTurnEvent";
 
-const bodyValidation = z.object({});
-
 export const standRouter: WebsocketRouter = async (event, context) => {
   const api = getAPIG(event, context);
   const { connectionId } = api;
