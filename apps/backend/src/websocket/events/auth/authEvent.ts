@@ -34,7 +34,7 @@ const authEvent = AsyncExceptionHandler(async (event, context, args) => {
   const [existed, errorExisted] = await UserController.getUserMeta({
     username,
   });
-  if (existed) return;
+  if (existed) throw errorExisted;
 
   const [user] = await UserController.getUserMeta({ username });
 
