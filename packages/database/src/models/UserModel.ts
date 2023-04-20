@@ -1,7 +1,6 @@
 import mongoose, { ObjectId } from "mongoose";
 import { Card } from "../utils/Card";
-import { IGame } from "./GameModel";
-import { v4 as uuid } from "uuid";
+
 import { z } from "zod";
 
 /**
@@ -94,6 +93,9 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  /**
+   * TODO: Prevent prolonging the game by keep hitting an empty deck
+   */
 });
 
 const User = mongoose.model<IUser>("User", UserSchema);

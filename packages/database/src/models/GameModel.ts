@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { Card } from "../utils/Card";
-import { IUser, ZodUserStrip, _IUser } from "./UserModel";
+import { ZodUserStrip, _IUser } from "./UserModel";
 import { v4 as uuid } from "uuid";
 import z from "zod";
 

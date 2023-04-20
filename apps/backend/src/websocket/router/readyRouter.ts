@@ -1,8 +1,6 @@
 import {
   ERR_ILLEGAL_OPERATION,
   ERR_INTERNAL,
-  ERR_INVALID_GAME,
-  ERR_INVALID_USER,
   GameController,
   UserController,
 } from "database";
@@ -10,8 +8,6 @@ import { getAPIG } from "../APIGateway";
 import { ERR_BAD_REQUEST } from "../utils/ErrorMessages";
 import { WebsocketRouter } from "../utils/type";
 import z from "zod";
-import { initRoundBroadcast } from "../broadcast/initRoundBroadcast";
-import { checkStartEvent } from "../events/matchmaking/checkStartEvent";
 import { initRoundEvent } from "../events/gameplay/initRoundEvent";
 import { readyEvent } from "../events/matchmaking/readyEvent";
 import { newGameEvent } from "../events/matchmaking/newGameEvent";

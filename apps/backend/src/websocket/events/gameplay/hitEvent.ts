@@ -4,7 +4,6 @@ import {
   ERR_INTERNAL,
   GameActionController,
   GameController,
-  User,
   UserController,
 } from "database";
 

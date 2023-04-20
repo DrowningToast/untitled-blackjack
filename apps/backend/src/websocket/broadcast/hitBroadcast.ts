@@ -1,16 +1,7 @@
 import { Card } from "database/src/utils/Card";
 import { APIG } from "../APIGateway";
 import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
-import {
-  ERR_INTERNAL,
-  GameActionController,
-  GameController,
-  UserController,
-} from "database";
-import {
-  hitEventMessage,
-  switchTurnMessage,
-} from "../utils/WebsocketResponses";
+import { hitEventMessage } from "../utils/WebsocketResponses";
 
 /**
  * @description Handle sending multiple websocket messages to notify the user
