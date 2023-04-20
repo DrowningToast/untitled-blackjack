@@ -3,13 +3,38 @@ import { getAPIG } from "../../APIGateway";
 import { connectionAuthorizedMessage } from "../../utils/WebsocketResponses";
 import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
 
-interface args {
-  username: string;
-}
-
 const authEvent = AsyncExceptionHandler(async (event, context, args) => {
-  const { send, connectionId } = getAPIG(event, context);
+  const { send, connectionId, isConnected } = getAPIG(event, context);
+
+  // clear out stale connection
+  const [connectionIds, error] = await UserController.getAllConnections();
+  if (error) throw error;
+
+  const status = await Promise.all(
+    connectionIds?.map(async (connectionId: string) => {
+      const connected = await isConnected(connectionId);
+      return {
+        connectionId,
+        connected,
+      };
+    })
+  );
+
+  // Filter out non-stale connection
+  const staleConnections = status.filter((connection) => !connection.connected);
+  // Delete stale connections
+  const [cleared, errCleared] = await UserController.clearStaleConnection(
+    staleConnections.map((connection) => connection.connectionId)
+  );
+  if (errCleared) throw errCleared;
+
   const { username } = args;
+
+  // Check if is the user taken or not
+  const [existed, errorExisted] = await UserController.getUserMeta({
+    username,
+  });
+  if (existed) return;
 
   const [user] = await UserController.getUserMeta({ username });
 

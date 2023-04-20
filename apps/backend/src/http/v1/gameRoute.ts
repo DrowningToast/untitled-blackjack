@@ -56,7 +56,6 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
           });
           if (err) return reply.status(500).send(err);
 
-          console.log(newGame);
           return newGame;
         }
       });

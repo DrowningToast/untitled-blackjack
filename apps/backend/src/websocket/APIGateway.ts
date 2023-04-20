@@ -2,6 +2,7 @@ import { APIGatewayProxyEvent } from "aws-lambda";
 import { ApiGatewayManagementApi } from "aws-sdk";
 import env from "env";
 import { WebsocketResponse } from "./utils/type";
+import { healthCheckMessage } from "./utils/WebsocketResponses";
 
 export type APIG = ReturnType<typeof getAPIG>;
 
@@ -59,12 +60,10 @@ export const getAPIG = (
 
     const isConnected = async (connectionId: string) => {
       try {
-        return !!(await api
-          .getConnection({ ConnectionId: connectionId })
-          .promise());
+        await send(healthCheckMessage(), connectionId);
+        return true;
       } catch (e) {
-        console.log(e);
-        throw e;
+        return false;
       }
     };
 

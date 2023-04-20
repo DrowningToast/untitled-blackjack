@@ -1,7 +1,7 @@
 import { GameController, UserController } from "database";
 import { WebsocketRouter } from "../utils/type";
 import { getAPIG } from "../APIGateway";
-import { gameStopMessage } from "../utils/WebsocketResponses";
+import { gameStopDueQuit } from "../utils/WebsocketResponses";
 
 export const $disconnectRouter: WebsocketRouter = async (event, context) => {
   try {
@@ -48,7 +48,7 @@ export const $disconnectRouter: WebsocketRouter = async (event, context) => {
 
             connectionIds.forEach(async (connectionId) => {
               if (await isConnected(connectionId)) {
-                await send(gameStopMessage(user.username), connectionId);
+                await send(gameStopDueQuit(user.username), connectionId);
               }
             });
           }
