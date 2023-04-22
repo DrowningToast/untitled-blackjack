@@ -419,24 +419,24 @@ const endGame = asyncTransaction(async (gameId: string) => {
   // delete game instance
   await Game.deleteOne({ gameId });
 
-  // remove players' cards
-  await UserController.updateUser(
-    {
-      username: playerA.username,
-    },
-    {
-      cards: [],
-    }
-  );
-
-  await UserController.updateUser(
-    {
-      username: playerB.username,
-    },
-    {
-      cards: [],
-    }
-  );
+  /**
+   * Reset players' status
+   *
+   * - cards
+   * - gameScore
+   * - ready
+   * - stand
+   *
+   *
+   */
+  const [reA, errReA] = await UserController.resetPlayersState({
+    username: playerA.username,
+  });
+  if (errReA) throw errReA;
+  const [reB, errReB] = await UserController.resetPlayersState({
+    username: playerB.username,
+  });
+  if (errReB) throw errReB;
 
   if (playerA.gameScore >= GAME_WIN_SCORE_TARGET) {
     return playerA;

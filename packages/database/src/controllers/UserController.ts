@@ -191,6 +191,30 @@ const getCardsSums = asyncTransaction(async (target: FilterQuery<IUser>) => {
   return [firstSum, secondSum];
 });
 
+const resetPlayersState = asyncTransaction(
+  async (target: FilterQuery<IUser>) => {
+    const _ = await User.updateMany(
+      {
+        ...target,
+      },
+      {
+        $set: {
+          stand: false,
+          ready: false,
+          gameScore: 0,
+          cards: [],
+          trumpCards: [],
+        },
+      }
+    );
+
+    const [updated, err] = await getUserMeta(target);
+    if (err) throw err;
+
+    return ZodUserStrip.parse(updated);
+  }
+);
+
 export const UserController = {
   /**
    * @description Get all users' connections
@@ -256,4 +280,16 @@ export const UserController = {
    * @description Get the sum of the cards
    */
   getCardsSums,
+  /**
+   * @access System Level
+   *
+   * @description Reset players'
+   * 1. Stand state
+   * 2. Ready state
+   * 3. Game score
+   * 4. Cards
+   * 5. Trump cards
+   *
+   */
+  resetPlayersState,
 };

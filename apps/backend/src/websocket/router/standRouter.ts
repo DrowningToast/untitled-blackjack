@@ -19,6 +19,7 @@ export const standRouter: WebsocketRouter = async (event, context) => {
   const [user, errUser] = await UserController.getUserMeta({
     connectionId,
   });
+  console.log(user);
   if (errUser) {
     return await api.send({
       status: "INTERNAL_ERROR",
@@ -28,6 +29,7 @@ export const standRouter: WebsocketRouter = async (event, context) => {
 
   // Get game
   const [game, errGame] = await GameController.getGame({ players: user._id });
+  console.log(errGame);
   if (errGame) {
     return await api.send({
       status: "INTERNAL_ERROR",
@@ -61,17 +63,10 @@ export const standRouter: WebsocketRouter = async (event, context) => {
     });
   }
 
+  console.log(result);
+
   // Are both parties stand?
   if (result) {
-    // Check if the game is over
-    const targetReached = await checkEndGameEvent(api, game.gameId);
-    if (targetReached) {
-      const [res, err] = await endGameEvent(api, game.gameId);
-      if (err) return await api.send({ status: "INTERNAL_ERROR", error: err });
-
-      return;
-    }
-
     // initiate showdown
     const [_1, err1] = await showdownEvent(api, game.gameId);
     if (err1) {
@@ -79,6 +74,25 @@ export const standRouter: WebsocketRouter = async (event, context) => {
         status: "INTERNAL_ERROR",
         error: err1,
       });
+    }
+
+    // Check if the game is over
+    const [targetReached, errTarget] = await checkEndGameEvent(
+      api,
+      game.gameId
+    );
+    if (errTarget) {
+      return await api.send({
+        status: "INTERNAL_ERROR",
+        error: errTarget,
+      });
+    }
+    if (targetReached) {
+      const [res, err] = await endGameEvent(api, game.gameId);
+      if (err) return await api.send({ status: "INTERNAL_ERROR", error: err });
+
+      // exit
+      return;
     }
 
     // announcement of new round
