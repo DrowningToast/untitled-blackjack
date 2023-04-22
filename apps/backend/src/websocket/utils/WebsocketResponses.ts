@@ -188,7 +188,9 @@ export interface GameWinner {
   game: IGame;
 }
 
-export const gameWinner = (args: GameWinner): WebsocketResponse<GameWinner> => {
+export const gameWinnerMessage = (
+  args: GameWinner
+): WebsocketResponse<GameWinner> => {
   return {
     status: "OK",
     handler: "GAME_WINNER",

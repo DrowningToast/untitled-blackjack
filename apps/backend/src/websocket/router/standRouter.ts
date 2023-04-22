@@ -1,4 +1,4 @@
-import { GameController, UserController } from "database";
+import { GameActionController, GameController, UserController } from "database";
 import { getAPIG } from "../APIGateway";
 import { WebsocketRouter } from "../utils/type";
 import { ERR_ILLEGAL_ACTION } from "../utils/ErrorMessages";
@@ -8,6 +8,8 @@ import { showdownEvent } from "../events/gameplay/showdownEvent";
 import { initRoundEvent } from "../events/gameplay/initRoundEvent";
 import { nextRoundEvent } from "../events/gameplay/nextRoundEvent";
 import { switchTurnEvent } from "../events/gameplay/switchTurnEvent";
+import { checkEndGameEvent } from "../events/gameplay/checkEndGameEvent";
+import { endGameEvent } from "../events/gameplay/endGameEvent";
 
 export const standRouter: WebsocketRouter = async (event, context) => {
   const api = getAPIG(event, context);
@@ -61,6 +63,15 @@ export const standRouter: WebsocketRouter = async (event, context) => {
 
   // Are both parties stand?
   if (result) {
+    // Check if the game is over
+    const targetReached = await checkEndGameEvent(api, game.gameId);
+    if (targetReached) {
+      const [res, err] = await endGameEvent(api, game.gameId);
+      if (err) return await api.send({ status: "INTERNAL_ERROR", error: err });
+
+      return;
+    }
+
     // initiate showdown
     const [_1, err1] = await showdownEvent(api, game.gameId);
     if (err1) {

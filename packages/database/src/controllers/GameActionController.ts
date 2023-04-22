@@ -416,6 +416,28 @@ const endGame = asyncTransaction(async (gameId: string) => {
   // players
   const [playerA, playerB] = game.players;
 
+  // delete game instance
+  await Game.deleteOne({ gameId });
+
+  // remove players' cards
+  await UserController.updateUser(
+    {
+      username: playerA.username,
+    },
+    {
+      cards: [],
+    }
+  );
+
+  await UserController.updateUser(
+    {
+      username: playerB.username,
+    },
+    {
+      cards: [],
+    }
+  );
+
   if (playerA.gameScore >= GAME_WIN_SCORE_TARGET) {
     return playerA;
   } else if (playerB.gameScore >= GAME_WIN_SCORE_TARGET) {

@@ -32,8 +32,6 @@ const authEvent = AsyncExceptionHandler(async (event, context, args) => {
 
   const [user] = await UserController.getUserMeta({ username });
 
-  console.log(user);
-
   /**
    * If the username is taken, reply with an error
    */
