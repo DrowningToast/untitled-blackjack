@@ -71,6 +71,8 @@ export const standRouter: WebsocketRouter = async (event, context) => {
         error: err1,
       });
     }
+    console.log(err1);
+    console.log("hello");
 
     // Check if the game is over
     const [targetReached, errTarget] = await checkEndGameEvent(
@@ -83,6 +85,8 @@ export const standRouter: WebsocketRouter = async (event, context) => {
         error: errTarget,
       });
     }
+    console.log(errTarget);
+
     if (targetReached) {
       const [res, err] = await endGameEvent(api, game.gameId);
       if (err) return await api.send({ status: "INTERNAL_ERROR", error: err });
