@@ -48,6 +48,19 @@ const initRound = asyncTransaction(async (gameId: string) => {
   await shuffleRemainingCards(gameId);
   // Reset target card points
   await resetTargetPoint(gameId);
+  // Reset players' stand state
+  await UserController.setStandState(
+    {
+      username: playerA.username,
+    },
+    false
+  );
+  await UserController.setStandState(
+    {
+      username: playerB.username,
+    },
+    false
+  );
 
   // Draw 2 cards for each player
   const [cardA, eA] = await drawCard(gameId, 2);
