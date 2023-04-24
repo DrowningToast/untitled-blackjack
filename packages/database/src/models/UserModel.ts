@@ -13,6 +13,26 @@ export const ZodUserStrip = z.object({
   gameScore: z.number().min(0),
   ready: z.boolean(),
   stand: z.boolean(),
+  trumpStatus: z.array(
+    z.union([
+      /**
+       * OPPONENT CANT SEE THE MY CARDS
+       */
+      z.literal("HIDE_CARDS"),
+      /**
+       * I CAN SEE OPPONENT CARDS
+       */
+      z.literal("SEE_OPPONENT_CARDS"),
+      /**
+       * OPPONENT CANT DRAW THE CARDS
+       */
+      z.literal("DENY_DRAW"),
+      /**
+       * OPPONENT CANT USE ANY TRUMP CARDS AFTER THIS
+       */
+      z.literal("DENY_TRUMP_USE"),
+    ])
+  ),
 });
 
 export type IUser = z.infer<typeof ZodUserStrip>;
@@ -93,6 +113,15 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  /**
+   * The effect from trump status
+   */
+  trumpStatus: [
+    {
+      type: String,
+      enum: ["HIDE_CARDS", "SEE_OPPONENT_CARDS", "DENY_DRAW", "DENY_TRUMP_USE"],
+    },
+  ],
   /**
    * TODO: Prevent prolonging the game by keep hitting an empty deck
    */
