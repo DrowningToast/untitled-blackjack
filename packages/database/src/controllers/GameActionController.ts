@@ -429,27 +429,16 @@ const endGame = asyncTransaction(async (gameId: string) => {
   // players
   const [playerA, playerB] = game.players;
 
-  // delete game instance
-  await Game.deleteOne({ gameId });
-
-  /**
-   * Reset players' status
-   *
-   * - cards
-   * - gameScore
-   * - ready
-   * - stand
-   *
-   *
-   */
-  const [reA, errReA] = await UserController.resetPlayersState({
-    username: playerA.username,
-  });
-  if (errReA) throw errReA;
-  const [reB, errReB] = await UserController.resetPlayersState({
-    username: playerB.username,
-  });
-  if (errReB) throw errReB;
+  // update the state of the game
+  const [_, errState] = await GameController.updateGame(
+    {
+      gameId: game.gameId,
+    },
+    {
+      gameState: "ended",
+    }
+  );
+  if (errState) throw errState;
 
   if (playerA.gameScore >= GAME_WIN_SCORE_TARGET) {
     return playerA;
@@ -533,10 +522,6 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
   // determine how many points the winner gets
   const winnerPoints = GAME_ROUND_SCORE_MAPPING[game.roundCounter];
   if (!winnerPoints) throw ERR_WINNER_POINTS;
-
-  console.log(winner);
-  console.log(game.roundCounter);
-  console.log(winnerPoints);
 
   // Update winner points
   if (winner === "A") {

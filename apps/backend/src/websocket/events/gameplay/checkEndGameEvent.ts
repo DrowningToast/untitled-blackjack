@@ -8,14 +8,13 @@ import { APIG } from "../../APIGateway";
 import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
 
 export const checkEndGameEvent = AsyncExceptionHandler(
-  async (api: APIG, gameId: string) => {
+  async (gameId: string) => {
     // find game instance
     const [game, gameErr] = await GameController.getGame({
       gameId,
       gameState: "onGoing",
     });
     if (gameErr) throw gameErr;
-    if (!game) throw ERR_INVALID_GAME;
 
     // check if any player has won
     const targetPoints = GAME_WIN_SCORE_TARGET;
