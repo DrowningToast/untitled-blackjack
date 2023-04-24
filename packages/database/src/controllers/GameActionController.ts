@@ -48,6 +48,19 @@ const initRound = asyncTransaction(async (gameId: string) => {
   await shuffleRemainingCards(gameId);
   // Reset target card points
   await resetTargetPoint(gameId);
+  // Reset players' stand state
+  await UserController.setStandState(
+    {
+      username: playerA.username,
+    },
+    false
+  );
+  await UserController.setStandState(
+    {
+      username: playerB.username,
+    },
+    false
+  );
 
   // Draw 2 cards for each player
   const [cardA, eA] = await drawCard(gameId, 2);
@@ -416,6 +429,17 @@ const endGame = asyncTransaction(async (gameId: string) => {
   // players
   const [playerA, playerB] = game.players;
 
+  // update the state of the game
+  const [_, errState] = await GameController.updateGame(
+    {
+      gameId: game.gameId,
+    },
+    {
+      gameState: "ended",
+    }
+  );
+  if (errState) throw errState;
+
   if (playerA.gameScore >= GAME_WIN_SCORE_TARGET) {
     return playerA;
   } else if (playerB.gameScore >= GAME_WIN_SCORE_TARGET) {
@@ -498,10 +522,6 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
   // determine how many points the winner gets
   const winnerPoints = GAME_ROUND_SCORE_MAPPING[game.roundCounter];
   if (!winnerPoints) throw ERR_WINNER_POINTS;
-
-  console.log(winner);
-  console.log(game.roundCounter);
-  console.log(winnerPoints);
 
   // Update winner points
   if (winner === "A") {

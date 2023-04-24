@@ -1,4 +1,4 @@
-import { GameController, UserController } from "database";
+import { GameActionController, GameController, UserController } from "database";
 import { getAPIG } from "../APIGateway";
 import { WebsocketRouter } from "../utils/type";
 import { ERR_ILLEGAL_ACTION } from "../utils/ErrorMessages";
@@ -8,6 +8,8 @@ import { showdownEvent } from "../events/gameplay/showdownEvent";
 import { initRoundEvent } from "../events/gameplay/initRoundEvent";
 import { nextRoundEvent } from "../events/gameplay/nextRoundEvent";
 import { switchTurnEvent } from "../events/gameplay/switchTurnEvent";
+import { checkEndGameEvent } from "../events/gameplay/checkEndGameEvent";
+import { endGameEvent } from "../events/gameplay/endGameEvent";
 
 export const standRouter: WebsocketRouter = async (event, context) => {
   const api = getAPIG(event, context);
@@ -68,6 +70,23 @@ export const standRouter: WebsocketRouter = async (event, context) => {
         status: "INTERNAL_ERROR",
         error: err1,
       });
+    }
+
+    // Check if the game is over
+    const [targetReached, errTarget] = await checkEndGameEvent(game.gameId);
+    if (errTarget) {
+      return await api.send({
+        status: "INTERNAL_ERROR",
+        error: errTarget,
+      });
+    }
+
+    if (targetReached) {
+      const [res, err] = await endGameEvent(api, game.gameId);
+      if (err) return await api.send({ status: "INTERNAL_ERROR", error: err });
+
+      // exit
+      return;
     }
 
     // announcement of new round
