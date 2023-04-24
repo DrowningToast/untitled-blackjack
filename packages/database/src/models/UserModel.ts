@@ -2,6 +2,7 @@ import mongoose, { ObjectId } from "mongoose";
 import { Card } from "../utils/Card";
 
 import { z } from "zod";
+import { TrumpCard } from "./TrumpCardModel";
 
 /**
  * @description Remove sensitive data from the model
@@ -15,6 +16,10 @@ export const ZodUserStrip = z.object({
   stand: z.boolean(),
   trumpStatus: z.array(
     z.union([
+      /**
+       * TARGET CANT SEE THEIR OWN CARDS
+       */
+      z.literal("BLIND"),
       /**
        * OPPONENT CANT SEE THE MY CARDS
        */
@@ -44,6 +49,7 @@ export type _IUser = IUser & {
   _id: ObjectId;
   connectionId: string;
   cards: Card[];
+  trumpCards: TrumpCard[];
 };
 
 const UserSchema = new mongoose.Schema({
@@ -119,7 +125,13 @@ const UserSchema = new mongoose.Schema({
   trumpStatus: [
     {
       type: String,
-      enum: ["HIDE_CARDS", "SEE_OPPONENT_CARDS", "DENY_DRAW", "DENY_TRUMP_USE"],
+      enum: [
+        "BLIND",
+        "HIDE_CARDS",
+        "SEE_OPPONENT_CARDS",
+        "DENY_DRAW",
+        "DENY_TRUMP_USE",
+      ],
     },
   ],
   /**

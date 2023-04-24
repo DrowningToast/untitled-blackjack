@@ -3,6 +3,7 @@ import { IUser, User, ZodUserStrip, _IUser } from "../models/UserModel";
 import { asyncTransaction } from "../utils/Transaction";
 import { Card } from "../utils/Card";
 import { ERR_INVALID_USER } from "../utils/Error";
+import { TrumpCard } from "../models/TrumpCardModel";
 
 const getAllConnections = asyncTransaction(async () => {
   const _ = (await User.find().select(["connectionId"])) as unknown as _IUser[];
@@ -125,6 +126,24 @@ const addCards = asyncTransaction(
   }
 );
 
+const removeCards = asyncTransaction(
+  async (connectionId: string, cards: Card[]) => {
+    const [oldCards, err] = await getCards({ connectionId });
+    if (err) throw err;
+
+    const newCards = oldCards.filter(
+      (card) => !cards.map((c) => c.display).includes(card.display)
+    );
+
+    const [user, errSet] = await setCards(connectionId, newCards);
+    if (errSet) throw errSet;
+
+    return oldCards.filter(
+      (card) => !cards.map((c) => c.display).includes(card.display)
+    );
+  }
+);
+
 const setReadyState = asyncTransaction(
   async (connectionId: string, ready: boolean) => {
     const [userMeta, err] = await getUserMeta({ connectionId });
@@ -215,6 +234,133 @@ const resetPlayersState = asyncTransaction(
   }
 );
 
+const getTrumpCards = asyncTransaction(async (target: FilterQuery<IUser>) => {
+  const _ = (await User.findOne(target).select(
+    "trumpCards"
+  )) as unknown as _IUser;
+  if (!_) throw ERR_INVALID_USER;
+  return _.trumpCards;
+});
+
+const addTrumpCards = asyncTransaction(
+  async (target: FilterQuery<IUser>, cards: TrumpCard[]) => {
+    // check if already has the card or not
+    const [trumpCards, err] = await getTrumpCards(target);
+    if (err) throw err;
+
+    if (trumpCards.find((owned) => cards.includes(owned))) return trumpCards;
+
+    const _ = await User.findOneAndUpdate(
+      {
+        ...target,
+      },
+      {
+        $push: {
+          trumpCards: cards,
+        },
+      }
+    );
+
+    const [updated, err2] = await getTrumpCards(target);
+    if (err2) throw err2;
+
+    return updated;
+  }
+);
+
+const removeTrumpCards = asyncTransaction(
+  async (target: FilterQuery<IUser>, cards?: TrumpCard[]) => {
+    if (cards) {
+      const _ = await User.findOneAndUpdate(
+        {
+          ...target,
+        },
+        {
+          $pull: {
+            trumpCards: {
+              $in: cards,
+            },
+          },
+        }
+      );
+    } else {
+      const _ = await User.findOneAndUpdate(
+        {
+          ...target,
+        },
+        {
+          $set: {
+            trumpCards: [],
+          },
+        }
+      );
+    }
+
+    const [updated, err] = await getTrumpCards(target);
+    if (err) throw err;
+
+    return updated;
+  }
+);
+
+const addTrumpStatus = asyncTransaction(
+  async (target: FilterQuery<IUser>, status: IUser["trumpStatus"][0]) => {
+    const [_, err] = await getUserMeta(target);
+    if (err) throw err;
+
+    if (_.trumpStatus.includes(status)) return _.trumpStatus;
+
+    const _2 = await User.findOneAndUpdate(
+      {
+        ...target,
+      },
+      {
+        $push: {
+          trumpStatus: status,
+        },
+      }
+    );
+
+    const [updated, errUpdate] = await getUserMeta(target);
+    if (errUpdate) throw errUpdate;
+
+    return updated.trumpStatus;
+  }
+);
+
+const removeTrumpStatus = asyncTransaction(
+  async (target: FilterQuery<IUser>, status?: IUser["trumpStatus"][0]) => {
+    if (status) {
+      const _ = await User.findOneAndUpdate(
+        {
+          ...target,
+        },
+        {
+          $pull: {
+            trumpStatus: status,
+          },
+        }
+      );
+    } else {
+      const _ = await User.findOneAndUpdate(
+        {
+          ...target,
+        },
+        {
+          $set: {
+            trumpStatus: [],
+          },
+        }
+      );
+    }
+
+    const [updated, err] = await getUserMeta(target);
+    if (err) throw err;
+
+    return updated.trumpStatus;
+  }
+);
+
 export const UserController = {
   /**
    * @description Get all users' connections
@@ -263,6 +409,12 @@ export const UserController = {
    */
   addCards,
   /**
+   * @access System level
+   *
+   * @description Remove cards from the user, returns ALL the cards
+   */
+  removeCards,
+  /**
    * @access User themselves
    *
    * @description Set the player ready state
@@ -292,4 +444,9 @@ export const UserController = {
    *
    */
   resetPlayersState,
+  addTrumpCards,
+  removeTrumpCards,
+  getTrumpCards,
+  addTrumpStatus,
+  removeTrumpStatus,
 };

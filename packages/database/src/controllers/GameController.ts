@@ -19,6 +19,7 @@ import { asyncTransaction } from "../utils/Transaction";
 import { UserController } from "./UserController";
 import {
   ERR_INGAME_PLAYERS,
+  ERR_INTERNAL,
   ERR_INVALID_GAME,
   ERR_INVALID_USER,
 } from "../utils/Error";
@@ -203,6 +204,20 @@ const getPlayerConnectionIds = asyncTransaction(async (gameId: string) => {
   return [connectionA, connectionB] as [string, string];
 });
 
+const getOpponent = asyncTransaction(
+  async (gameId: string, username: string) => {
+    const [game, err] = await getGame({ gameId });
+    if (err) throw ERR_INVALID_GAME;
+
+    const opponent = game.players.find(
+      (player) => player.username !== username
+    );
+    if (!opponent) throw ERR_INTERNAL;
+
+    return opponent;
+  }
+);
+
 const deleteGame = asyncTransaction(async (gameId: string) => {
   const _ = await Game.deleteOne({
     gameId,
@@ -273,4 +288,5 @@ export const GameController = {
    * Delete the game instance
    */
   deleteGame,
+  getOpponent,
 };

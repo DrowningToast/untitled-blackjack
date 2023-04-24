@@ -2,8 +2,10 @@ import { GameActionController } from "../controllers/GameActionController";
 import { GameController } from "../controllers/GameController";
 import { UserController } from "../controllers/UserController";
 import { IGame } from "../models/GameModel";
+import { TrumpCard } from "../models/TrumpCardModel";
 import { IUser, User } from "../models/UserModel";
 import {
+  Card,
   aceCard,
   fiveCard,
   jackCard,
@@ -13,17 +15,6 @@ import {
   tenCard,
   threeCard,
 } from "./Card";
-
-export interface TrumpCard<T = any> {
-  handler: string;
-  // Handle the effeec of the card
-  onUse: (
-    // The user who used the card
-    cardUser: IUser,
-    // The game the user is in
-    game: IGame
-  ) => Promise<T>;
-}
 
 export const demoTrump: TrumpCard = {
   handler: "demo",
@@ -173,10 +164,208 @@ export const tenTrumps: TrumpCard<
   },
 };
 
-export const attackRemoveLastCardTrump: TrumpCard<boolean> = {
+/**
+ * Remove last drawn card from the opponent, returns ALL remaining cards
+ */
+export const attackRemoveLastCardTrump: TrumpCard<Card[] | undefined> = {
   handler: "attackRemoveLastCard",
   onUse: async (cardUser, game) => {
-    return false;
+    const [target, errTarget] = await GameController.getOpponent(
+      game.gameId,
+      cardUser.username
+    );
+    if (errTarget) throw errTarget;
+
+    const [targetCards, errTargetCards] = await UserController.getCards({
+      username: target.username,
+    });
+    if (errTargetCards) throw errTargetCards;
+
+    // check if the target has only 2 cards
+    if (targetCards.length < 3) return;
+
+    // remove the last card from the target
+    const [connectionId, err2] = await UserController.getConnectionId({
+      username: target.username,
+    });
+    if (err2) throw err2;
+
+    const [cards, err3] = await UserController.removeCards(connectionId, [
+      targetCards[targetCards.length - 1],
+    ]);
+    if (err3) throw err3;
+
+    return cards;
+  },
+};
+
+/**
+ * The target won't be able to see their own cards
+ */
+export const blindDrawTrump: TrumpCard<IUser["trumpStatus"]> = {
+  handler: "blindDraw",
+  onUse: async (cardUser, game) => {
+    const [target, errTarget] = await GameController.getOpponent(
+      game.gameId,
+      cardUser.username
+    );
+    if (errTarget) throw errTarget;
+
+    if (target.trumpStatus.find((status) => status === "BLIND"))
+      return target.trumpStatus;
+
+    // add blind status
+    const [statuses, errStatus] = await UserController.addTrumpStatus(
+      { username: cardUser.username },
+      "BLIND"
+    );
+    if (errStatus) throw errStatus;
+
+    return statuses;
+  },
+};
+
+export const denyDrawTrump: TrumpCard<IUser["trumpStatus"]> = {
+  handler: "denyDraw",
+  onUse: async (cardUser, game) => {
+    const [target, errTarget] = await GameController.getOpponent(
+      game.gameId,
+      cardUser.username
+    );
+
+    if (errTarget) throw errTarget;
+
+    if (target.trumpStatus.find((status) => status === "DENY_DRAW"))
+      return target.trumpStatus;
+
+    // add blind status
+    const [statuses, errStatus] = await UserController.addTrumpStatus(
+      { username: cardUser.username },
+      "DENY_DRAW"
+    );
+    if (errStatus) throw errStatus;
+
+    return statuses;
+  },
+};
+
+export const nullifyTrumpCard: TrumpCard<IUser["trumpStatus"]> = {
+  handler: "nullifyOpponentTrumpCards",
+  onUse: async (cardUser, game) => {
+    const [target, errTarget] = await GameController.getOpponent(
+      game.gameId,
+      cardUser.username
+    );
+    if (errTarget) throw errTarget;
+
+    if (target.trumpStatus.find((status) => status === "DENY_TRUMP_USE"))
+      return target.trumpStatus;
+
+    // cleanse my status
+    const [statuses, errStatus] = await UserController.removeTrumpStatus(
+      cardUser
+    );
+    if (errStatus) throw errStatus;
+
+    return statuses;
+  },
+};
+
+/**
+ * Force the opponent to draw the max card from the deck
+ */
+export const maxCardOpponentTrump: TrumpCard<Card[]> = {
+  handler: "maxCardOpponent",
+  onUse: async (cardUser, game) => {
+    const [target, errTarget] = await GameController.getOpponent(
+      game.gameId,
+      cardUser.username
+    );
+    if (errTarget) throw errTarget;
+
+    const [currCards, errCurr] = await UserController.getCards({
+      username: target.username,
+    });
+    if (errCurr) throw errCurr;
+
+    const [maxCard, errMax] = await GameActionController.getMaxCard(
+      game.gameId
+    );
+    if (errMax) throw errMax;
+
+    if (!maxCard) return currCards;
+
+    // remove the last card from the target
+    const [connectionId, err2] = await UserController.getConnectionId({
+      username: target.username,
+    });
+    if (err2) throw err2;
+
+    const [newCards, err3] = await UserController.addCards(connectionId, [
+      maxCard,
+    ]);
+    if (err3) throw err3;
+
+    return newCards;
+  },
+};
+
+/**
+ * Ability to see through the opponent's cards
+ */
+export const seeThroughTrump: TrumpCard<IUser["trumpStatus"]> = {
+  handler: "seeThrough",
+  onUse: async (cardUser, game) => {
+    const [statuses, err] = await UserController.addTrumpStatus(
+      cardUser,
+      "SEE_OPPONENT_CARDS"
+    );
+    if (err) throw err;
+
+    return statuses;
+  },
+};
+
+/**
+ * Change the target point in the round from 21 to 25
+ */
+export const changePointsLimit25Trump: TrumpCard<IGame> = {
+  handler: "changePointsLimit25",
+  onUse: async (cardUser, game) => {
+    const [newGame, err] = await GameActionController.setTargetPoint(
+      game.gameId,
+      25
+    );
+    if (err) throw err;
+
+    return newGame;
+  },
+};
+
+/**
+ * When the user has more than 3 cards, they can use this card to remove the last card
+ */
+export const undoHitTrump: TrumpCard<Card[]> = {
+  handler: "undoHit",
+  onUse: async (cardUser, game) => {
+    const [currCards, errCurr] = await UserController.getCards(cardUser);
+    if (errCurr) throw errCurr;
+
+    if (currCards.length < 3) return currCards;
+
+    const [connectionId, err2] = await UserController.getConnectionId(cardUser);
+    if (err2) throw err2;
+
+    const [_, err3] = await UserController.setCards(
+      connectionId,
+      currCards.slice(0, -1)
+    );
+    if (err3) throw err3;
+
+    const [cards, errCards] = await UserController.getCards(cardUser);
+    if (errCards) throw errCards;
+
+    return cards;
   },
 };
 

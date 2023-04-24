@@ -1,6 +1,6 @@
 import { ERR_GAME_STATE } from "../../../../apps/backend/src/websocket/utils/ErrorMessages";
 import { Game, ZodGameStrip, _IGame } from "../models/GameModel";
-import { sortedGlobalCardsContext } from "../utils/Card";
+import { Card, sortedGlobalCardsContext } from "../utils/Card";
 import {
   ERR_INTERNAL,
   ERR_INVALID_CARDS,
@@ -125,6 +125,47 @@ const drawCard = asyncTransaction(
     return drawn;
   }
 );
+
+const setRemainingCards = asyncTransaction(
+  async (gameId: string, cards: Card[]) => {
+    const _ = await Game.findOneAndUpdate(
+      {
+        gameId,
+      },
+      {
+        remainingCards: cards,
+      }
+    );
+
+    return cards;
+  }
+);
+
+const getMaxCard = asyncTransaction(async (gameId: string) => {
+  const [remainingCardsCount, errRemain] = await getAmountOfRemainingCards(
+    gameId
+  );
+  if (errRemain) throw ERR_INTERNAL;
+  if (remainingCardsCount === undefined) throw ERR_INTERNAL;
+  if (remainingCardsCount === 0) return null;
+
+  const [cards, err] = await getRemainingCards(gameId);
+  if (err) throw ERR_INTERNAL;
+
+  const maxCard = cards.reduce((prev, curr) => {
+    if (Math.max(...prev.values) > Math.max(...curr.values)) return prev;
+    return curr;
+  }, cards[0]);
+
+  const remainingCards = cards.filter(
+    (card) => card.display !== maxCard.display
+  );
+
+  const [remain, err2] = await setRemainingCards(gameId, remainingCards);
+  if (err2) throw ERR_INTERNAL;
+
+  return maxCard;
+});
 
 const getRemainingCards = asyncTransaction(async (gameId: string) => {
   const game = (await Game.findOne({
@@ -712,4 +753,11 @@ export const GameActionController = {
    * returns the winner, points earned, cards and game
    */
   showdownRound,
+  setRemainingCards,
+  /**
+   * @access System level
+   *
+   * @description Get the max card from the remaining cards
+   */
+  getMaxCard,
 };
