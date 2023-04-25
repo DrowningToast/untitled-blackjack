@@ -19,6 +19,10 @@ export const ZodUserStrip = z.object({
       /**
        * TARGET CANT SEE THEIR OWN CARDS
        */
+      z.literal("INVINCIBLE"),
+      /**
+       * TARGET CANT SEE THEIR OWN CARDS
+       */
       z.literal("BLIND"),
       /**
        * OPPONENT CANT SEE THE MY CARDS
@@ -126,6 +130,7 @@ const UserSchema = new mongoose.Schema({
     {
       type: String,
       enum: [
+        "INVINCIBLE",
         "BLIND",
         "HIDE_CARDS",
         "SEE_OPPONENT_CARDS",

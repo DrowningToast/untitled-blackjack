@@ -361,6 +361,15 @@ const removeTrumpStatus = asyncTransaction(
   }
 );
 
+const checkInvincibility = asyncTransaction(
+  async (target: FilterQuery<IUser>) => {
+    const [user, err] = await getUserMeta(target);
+    if (err) throw err;
+
+    return user.trumpStatus.includes("INVINCIBLE");
+  }
+);
+
 export const UserController = {
   /**
    * @description Get all users' connections
@@ -449,4 +458,5 @@ export const UserController = {
   getTrumpCards,
   addTrumpStatus,
   removeTrumpStatus,
+  checkInvincibility,
 };

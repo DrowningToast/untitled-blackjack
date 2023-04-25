@@ -369,4 +369,33 @@ export const undoHitTrump: TrumpCard<Card[]> = {
   },
 };
 
+/**
+ * TODO: Actually prevent the thing
+ */
+export const invincibilityTrump: TrumpCard<IUser["trumpStatus"]> = {
+  handler: "invincibility",
+  onUse: async (cardUser, game) => {
+    const [statuses, err] = await UserController.addTrumpStatus(
+      cardUser,
+      "INVINCIBLE"
+    );
+    if (err) throw err;
+
+    return statuses;
+  },
+};
+
+export const hideCardsTrump: TrumpCard<IUser["trumpStatus"]> = {
+  handler: "hideCards",
+  onUse: async (cardUser, game) => {
+    const [statuses, err] = await UserController.addTrumpStatus(
+      cardUser,
+      "HIDE_CARDS"
+    );
+    if (err) throw err;
+
+    return statuses;
+  },
+};
+
 export const trumpCards = [demoTrump];
