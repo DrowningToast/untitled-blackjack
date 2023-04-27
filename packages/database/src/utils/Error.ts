@@ -88,3 +88,18 @@ export const ERR_INVALID_CARDS: ErrorMessage = {
   error: "invalid-cards",
   description: "Players cards are invalid",
 };
+
+export const ERR_INVALID_TRUMP_CARD: ErrorMessage = {
+  error: "invalid-trump-card",
+  description: "Trump card is invalid",
+};
+
+export const ERR_NO_TRUMP_FOUND: ErrorMessage = {
+  error: "no-trump-found",
+  description: "trump card not found",
+};
+
+export const ERR_TRUMP_USE_DENIED: ErrorMessage = {
+  error: "trump-use-denied",
+  description: "The user attempt to use trump card while being denied",
+};

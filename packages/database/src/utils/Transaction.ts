@@ -1,4 +1,4 @@
-import { ERR_INTERNAL, ErrorMessage, ZodErrorMessage } from "./Error";
+import { ERR_INTERNAL, ErrorMessage, ZodErrorMessage } from "./error";
 
 /**
  * @description Error handling function which accepts callbacks

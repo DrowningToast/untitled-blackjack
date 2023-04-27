@@ -2,8 +2,16 @@ import { FilterQuery, UpdateQuery } from "mongoose";
 import { IUser, User, ZodUserStrip, _IUser } from "../models/UserModel";
 import { asyncTransaction } from "../utils/Transaction";
 import { Card } from "../utils/Card";
-import { ERR_INVALID_USER } from "../utils/Error";
+import {
+  ERR_INVALID_GAME,
+  ERR_INVALID_TRUMP_CARD,
+  ERR_INVALID_USER,
+  ERR_NO_TRUMP_FOUND,
+  ERR_TRUMP_USE_DENIED,
+} from "../utils/error";
 import { TrumpCard } from "../models/TrumpCardModel";
+import { trumpCardsAsArray } from "../utils/TrumpCard";
+import { GameController } from "./GameController";
 
 const getAllConnections = asyncTransaction(async () => {
   const _ = (await User.find().select(["connectionId"])) as unknown as _IUser[];
@@ -370,6 +378,35 @@ const checkInvincibility = asyncTransaction(
   }
 );
 
+const useTrumpCard = asyncTransaction(
+  async (trumpUser: FilterQuery<IUser>, card: TrumpCard) => {
+    const [user, errUser] = await getUserMeta(trumpUser);
+    if (errUser) throw errUser;
+
+    const [cards, err] = await getTrumpCards(trumpUser);
+    if (err) throw err;
+
+    if (!trumpCardsAsArray.includes(card)) throw ERR_INVALID_TRUMP_CARD;
+
+    if (!cards.includes(card)) throw ERR_NO_TRUMP_FOUND;
+
+    const [game, errGame] = await GameController.getGame({
+      players: user._id,
+    });
+    if (errGame) throw errGame;
+    if (!game) throw ERR_INVALID_GAME;
+
+    if (user.trumpStatus.includes("DENY_TRUMP_USE")) throw ERR_TRUMP_USE_DENIED;
+
+    await card.onUse(user, game);
+
+    const [updated, errUpdated] = await removeTrumpCards(user, [card]);
+    if (errUpdated) throw errUpdated;
+
+    return updated;
+  }
+);
+
 export const UserController = {
   /**
    * @description Get all users' connections
@@ -453,10 +490,46 @@ export const UserController = {
    *
    */
   resetPlayersState,
+  /**
+   * @access System Level
+   *
+   * @description add the trump cards
+   */
   addTrumpCards,
+  /**
+   * @access System Level
+   *
+   * @description remove the trump cards
+   */
   removeTrumpCards,
+  /**
+   * @access System Level
+   *
+   * @description get the trump cards
+   */
   getTrumpCards,
+  /**
+   * @access System Level
+   *
+   * @description add the trump status
+   */
   addTrumpStatus,
+  /**
+   * @access System Level
+   *
+   * @description remove the trump status
+   */
   removeTrumpStatus,
+  /**
+   * @access System Level
+   *
+   * @description check if the user is invincible
+   */
   checkInvincibility,
+  /**
+   * @access System Level
+   *
+   * @description use the trump card
+   */
+  useTrumpCard,
 };

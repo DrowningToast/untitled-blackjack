@@ -22,7 +22,7 @@ import {
   ERR_INTERNAL,
   ERR_INVALID_GAME,
   ERR_INVALID_USER,
-} from "../utils/Error";
+} from "../utils/error";
 
 /**
  * There should be no function that updates the game instance data directly for security reasons

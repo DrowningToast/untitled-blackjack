@@ -17,7 +17,7 @@ export const ZodUserStrip = z.object({
   trumpStatus: z.array(
     z.union([
       /**
-       * TARGET CANT SEE THEIR OWN CARDS
+       * THEIR TRUMP CARDS WON'T AFFECT ME
        */
       z.literal("INVINCIBLE"),
       /**

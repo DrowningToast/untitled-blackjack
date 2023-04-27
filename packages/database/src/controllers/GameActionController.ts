@@ -10,9 +10,10 @@ import {
   ERR_ROUND_COUNTER,
   ERR_USER_STAND,
   ERR_WINNER_POINTS,
-} from "../utils/Error";
+} from "../utils/error";
 import { asyncTransaction } from "../utils/Transaction";
-import { trumpCards } from "../utils/TrumpCard";
+import { trumpCardsAsArray } from "../utils/TrumpCard";
+// import { trumpCards } from "../utils/TrumpCard";
 import {
   GAME_ROUND_PLAYED_MAX,
   GAME_ROUND_SCORE_MAPPING,
@@ -637,7 +638,9 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
 
 const drawRandomTrumpCard = asyncTransaction(async () => {
   // return a random trump card
-  return trumpCards[Math.floor(Math.random() * trumpCards.length)];
+  return trumpCardsAsArray[
+    Math.floor(Math.random() * trumpCardsAsArray.length)
+  ];
 });
 
 export const GameActionController = {
@@ -753,6 +756,11 @@ export const GameActionController = {
    * returns the winner, points earned, cards and game
    */
   showdownRound,
+  /**
+   * @access System level
+   *
+   * @description Set the remaining cards
+   */
   setRemainingCards,
   /**
    * @access System level
