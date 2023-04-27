@@ -3,7 +3,7 @@ import {
   ERR_EXISTED_USER,
   ERR_INTERNAL,
   ERR_INVALID_CONNECTION_ID,
-} from "database/src/utils/Error";
+} from "database/src/utils/error";
 import { UserController } from "database";
 
 /**

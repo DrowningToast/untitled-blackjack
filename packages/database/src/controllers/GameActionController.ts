@@ -22,6 +22,8 @@ import {
 } from "../utils/config";
 import { GameController } from "./GameController";
 import { UserController } from "./UserController";
+import { FilterQuery } from "mongoose";
+import { IUser } from "../models/UserModel";
 
 const initRound = asyncTransaction(async (gameId: string) => {
   console.log("INITING GAME");
@@ -74,6 +76,24 @@ const initRound = asyncTransaction(async (gameId: string) => {
     UserController.setCards(connectionA, cardA),
     UserController.setCards(connectionB, cardB),
   ]);
+
+  // Draw 2 Trump Cards for each player
+  const [trumpCardA, eTA] = await drawTrumpCard(playerA, 2);
+  const [trumpCardB, eTB] = await drawTrumpCard(playerB, 2);
+
+  console.log("trump A");
+  console.log(trumpCardA);
+  console.log("trump B");
+  console.log(trumpCardB);
+
+  if (eTA || eTB) throw ERR_INTERNAL;
+
+  // Deal the Trump Cards to the players
+  const [[_1A, err1A], [_1B, err1B]] = await Promise.all([
+    UserController.addTrumpCards(playerA, trumpCardA),
+    UserController.addTrumpCards(playerB, trumpCardB),
+  ]);
+  if (err1A || err1B) throw ERR_INTERNAL;
 
   // Set the turn owner
   const [newGame, e] = await setTurnOwner(gameId);
@@ -636,12 +656,27 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
   };
 });
 
-const drawRandomTrumpCard = asyncTransaction(async () => {
-  // return a random trump card
-  return trumpCardsAsArray[
-    Math.floor(Math.random() * trumpCardsAsArray.length)
-  ];
-});
+const drawTrumpCard = asyncTransaction(
+  async (user: FilterQuery<IUser>, amount: number = 1) => {
+    // ensure user exists
+    const [userExists, err] = await UserController.getUserMeta(user);
+    if (err) throw err;
+    // get user's trump cards
+    const [owned, err2] = await UserController.getTrumpCards(user);
+    if (err2) throw err2;
+
+    // generate random pool, garuntee unqiue cards
+    const randomPool = [...trumpCardsAsArray].filter(
+      (randomCard) => !owned.map((o) => o.handler).includes(randomCard.handler)
+    );
+
+    const shuffledPool = randomPool.sort(() => Math.random() - 0.5);
+    const randomizedCards = shuffledPool.slice(0, amount);
+
+    // return a random trump card
+    return randomizedCards;
+  }
+);
 
 export const GameActionController = {
   /**
@@ -699,8 +734,11 @@ export const GameActionController = {
   switchPlayerTurn,
   /**
    * @access User themselves
+   *
+   * draws a number of random trump cards
+   * doesn't contain duplicate
    */
-  drawRandomTrumpCard,
+  drawTrumpCard,
   /**
    * @access System Level
    *

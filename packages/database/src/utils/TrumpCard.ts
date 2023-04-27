@@ -173,8 +173,9 @@ const tenTrumps: TrumpCard<
 /**
  * Remove last drawn card from the opponent, returns ALL remaining cards
  */
-const removeLastCardAttackTrump: TrumpCard<Card[] | undefined> = {
-  handler: "removeLastCardAttack",
+const removeLastCardTrump: TrumpCard<Card[] | undefined> = {
+  handler: "removeLastCard",
+  type: "ATTACK",
   onUse: async (cardUser, game) => {
     const [target, errTarget] = await GameController.getOpponent(
       game.gameId,
@@ -222,8 +223,9 @@ const removeLastCardAttackTrump: TrumpCard<Card[] | undefined> = {
  *
  * @return the target IUser
  */
-const blindDrawAttackTrump: TrumpCard<IUser> = {
-  handler: "blindDrawAttack",
+const blindDrawTrump: TrumpCard<IUser> = {
+  handler: "blindDraw",
+  type: "ATTACK",
   onUse: async (cardUser, game) => {
     const [target, errTarget] = await GameController.getOpponent(
       game.gameId,
@@ -255,6 +257,7 @@ const blindDrawAttackTrump: TrumpCard<IUser> = {
 
 const denyDrawTrump: TrumpCard<IUser> = {
   handler: "denyDraw",
+  type: "ATTACK",
   onUse: async (cardUser, game) => {
     const [target, errTarget] = await GameController.getOpponent(
       game.gameId,
@@ -287,8 +290,12 @@ const denyDrawTrump: TrumpCard<IUser> = {
   },
 };
 
-const nullifyTrumpCardAttackTrump: TrumpCard<IUser> = {
-  handler: "nullifyOpponentTrumpCardsAttack",
+/**
+ *  Prevent opponent from using any trump card
+ */
+const preventTrumpCardTrump: TrumpCard<IUser> = {
+  handler: "preventOpponentTrumpCards",
+  type: "ATTACK",
   onUse: async (cardUser, game) => {
     const [target, errTarget] = await GameController.getOpponent(
       game.gameId,
@@ -318,8 +325,9 @@ const nullifyTrumpCardAttackTrump: TrumpCard<IUser> = {
  *
  * @return the opponent's cards
  */
-const maxCardOpponentAttackTrump: TrumpCard<Card[]> = {
+const maxCardOpponentTrump: TrumpCard<Card[]> = {
   handler: "maxCardOpponent",
+  type: "ATTACK",
   onUse: async (cardUser, game) => {
     const [target, errTarget] = await GameController.getOpponent(
       game.gameId,
@@ -366,6 +374,7 @@ const maxCardOpponentAttackTrump: TrumpCard<Card[]> = {
  */
 const seeThroughTrump: TrumpCard<IUser> = {
   handler: "seeThrough",
+  type: "ATTACK",
   onUse: async (cardUser, game) => {
     const [target, errTarget] = await GameController.getOpponent(
       game.gameId,
@@ -385,7 +394,11 @@ const seeThroughTrump: TrumpCard<IUser> = {
     );
     if (err) throw err;
 
-    return statuses;
+    // updated opponent
+    const [updated, errUpdated] = await UserController.getUserMeta(target);
+    if (errUpdated) throw errUpdated;
+
+    return updated;
   },
 };
 
@@ -394,6 +407,7 @@ const seeThroughTrump: TrumpCard<IUser> = {
  */
 const changePointsLimit25Trump: TrumpCard<IGame> = {
   handler: "changePointsLimit25",
+  type: "UTILITY",
   onUse: async (cardUser, game) => {
     const [newGame, err] = await GameActionController.setTargetPoint(
       game.gameId,
@@ -410,6 +424,7 @@ const changePointsLimit25Trump: TrumpCard<IGame> = {
  */
 const undoHitTrump: TrumpCard<Card[]> = {
   handler: "undoHit",
+  type: "UTILITY",
   onUse: async (cardUser, game) => {
     const [currCards, errCurr] = await UserController.getCards(cardUser);
     if (errCurr) throw errCurr;
@@ -439,6 +454,7 @@ const undoHitTrump: TrumpCard<Card[]> = {
  */
 const invincibilityTrump: TrumpCard<IUser> = {
   handler: "invincibility",
+  type: "UTILITY",
   onUse: async (cardUser, game) => {
     const [statuses, err] = await UserController.addTrumpStatus(
       cardUser,
@@ -456,6 +472,7 @@ const invincibilityTrump: TrumpCard<IUser> = {
 
 const hideCardsTrump: TrumpCard<IUser> = {
   handler: "hideCards",
+  type: "UTILITY",
   onUse: async (cardUser, game) => {
     const [statuses, err] = await UserController.addTrumpStatus(
       cardUser,
@@ -472,20 +489,38 @@ const hideCardsTrump: TrumpCard<IUser> = {
 };
 
 // All trump cards in the game
-export const trumpCardsAsArray = [
-  blindDrawAttackTrump,
+export const trumpCardsAsArray: TrumpCard[] = [
+  blindDrawTrump,
   denyDrawTrump,
-  nullifyTrumpCard,
+  preventTrumpCardTrump,
   maxCardOpponentTrump,
   seeThroughTrump,
   changePointsLimit25Trump,
   undoHitTrump,
   invincibilityTrump,
   hideCardsTrump,
-  removeLastCardAttackTrump,
+  removeLastCardTrump,
   aceTrump,
   threeTrump,
   fiveTrump,
   sevenTrump,
   tenTrumps,
 ];
+
+export const trumpCardsAsObject: { [key: string]: TrumpCard } = {
+  blindDrawTrump,
+  denyDrawTrump,
+  preventTrumpCardTrump,
+  maxCardOpponentTrump,
+  seeThroughTrump,
+  changePointsLimit25Trump,
+  undoHitTrump,
+  invincibilityTrump,
+  hideCardsTrump,
+  removeLastCardTrump,
+  aceTrump,
+  threeTrump,
+  fiveTrump,
+  sevenTrump,
+  tenTrumps,
+};

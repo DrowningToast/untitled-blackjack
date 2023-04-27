@@ -250,6 +250,19 @@ const getTrumpCards = asyncTransaction(async (target: FilterQuery<IUser>) => {
   return _.trumpCards;
 });
 
+const setTrumpCards = asyncTransaction(
+  async (target: FilterQuery<IUser>, cards: TrumpCard[]) => {
+    const _ = await User.findOneAndUpdate(
+      {
+        ...target,
+      },
+      {
+        trumpCards: cards,
+      }
+    );
+  }
+);
+
 const addTrumpCards = asyncTransaction(
   async (target: FilterQuery<IUser>, cards: TrumpCard[]) => {
     // check if already has the card or not
@@ -396,7 +409,16 @@ const useTrumpCard = asyncTransaction(
     if (errGame) throw errGame;
     if (!game) throw ERR_INVALID_GAME;
 
+    // Deny usage of trump card if the user has a status
     if (user.trumpStatus.includes("DENY_TRUMP_USE")) throw ERR_TRUMP_USE_DENIED;
+
+    // Check for opponent invincibility
+    const [opponent, errOpponent] = await GameController.getOpponent(
+      game.gameId,
+      user.username
+    );
+    if (card.type === "ATTACK" && opponent?.trumpStatus.includes("INVINCIBLE"))
+      throw ERR_TRUMP_USE_DENIED;
 
     await card.onUse(user, game);
 
