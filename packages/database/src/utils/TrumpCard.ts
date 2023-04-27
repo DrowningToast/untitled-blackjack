@@ -18,6 +18,7 @@ import {
 
 const demoTrump: TrumpCard = {
   handler: "demo",
+  type: "dummy",
   onUse: async (cardUser, game) => {
     console.log(cardUser);
     console.log(game);
@@ -26,6 +27,7 @@ const demoTrump: TrumpCard = {
 
 const aceTrump: TrumpCard<typeof aceCard | undefined> = {
   handler: "ace",
+  type: "DRAW",
   onUse: async (cardUser, game) => {
     const [cards, err1] = await GameActionController.getRemainingCards(
       game.gameId
@@ -52,6 +54,7 @@ const aceTrump: TrumpCard<typeof aceCard | undefined> = {
 
 const threeTrump: TrumpCard<typeof threeCard | undefined> = {
   handler: "three",
+  type: "DRAW",
   onUse: async (cardUser, game) => {
     const [cards, err1] = await GameActionController.getRemainingCards(
       game.gameId
@@ -78,6 +81,7 @@ const threeTrump: TrumpCard<typeof threeCard | undefined> = {
 
 const fiveTrump: TrumpCard<typeof fiveCard | undefined> = {
   handler: "five",
+  type: "DRAW",
   onUse: async (cardUser, game) => {
     const [cards, err1] = await GameActionController.getRemainingCards(
       game.gameId
@@ -104,6 +108,7 @@ const fiveTrump: TrumpCard<typeof fiveCard | undefined> = {
 
 const sevenTrump: TrumpCard<typeof sevenCard | undefined> = {
   handler: "seven",
+  type: "DRAW",
   onUse: async (cardUser, game) => {
     const [cards, err1] = await GameActionController.getRemainingCards(
       game.gameId
@@ -136,6 +141,7 @@ const tenTrumps: TrumpCard<
   | undefined
 > = {
   handler: "tens",
+  type: "DRAW",
   onUse: async (cardUser, game) => {
     const [cards, err1] = await GameActionController.getRemainingCards(
       game.gameId
@@ -167,8 +173,8 @@ const tenTrumps: TrumpCard<
 /**
  * Remove last drawn card from the opponent, returns ALL remaining cards
  */
-const attackRemoveLastCardTrump: TrumpCard<Card[] | undefined> = {
-  handler: "attackRemoveLastCard",
+const removeLastCardAttackTrump: TrumpCard<Card[] | undefined> = {
+  handler: "removeLastCardAttack",
   onUse: async (cardUser, game) => {
     const [target, errTarget] = await GameController.getOpponent(
       game.gameId,
@@ -216,8 +222,8 @@ const attackRemoveLastCardTrump: TrumpCard<Card[] | undefined> = {
  *
  * @return the target IUser
  */
-const BlindDrawAttackTrump: TrumpCard<IUser> = {
-  handler: "blindDraw",
+const blindDrawAttackTrump: TrumpCard<IUser> = {
+  handler: "blindDrawAttack",
   onUse: async (cardUser, game) => {
     const [target, errTarget] = await GameController.getOpponent(
       game.gameId,
@@ -241,6 +247,7 @@ const BlindDrawAttackTrump: TrumpCard<IUser> = {
     if (errStatus) throw errStatus;
 
     const [updated, errUpdated] = await UserController.getUserMeta(target);
+    if (errUpdated) throw errUpdated;
 
     return updated;
   },
@@ -280,8 +287,8 @@ const denyDrawTrump: TrumpCard<IUser> = {
   },
 };
 
-const nullifyTrumpCard: TrumpCard<IUser> = {
-  handler: "nullifyOpponentTrumpCards",
+const nullifyTrumpCardAttackTrump: TrumpCard<IUser> = {
+  handler: "nullifyOpponentTrumpCardsAttack",
   onUse: async (cardUser, game) => {
     const [target, errTarget] = await GameController.getOpponent(
       game.gameId,
@@ -290,7 +297,7 @@ const nullifyTrumpCard: TrumpCard<IUser> = {
     if (errTarget) throw errTarget;
 
     if (target.trumpStatus.find((status) => status === "DENY_TRUMP_USE"))
-      return target.trumpStatus;
+      return target;
 
     // cleanse my status
     const [statuses, errStatus] = await UserController.removeTrumpStatus(
@@ -298,14 +305,20 @@ const nullifyTrumpCard: TrumpCard<IUser> = {
     );
     if (errStatus) throw errStatus;
 
-    return statuses;
+    // get updated user
+    const [updated, errUpdated] = await UserController.getUserMeta(target);
+    if (errUpdated) throw errUpdated;
+
+    return updated;
   },
 };
 
 /**
  * Force the opponent to draw the max card from the deck
+ *
+ * @return the opponent's cards
  */
-const maxCardOpponentTrump: TrumpCard<Card[]> = {
+const maxCardOpponentAttackTrump: TrumpCard<Card[]> = {
   handler: "maxCardOpponent",
   onUse: async (cardUser, game) => {
     const [target, errTarget] = await GameController.getOpponent(
@@ -460,7 +473,7 @@ const hideCardsTrump: TrumpCard<IUser> = {
 
 // All trump cards in the game
 export const trumpCardsAsArray = [
-  blindDrawTrump,
+  blindDrawAttackTrump,
   denyDrawTrump,
   nullifyTrumpCard,
   maxCardOpponentTrump,
@@ -469,7 +482,7 @@ export const trumpCardsAsArray = [
   undoHitTrump,
   invincibilityTrump,
   hideCardsTrump,
-  attackRemoveLastCardTrump,
+  removeLastCardAttackTrump,
   aceTrump,
   threeTrump,
   fiveTrump,
