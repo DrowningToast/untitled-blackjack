@@ -1,3 +1,9 @@
+import { APIG } from "../../../../apps/backend/src/websocket/APIGateway";
+import { AsyncExceptionHandler } from "../../../../apps/backend/src/websocket/AsyncExceptionHandler";
+import {
+  hitEventMessage,
+  switchTurnMessage,
+} from "../../../../apps/backend/src/websocket/utils/WebsocketResponses";
 import { GameActionController } from "../controllers/GameActionController";
 import { GameController } from "../controllers/GameController";
 import { UserController } from "../controllers/UserController";
@@ -15,6 +21,19 @@ import {
   tenCard,
   threeCard,
 } from "./Card";
+import {
+  DrawTrumpEventHandler,
+  blindDrawTrumpEventHandler,
+  changePointTargetTrumpEventHandler,
+  denyDrawTrumpEventHandler,
+  hideCardsTrumpEventHandler,
+  invincibilityTrumpEventHandler,
+  maxCardOpponentTrumpEventHandler,
+  removeLastCardTrumpEventHandler,
+  seeThroughTrumpEventHandler,
+  undoHitTrumpEventHandler,
+} from "./TrumpCardEventHandler";
+import { ERR_INVALID_GAME } from "./error";
 
 const demoTrump: TrumpCard = {
   handler: "demo",
@@ -22,6 +41,9 @@ const demoTrump: TrumpCard = {
   onUse: async (cardUser, game) => {
     console.log(cardUser);
     console.log(game);
+  },
+  eventHandler: async () => {
+    console.log("demo");
   },
 };
 
@@ -44,12 +66,16 @@ const aceTrump: TrumpCard<typeof aceCard | undefined> = {
     });
     if (err2) throw err2;
 
-    const [user, err3] = await UserController.addCards(connectionId, [ace]);
+    const [user, err3] = await UserController.addCards(cardUser, [ace]);
     if (err3) throw err3;
+
+    // switch turn
+    await GameActionController.switchPlayerTurn(game.gameId);
 
     // return the ace indicating that the card was used
     return ace as typeof aceCard;
   },
+  eventHandler: AsyncExceptionHandler(DrawTrumpEventHandler(aceCard)),
 };
 
 const threeTrump: TrumpCard<typeof threeCard | undefined> = {
@@ -71,12 +97,13 @@ const threeTrump: TrumpCard<typeof threeCard | undefined> = {
     });
     if (err2) throw err2;
 
-    const [user, err3] = await UserController.addCards(connectionId, [three]);
+    const [user, err3] = await UserController.addCards(cardUser, [three]);
     if (err3) throw err3;
 
     // return the ace indicating that the card was used
     return three as typeof threeCard;
   },
+  eventHandler: AsyncExceptionHandler(DrawTrumpEventHandler(threeCard)),
 };
 
 const fiveTrump: TrumpCard<typeof fiveCard | undefined> = {
@@ -98,12 +125,13 @@ const fiveTrump: TrumpCard<typeof fiveCard | undefined> = {
     });
     if (err2) throw err2;
 
-    const [user, err3] = await UserController.addCards(connectionId, [five]);
+    const [user, err3] = await UserController.addCards(cardUser, [five]);
     if (err3) throw err3;
 
     // return the ace indicating that the card was used
     return five as typeof fiveCard;
   },
+  eventHandler: DrawTrumpEventHandler(fiveCard),
 };
 
 const sevenTrump: TrumpCard<typeof sevenCard | undefined> = {
@@ -125,12 +153,13 @@ const sevenTrump: TrumpCard<typeof sevenCard | undefined> = {
     });
     if (err2) throw err2;
 
-    const [user, err3] = await UserController.addCards(connectionId, [seven]);
+    const [user, err3] = await UserController.addCards(cardUser, [seven]);
     if (err3) throw err3;
 
     // return the ace indicating that the card was used
     return seven as typeof sevenCard;
   },
+  eventHandler: DrawTrumpEventHandler(sevenCard),
 };
 
 const tenTrumps: TrumpCard<
@@ -158,7 +187,7 @@ const tenTrumps: TrumpCard<
     });
     if (err2) throw err2;
 
-    const [user, err3] = await UserController.addCards(connectionId, [tens]);
+    const [user, err3] = await UserController.addCards(cardUser, [tens]);
     if (err3) throw err3;
 
     // return the ace indicating that the card was used
@@ -168,6 +197,7 @@ const tenTrumps: TrumpCard<
       | typeof queenCard
       | typeof kingCard;
   },
+  eventHandler: DrawTrumpEventHandler(tenCard),
 };
 
 /**
@@ -216,10 +246,12 @@ const removeLastCardTrump: TrumpCard<Card[] | undefined> = {
 
     return cards;
   },
+  eventHandler: removeLastCardTrumpEventHandler(),
 };
 
 /**
- * The target won't be able to see their own cards
+ * The target won't be able to see their own cards,
+ * gives opponent the trump status "BLIND"
  *
  * @return the target IUser
  */
@@ -253,8 +285,15 @@ const blindDrawTrump: TrumpCard<IUser> = {
 
     return updated;
   },
+  eventHandler: blindDrawTrumpEventHandler(),
 };
 
+/**
+ * Deny the opponent from drawing cards in the current round
+ * gives opponent the trump status "DENY_DRAW"
+ *
+ * @return the target IUser
+ */
 const denyDrawTrump: TrumpCard<IUser> = {
   handler: "denyDraw",
   type: "ATTACK",
@@ -288,10 +327,11 @@ const denyDrawTrump: TrumpCard<IUser> = {
 
     return updated;
   },
+  eventHandler: denyDrawTrumpEventHandler(),
 };
 
 /**
- *  Prevent opponent from using any trump card
+ *  Opponent cards will be hidden for a round
  */
 const preventTrumpCardTrump: TrumpCard<IUser> = {
   handler: "preventOpponentTrumpCards",
@@ -318,6 +358,7 @@ const preventTrumpCardTrump: TrumpCard<IUser> = {
 
     return updated;
   },
+  eventHandler: blindDrawTrumpEventHandler(),
 };
 
 /**
@@ -347,26 +388,19 @@ const maxCardOpponentTrump: TrumpCard<Card[]> = {
     if (errInvinc) throw errInvinc;
     if (isInvinc) return currCards;
 
-    const [maxCard, errMax] = await GameActionController.getMaxCard(
+    const [maxCard, errMax] = await GameActionController.drawMaxCard(
       game.gameId
     );
     if (errMax) throw errMax;
 
     if (!maxCard) return currCards;
 
-    // remove the last card from the target
-    const [connectionId, err2] = await UserController.getConnectionId({
-      username: target.username,
-    });
-    if (err2) throw err2;
-
-    const [newCards, err3] = await UserController.addCards(connectionId, [
-      maxCard,
-    ]);
+    const [newCards, err3] = await UserController.addCards(target, [maxCard]);
     if (err3) throw err3;
 
     return newCards;
   },
+  eventHandler: maxCardOpponentTrumpEventHandler(),
 };
 
 /**
@@ -400,6 +434,7 @@ const seeThroughTrump: TrumpCard<IUser> = {
 
     return updated;
   },
+  eventHandler: seeThroughTrumpEventHandler(),
 };
 
 /**
@@ -417,6 +452,7 @@ const changePointsLimit25Trump: TrumpCard<IGame> = {
 
     return newGame;
   },
+  eventHandler: changePointTargetTrumpEventHandler(25),
 };
 
 /**
@@ -445,10 +481,10 @@ const undoHitTrump: TrumpCard<Card[]> = {
 
     return cards;
   },
+  eventHandler: undoHitTrumpEventHandler(),
 };
 
 /**
- * TODO: Actually prevent the thing
  *
  * @return cardUser updated information
  */
@@ -468,6 +504,7 @@ const invincibilityTrump: TrumpCard<IUser> = {
 
     return user;
   },
+  eventHandler: invincibilityTrumpEventHandler(),
 };
 
 const hideCardsTrump: TrumpCard<IUser> = {
@@ -486,6 +523,7 @@ const hideCardsTrump: TrumpCard<IUser> = {
 
     return user;
   },
+  eventHandler: hideCardsTrumpEventHandler(),
 };
 
 // All trump cards in the game

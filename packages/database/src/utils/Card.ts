@@ -77,6 +77,11 @@ const kingCard: Card = {
   values: [10],
 };
 
+const hiddenCard: Card = {
+  display: "HIDDEN",
+  values: [0],
+};
+
 const sortedGlobalCardsContext: Card[] = [
   aceCard,
   twoCard,
@@ -108,4 +113,5 @@ export {
   queenCard,
   kingCard,
   sortedGlobalCardsContext,
+  hiddenCard,
 };

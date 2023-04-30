@@ -8,6 +8,7 @@ import { readyRouter } from "./router/readyRouter";
 import { hitRouter } from "./router/hitRouter";
 import { standRouter } from "./router/standRouter";
 import { dev_giveTrump } from "./router/dev_giveTrump";
+import { useTrumpRouter } from "./router/useTrumpRouter";
 
 export const WebsocketRouters: Record<string, WebsocketRouter> = {
   $connect: $connectRouter,
@@ -18,6 +19,7 @@ export const WebsocketRouters: Record<string, WebsocketRouter> = {
   ready: readyRouter,
   hit: hitRouter,
   stand: standRouter,
+  useTrump: useTrumpRouter,
 
   // Dev routers
   dev_giveTrump: dev_giveTrump,

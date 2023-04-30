@@ -96,7 +96,7 @@ export const ERR_INVALID_TRUMP_CARD: ErrorMessage = {
 
 export const ERR_NO_TRUMP_FOUND: ErrorMessage = {
   error: "no-trump-found",
-  description: "trump card not found",
+  description: "trump card is not found in the player's hand",
 };
 
 export const ERR_TRUMP_USE_DENIED: ErrorMessage = {

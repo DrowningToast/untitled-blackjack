@@ -1,7 +1,7 @@
 import { FilterQuery, UpdateQuery } from "mongoose";
 import { IUser, User, ZodUserStrip, _IUser } from "../models/UserModel";
 import { asyncTransaction } from "../utils/Transaction";
-import { Card } from "../utils/Card";
+import { Card, hiddenCard } from "../utils/Card";
 import {
   ERR_INVALID_GAME,
   ERR_INVALID_TRUMP_CARD,
@@ -81,10 +81,20 @@ const getConnectionId = asyncTransaction(async (args: FilterQuery<IUser>) => {
 });
 
 const getCards = asyncTransaction(
-  async (args: FilterQuery<IUser>, all: boolean = false) => {
-    const _ = (await User.findOne(args).select("cards")) as unknown as _IUser;
-    if (all) return _?.cards! ?? [];
-    return _?.cards!.slice(1) ?? [];
+  async (
+    args: FilterQuery<IUser>,
+    all: boolean = false,
+    bypassBlind: boolean = false
+  ) => {
+    const _ = (await User.findOne(args)) as unknown as _IUser;
+
+    let cards =
+      _.trumpStatus.includes("BLIND") && !bypassBlind
+        ? _.cards.map((_) => hiddenCard)
+        : _.cards;
+
+    if (all) return cards! ?? [];
+    return cards!.slice(1) ?? [];
   }
 );
 
@@ -111,15 +121,15 @@ const setCards = asyncTransaction(
 );
 
 const addCards = asyncTransaction(
-  async (connectionId: string, cards: Card[]) => {
-    const [oldCards, err] = await getCards({ connectionId });
+  async (userTarget: FilterQuery<IUser>, cards: Card[]) => {
+    const [oldCards, err] = await getCards({ ...userTarget });
     if (err) {
       throw ERR_INVALID_USER;
     }
 
     await User.findOneAndUpdate(
       {
-        connectionId,
+        ...userTarget,
       },
       {
         $push: {

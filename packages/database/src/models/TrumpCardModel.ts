@@ -1,3 +1,4 @@
+import { APIG } from "../../../../apps/backend/src/websocket/APIGateway";
 import { Card } from "../utils/Card";
 import { IGame, ZodGameStrip } from "./GameModel";
 import { IUser, ZodUserStrip } from "./UserModel";
@@ -7,6 +8,7 @@ export const TrumpCardValidator = z.object({
   handler: z.string(),
   type: z.enum(["DRAW", "ATTACK", "UTILITY"]),
   onUse: z.function(z.tuple([ZodUserStrip, ZodGameStrip]), z.promise(z.any())),
+  eventHandler: z.function(z.tuple([z.any(), z.string()]), z.promise(z.any())),
 });
 
 /**
@@ -15,6 +17,14 @@ export const TrumpCardValidator = z.object({
  * DRAW: Draw specific number of cards returns the user new hand
  * ATTACK: Attack the opponent, returns the opponent/target IUser
  * UTILITY: Utility card, returns User IUser
+ */
+
+/**
+ * onUse: is invoked by the user controller
+ */
+
+/**
+ * eventHandler: is invoked by the websocket events
  */
 
 export interface drawTrumpCard<T = Card[]> {
@@ -28,6 +38,7 @@ export interface drawTrumpCard<T = Card[]> {
     // The game the user is in
     game: IGame
   ) => Promise<T>;
+  eventHandler: (api: APIG, userConnectionId: string) => Promise<any>;
 }
 
 export interface attackTrumpCard<T = IUser> {
@@ -41,6 +52,7 @@ export interface attackTrumpCard<T = IUser> {
     // The game the user is in
     game: IGame
   ) => Promise<T>;
+  eventHandler: (api: APIG, userConnectionId: string) => Promise<any>;
 }
 
 export interface utilityTrumpCard<T = IUser> {
@@ -54,12 +66,14 @@ export interface utilityTrumpCard<T = IUser> {
     // The game the user is in
     game: IGame
   ) => Promise<T>;
+  eventHandler: (api: APIG, userConnectionId: string) => Promise<any>;
 }
 
 export interface dummyTrumpCard {
   handler: string;
   type: "dummy";
   onUse: (cardUser: IUser, game: IGame) => any;
+  eventHandler: (api: APIG, userConnectionId: string) => Promise<any>;
 }
 
 export type TrumpCard<T = any> =

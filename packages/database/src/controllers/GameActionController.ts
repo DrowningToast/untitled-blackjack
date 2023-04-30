@@ -1,4 +1,7 @@
-import { ERR_GAME_STATE } from "../../../../apps/backend/src/websocket/utils/ErrorMessages";
+import {
+  ERR_GAME_STATE,
+  ERR_ILLEGAL_ACTION,
+} from "../../../../apps/backend/src/websocket/utils/ErrorMessages";
 import { Game, ZodGameStrip, _IGame } from "../models/GameModel";
 import { Card, sortedGlobalCardsContext } from "../utils/Card";
 import {
@@ -24,6 +27,7 @@ import { GameController } from "./GameController";
 import { UserController } from "./UserController";
 import { FilterQuery } from "mongoose";
 import { IUser } from "../models/UserModel";
+import { TrumpCard } from "../models/TrumpCardModel";
 
 const initRound = asyncTransaction(async (gameId: string) => {
   console.log("INITING GAME");
@@ -66,20 +70,14 @@ const initRound = asyncTransaction(async (gameId: string) => {
   );
 
   // Draw 2 cards for each player
-  const [cardA, eA] = await drawCard(gameId, 2);
-  const [cardB, eB] = await drawCard(gameId, 2);
+  const [cardA, eA] = await drawCards(playerA, gameId, 2);
+  const [cardB, eB] = await drawCards(playerB, gameId, 2);
 
   if (eA || eB) throw ERR_INTERNAL;
 
-  // Deal the cards to the players
-  const _ = await Promise.all([
-    UserController.setCards(connectionA, cardA),
-    UserController.setCards(connectionB, cardB),
-  ]);
-
   // Draw 2 Trump Cards for each player
-  const [trumpCardA, eTA] = await drawTrumpCard(playerA, 2);
-  const [trumpCardB, eTB] = await drawTrumpCard(playerB, 2);
+  const [trumpCardA, eTA] = await drawTrumpCards(playerA, game.gameId, 2);
+  const [trumpCardB, eTB] = await drawTrumpCards(playerB, game.gameId, 2);
 
   console.log("trump A");
   console.log(trumpCardA);
@@ -113,7 +111,41 @@ const resetTargetPoint = asyncTransaction((gameId: string) => {
   );
 });
 
-const drawCard = asyncTransaction(
+const drawCards = asyncTransaction(
+  async (user: FilterQuery<IUser>, gameId: string, amount: number = 1) => {
+    // validate the user
+    const [userInstance, err] = await UserController.getUserMeta(user);
+    if (err) throw err;
+
+    // check if the usesr has deny draw status
+    if (userInstance.trumpStatus.includes("DENY_DRAW"))
+      throw ERR_ILLEGAL_ACTION;
+
+    const [remainingCardsCount] = await getAmountOfRemainingCards(gameId);
+    if (remainingCardsCount === undefined) throw ERR_INTERNAL;
+
+    if (remainingCardsCount < amount) {
+      amount = remainingCardsCount;
+    }
+
+    // shift the cards
+    const [cardStuff, err1] = await shiftCards(gameId, amount);
+    if (err1) throw ERR_INTERNAL;
+
+    const [drawn, remaining] = cardStuff;
+
+    // Add the drawn cards to the user
+    const [userCards, err3] = await UserController.addCards(
+      { username: userInstance.username },
+      drawn
+    );
+    if (err3) throw ERR_INTERNAL;
+
+    return userCards;
+  }
+);
+
+const shiftCards = asyncTransaction(
   async (gameId: string, amount: number = 1) => {
     const [remainingCardsCount] = await getAmountOfRemainingCards(gameId);
 
@@ -143,7 +175,7 @@ const drawCard = asyncTransaction(
       }
     );
 
-    return drawn;
+    return [drawn, remaining];
   }
 );
 
@@ -162,7 +194,7 @@ const setRemainingCards = asyncTransaction(
   }
 );
 
-const getMaxCard = asyncTransaction(async (gameId: string) => {
+const drawMaxCard = asyncTransaction(async (gameId: string) => {
   const [remainingCardsCount, errRemain] = await getAmountOfRemainingCards(
     gameId
   );
@@ -263,6 +295,8 @@ const getAllPlayersCards = asyncTransaction(
     const [players, err] = await GameController.getPlayers(gameId);
     if (err) throw ERR_INVALID_GAME;
 
+    const [playerA, playerB] = players;
+
     const [connectionA, errA] = await UserController.getConnectionId({
       username: players[0].username,
     });
@@ -279,13 +313,13 @@ const getAllPlayersCards = asyncTransaction(
       {
         connectionId: connectionA,
       },
-      includeHidden
+      playerB.trumpStatus.includes("SEE_OPPONENT_CARDS") ? true : includeHidden
     );
     const [cardsB, eB] = await UserController.getCards(
       {
         connectionId: connectionB,
       },
-      includeHidden
+      playerA.trumpStatus.includes("SEE_OPPONENT_CARDS") ? true : includeHidden
     );
 
     if (eA || eB) throw ERR_INVALID_USER;
@@ -630,8 +664,8 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
   const [[updatedGame, err2], [playerACards, err3], [playerBCards, err4]] =
     await Promise.all([
       GameController.getGame({ gameId }),
-      UserController.getCards({ username: playerA.username }, true),
-      UserController.getCards({ username: playerB.username }, true),
+      UserController.getCards({ username: playerA.username }, true, true),
+      UserController.getCards({ username: playerB.username }, true, true),
     ]);
 
   if (err2 || err3 || err4) throw ERR_INTERNAL;
@@ -656,18 +690,47 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
   };
 });
 
-const drawTrumpCard = asyncTransaction(
-  async (user: FilterQuery<IUser>, amount: number = 1) => {
-    // ensure user exists
-    const [userExists, err] = await UserController.getUserMeta(user);
-    if (err) throw err;
-    // get user's trump cards
-    const [owned, err2] = await UserController.getTrumpCards(user);
-    if (err2) throw err2;
+const drawTrumpCards = asyncTransaction(
+  async (user: FilterQuery<IUser>, gameId: string, amount: number = 1) => {
+    const [game, err] = await GameController.getGame({ gameId });
+    if (err) throw ERR_INVALID_GAME;
 
+    // check if the user is in the game or not
+    if (!game.players.map((o) => o.username).includes(user.username))
+      throw ERR_INVALID_GAME;
+
+    // check if the user exists
+    const [userInGame, err2] = await UserController.getUserMeta(user);
+    if (err2) throw ERR_INVALID_USER;
+
+    // get user trump cards
+    const [trumpCards, err3] = await UserController.getTrumpCards(user);
+    if (err3) throw ERR_INTERNAL;
+
+    // get randomized trump cards
+    const [randomizedCards, err4] = await getRandomTrumpCards(
+      amount,
+      trumpCards
+    );
+    if (err4) throw ERR_INTERNAL;
+
+    // add trump cards
+    const [updatedCards, err5] = await UserController.addTrumpCards(
+      user,
+      randomizedCards
+    );
+    if (err5) throw ERR_INTERNAL;
+
+    return updatedCards;
+  }
+);
+
+const getRandomTrumpCards = asyncTransaction(
+  async (amount: number = 1, unwanted: TrumpCard[]) => {
     // generate random pool, garuntee unqiue cards
     const randomPool = [...trumpCardsAsArray].filter(
-      (randomCard) => !owned.map((o) => o.handler).includes(randomCard.handler)
+      (randomCard) =>
+        !unwanted.map((o) => o.handler).includes(randomCard.handler)
     );
 
     const shuffledPool = randomPool.sort(() => Math.random() - 0.5);
@@ -695,7 +758,7 @@ export const GameActionController = {
    *
    * @description Return array of cards, and update the remaining cards
    */
-  drawCard,
+  drawCards,
   /**
    * @access System level
    *
@@ -738,7 +801,7 @@ export const GameActionController = {
    * draws a number of random trump cards
    * doesn't contain duplicate
    */
-  drawTrumpCard,
+  drawTrumpCards,
   /**
    * @access System Level
    *
@@ -753,6 +816,8 @@ export const GameActionController = {
   getTurnOwner,
   /**
    * @access System Level
+   *
+   * If the user has see through status, the opponent cards will always be revealed
    *
    * @description Get the players cards of the game instance
    */
@@ -805,5 +870,5 @@ export const GameActionController = {
    *
    * @description Get the max card from the remaining cards
    */
-  getMaxCard,
+  drawMaxCard,
 };

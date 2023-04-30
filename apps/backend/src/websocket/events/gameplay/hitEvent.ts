@@ -44,16 +44,14 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
   // DONE CHECKING
 
   // Draw
-  const [drawnCards, err5] = await GameActionController.drawCard(
+  const [drawnCards, err5] = await GameActionController.drawCards(
+    {
+      username: user.username,
+    },
     game.gameId,
     1
   );
   if (err5) throw err5;
-  let [cards, err6] = await UserController.addCards(
-    connectionId,
-    drawnCards ?? []
-  );
-  if (err6) throw err6;
 
   const [connectionIds, errIds] = await GameController.getPlayerConnectionIds(
     game.gameId
@@ -87,7 +85,7 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
     UserController.getCards({ username: p2.username }, true),
   ]);
 
-  if (err4 || err7 || !cards || !cards_A || !cards_B || !visibleCards) {
+  if (err4 || err7 || !cards_A || !cards_B || !visibleCards) {
     throw ERR_INTERNAL;
   }
 
