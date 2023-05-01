@@ -95,6 +95,7 @@ export const readyRouter: WebsocketRouter = async (event, context) => {
     if (errNew) throw errNew;
 
     const [_, err] = await initRoundEvent(api, gameId);
+    console.log(_);
     if (err)
       return await send({
         status: "INTERNAL_ERROR",

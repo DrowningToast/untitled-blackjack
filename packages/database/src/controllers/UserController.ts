@@ -8,6 +8,7 @@ import {
   ERR_INVALID_USER,
   ERR_NO_TRUMP_FOUND,
   ERR_TRUMP_USE_DENIED,
+  insertErrorStack,
 } from "../utils/error";
 import { TrumpCard } from "../models/TrumpCardModel";
 import { trumpCardsAsArray } from "../utils/TrumpCard";
@@ -63,7 +64,7 @@ const getUserMeta = asyncTransaction(async (args: FilterQuery<IUser>) => {
     cards: 0,
     connectionId: 0,
   });
-  if (!_) throw ERR_INVALID_USER;
+  if (!_) throw insertErrorStack(ERR_INVALID_USER);
   return ZodUserStrip.parse(_);
 });
 
@@ -76,7 +77,7 @@ const getConnectionId = asyncTransaction(async (args: FilterQuery<IUser>) => {
   const _ = (await User.findOne(args).select([
     "connectionId",
   ])) as unknown as _IUser;
-  if (!_?.connectionId) throw ERR_INVALID_USER;
+  if (!_?.connectionId) throw insertErrorStack(ERR_INVALID_USER);
   return _.connectionId;
 });
 
@@ -101,7 +102,7 @@ const getCards = asyncTransaction(
 const setCards = asyncTransaction(
   async (connectionId: string, cards: Card[]) => {
     const [userMeta] = await getUserMeta({ connectionId });
-    if (!userMeta) throw ERR_INVALID_USER;
+    if (!userMeta) throw insertErrorStack(ERR_INVALID_USER);
 
     const _ = await User.findOneAndUpdate(
       {
@@ -115,7 +116,7 @@ const setCards = asyncTransaction(
     const [updated, err] = await getUserMeta({ connectionId });
     if (err) throw err;
 
-    if (!updated) throw ERR_INVALID_USER;
+    if (!updated) throw insertErrorStack(ERR_INVALID_USER);
     return ZodUserStrip.parse(updated);
   }
 );
@@ -124,7 +125,7 @@ const addCards = asyncTransaction(
   async (userTarget: FilterQuery<IUser>, cards: Card[]) => {
     const [oldCards, err] = await getCards({ ...userTarget });
     if (err) {
-      throw ERR_INVALID_USER;
+      throw insertErrorStack(ERR_INVALID_USER);
     }
 
     await User.findOneAndUpdate(
@@ -166,10 +167,10 @@ const setReadyState = asyncTransaction(
   async (connectionId: string, ready: boolean) => {
     const [userMeta, err] = await getUserMeta({ connectionId });
     if (err) {
-      throw ERR_INVALID_USER;
+      throw insertErrorStack(ERR_INVALID_USER);
     }
     if (!userMeta) {
-      throw ERR_INVALID_USER;
+      throw insertErrorStack(ERR_INVALID_USER);
     }
 
     const _ = await User.findOneAndUpdate(
@@ -183,7 +184,7 @@ const setReadyState = asyncTransaction(
       }
     );
 
-    if (!_) throw ERR_INVALID_USER;
+    if (!_) throw insertErrorStack(ERR_INVALID_USER);
 
     return ZodUserStrip.parse(_);
   }
@@ -256,7 +257,7 @@ const getTrumpCards = asyncTransaction(async (target: FilterQuery<IUser>) => {
   const _ = (await User.findOne(target).select(
     "trumpCards"
   )) as unknown as _IUser;
-  if (!_) throw ERR_INVALID_USER;
+  if (!_) throw insertErrorStack(ERR_INVALID_USER);
   return _.trumpCards;
 });
 
@@ -334,6 +335,29 @@ const removeTrumpCards = asyncTransaction(
   }
 );
 
+const setTrumpStatus = asyncTransaction(
+  async (target: FilterQuery<IUser>, status: IUser["trumpStatus"][0][]) => {
+    const [_, err] = await getUserMeta(target);
+    if (err) throw err;
+
+    const _2 = await User.findOneAndUpdate(
+      {
+        ...target,
+      },
+      {
+        $push: {
+          trumpStatus: status,
+        },
+      }
+    );
+
+    const [updated, errUpdate] = await getUserMeta(target);
+    if (errUpdate) throw errUpdate;
+
+    return updated.trumpStatus;
+  }
+);
+
 const addTrumpStatus = asyncTransaction(
   async (target: FilterQuery<IUser>, status: IUser["trumpStatus"][0]) => {
     const [_, err] = await getUserMeta(target);
@@ -402,37 +426,45 @@ const checkInvincibility = asyncTransaction(
 );
 
 const useTrumpCard = asyncTransaction(
-  async (trumpUser: FilterQuery<IUser>, card: TrumpCard) => {
+  async (trumpUser: FilterQuery<IUser>, trumpCard: TrumpCard) => {
     const [user, errUser] = await getUserMeta(trumpUser);
     if (errUser) throw errUser;
 
     const [cards, err] = await getTrumpCards(trumpUser);
     if (err) throw err;
 
-    if (!trumpCardsAsArray.includes(card)) throw ERR_INVALID_TRUMP_CARD;
+    if (!trumpCardsAsArray.find((card) => card.handler === trumpCard.handler))
+      throw insertErrorStack(ERR_INVALID_TRUMP_CARD);
 
-    if (!cards.includes(card)) throw ERR_NO_TRUMP_FOUND;
+    if (!cards.find((card) => card.handler === trumpCard.handler))
+      throw insertErrorStack(ERR_NO_TRUMP_FOUND);
 
     const [game, errGame] = await GameController.getGame({
       players: user._id,
     });
     if (errGame) throw errGame;
-    if (!game) throw ERR_INVALID_GAME;
+    if (!game) throw insertErrorStack(ERR_INVALID_GAME);
 
     // Deny usage of trump card if the user has a status
-    if (user.trumpStatus.includes("DENY_TRUMP_USE")) throw ERR_TRUMP_USE_DENIED;
+    if (user.trumpStatus.includes("DENY_TRUMP_USE"))
+      throw insertErrorStack(ERR_TRUMP_USE_DENIED);
 
     // Check for opponent invincibility
     const [opponent, errOpponent] = await GameController.getOpponent(
       game.gameId,
       user.username
     );
-    if (card.type === "ATTACK" && opponent?.trumpStatus.includes("INVINCIBLE"))
-      throw ERR_TRUMP_USE_DENIED;
+    if (errOpponent) throw errOpponent;
 
-    await card.onUse(user, game);
+    if (
+      trumpCard.type === "ATTACK" &&
+      opponent?.trumpStatus.includes("INVINCIBLE")
+    )
+      throw insertErrorStack(ERR_TRUMP_USE_DENIED);
 
-    const [updated, errUpdated] = await removeTrumpCards(user, [card]);
+    await trumpCard.onUse(user, game);
+
+    const [updated, errUpdated] = await removeTrumpCards(user, [trumpCard]);
     if (errUpdated) throw errUpdated;
 
     return updated;
@@ -564,4 +596,6 @@ export const UserController = {
    * @description use the trump card
    */
   useTrumpCard,
+  setTrumpCards,
+  setTrumpStatus,
 };

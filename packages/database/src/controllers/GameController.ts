@@ -22,6 +22,7 @@ import {
   ERR_INTERNAL,
   ERR_INVALID_GAME,
   ERR_INVALID_USER,
+  insertErrorStack,
 } from "../utils/error";
 
 /**
@@ -79,7 +80,7 @@ const getGame = asyncTransaction(async (arg: FilterQuery<IGame>) => {
       passcode: 0,
     });
 
-  if (!_) throw ERR_INVALID_GAME;
+  if (!_) throw insertErrorStack(ERR_INVALID_GAME);
 
   const game = ZodGameStrip.parse(_);
 
@@ -91,7 +92,7 @@ const updateGame = asyncTransaction(
     // Get the game instance and populate the players
     let _ = await Game.findOneAndUpdate(query, update);
 
-    if (!_) throw ERR_INVALID_GAME;
+    if (!_) throw insertErrorStack(ERR_INVALID_GAME);
 
     const [game, err] = await getGame({ gameId: _.gameId });
     if (err) throw ERR_INVALID_GAME;
@@ -109,7 +110,7 @@ const joinGame = asyncTransaction(
 
     const [updated, err] = await getGame({ _id });
 
-    if (err) throw ERR_INVALID_GAME;
+    if (err) throw insertErrorStack(ERR_INVALID_GAME);
 
     return ZodGameStrip.parse(updated);
   }
@@ -122,12 +123,12 @@ const leaveGame = asyncTransaction(
     });
 
     // Ensure the user is valid
-    if (!userMeta) throw ERR_INVALID_USER;
+    if (!userMeta) throw insertErrorStack(ERR_INVALID_USER);
 
     // Ensure the game instance is valid
     let [game] = await getGame({ gameId });
 
-    if (!game) throw ERR_INVALID_GAME;
+    if (!game) throw insertErrorStack(ERR_INVALID_GAME);
 
     /**
      * If the game players is empty, delete the game instance
@@ -151,7 +152,7 @@ const leaveGame = asyncTransaction(
 
       const [res, e] = await getGame({ gameId });
 
-      if (e) throw ERR_INVALID_GAME;
+      if (e) throw insertErrorStack(ERR_INVALID_GAME);
 
       return res;
     }
@@ -161,7 +162,7 @@ const leaveGame = asyncTransaction(
 const getPlayers = asyncTransaction(async (gameId: string) => {
   const [game] = await getGame({ gameId });
 
-  if (!game) throw ERR_INVALID_GAME;
+  if (!game) throw insertErrorStack(ERR_INVALID_GAME);
 
   return game?.players ?? [];
 });
@@ -169,7 +170,7 @@ const getPlayers = asyncTransaction(async (gameId: string) => {
 const startGame = asyncTransaction(async (gameId: string) => {
   const [game] = await getGame({ gameId });
 
-  if (!game) throw ERR_INVALID_GAME;
+  if (!game) throw insertErrorStack(ERR_INVALID_GAME);
 
   const _ = await Game.findOneAndUpdate(
     {
@@ -180,7 +181,7 @@ const startGame = asyncTransaction(async (gameId: string) => {
     }
   );
 
-  if (!_) throw ERR_INVALID_GAME;
+  if (!_) throw insertErrorStack(ERR_INVALID_GAME);
 
   const [res, e] = await getGame({ gameId });
 
@@ -190,16 +191,16 @@ const startGame = asyncTransaction(async (gameId: string) => {
 const getPlayerConnectionIds = asyncTransaction(async (gameId: string) => {
   const [game, err] = await getGame({ gameId });
 
-  if (err) throw ERR_INVALID_GAME;
+  if (err) throw insertErrorStack(ERR_INVALID_GAME);
 
-  if (game.players.length !== 2) throw ERR_INGAME_PLAYERS;
+  if (game.players.length !== 2) throw insertErrorStack(ERR_INGAME_PLAYERS);
 
   const [[connectionA, errA], [connectionB, errB]] = await Promise.all([
     UserController.getConnectionId({ username: game.players[0].username }),
     UserController.getConnectionId({ username: game.players[1].username }),
   ]);
 
-  if (errA || errB) throw ERR_INVALID_USER;
+  if (errA || errB) throw insertErrorStack(ERR_INVALID_USER);
 
   return [connectionA, connectionB] as [string, string];
 });
@@ -207,12 +208,12 @@ const getPlayerConnectionIds = asyncTransaction(async (gameId: string) => {
 const getOpponent = asyncTransaction(
   async (gameId: string, username: string) => {
     const [game, err] = await getGame({ gameId });
-    if (err) throw ERR_INVALID_GAME;
+    if (err) throw insertErrorStack(ERR_INVALID_GAME);
 
     const opponent = game.players.find(
       (player) => player.username !== username
     );
-    if (!opponent) throw ERR_INTERNAL;
+    if (!opponent) throw insertErrorStack(ERR_INTERNAL);
 
     return opponent;
   }

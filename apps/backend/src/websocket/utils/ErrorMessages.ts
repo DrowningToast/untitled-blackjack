@@ -39,7 +39,7 @@ export const ERR_INVALID_AUTHORIZE_CONNECTION_INSTANCE: ErrorMessage = {
 };
 
 export const ERR_GAME_STATE: ErrorMessage = {
-  error: "game-state",
+  error: "invalid-game-state",
   description: "The game is in a state that doesn't allow this action",
 };
 

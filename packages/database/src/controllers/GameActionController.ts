@@ -13,6 +13,7 @@ import {
   ERR_ROUND_COUNTER,
   ERR_USER_STAND,
   ERR_WINNER_POINTS,
+  insertErrorStack,
 } from "../utils/error";
 import { asyncTransaction } from "../utils/Transaction";
 import { trumpCardsAsArray } from "../utils/TrumpCard";
@@ -31,23 +32,20 @@ import { TrumpCard } from "../models/TrumpCardModel";
 
 const initRound = asyncTransaction(async (gameId: string) => {
   console.log("INITING GAME");
+  console.log(gameId);
 
   const [game] = await GameController.getGame({ gameId, gameState: "onGoing" });
 
-  if (!game) throw ERR_INVALID_GAME;
+  console.log(game);
+
+  if (!game) throw insertErrorStack(ERR_INVALID_GAME);
 
   const [players, err] = await GameController.getPlayers(gameId);
   if (err) throw err;
 
-  const [playerA, playerB] = players;
-  const [connectionA, errA] = await UserController.getConnectionId({
-    username: playerA.username,
-  });
-  const [connectionB, errB] = await UserController.getConnectionId({
-    username: playerB.username,
-  });
+  console.log(players);
 
-  if (errA || errB) throw ERR_INTERNAL;
+  const [playerA, playerB] = players;
 
   // Reset the cards
   await resetRemainingCards(gameId);
@@ -70,32 +68,53 @@ const initRound = asyncTransaction(async (gameId: string) => {
   );
 
   // Draw 2 cards for each player
-  const [cardA, eA] = await drawCards(playerA, gameId, 2);
-  const [cardB, eB] = await drawCards(playerB, gameId, 2);
+  const [_A, eA] = await drawCards(
+    {
+      username: playerA.username,
+    },
+    gameId,
+    2
+  );
 
-  if (eA || eB) throw ERR_INTERNAL;
+  console.log(_A);
+
+  const [_B, eB] = await drawCards(
+    {
+      username: playerB.username,
+    },
+    gameId,
+    2
+  );
+
+  if (eA) throw eA;
+  if (eB) throw eB;
 
   // Draw 2 Trump Cards for each player
-  const [trumpCardA, eTA] = await drawTrumpCards(playerA, game.gameId, 2);
-  const [trumpCardB, eTB] = await drawTrumpCards(playerB, game.gameId, 2);
+  const [trumpCardA, eTA] = await drawTrumpCards(
+    {
+      username: playerA.username,
+    },
+    game.gameId,
+    2
+  );
+  const [trumpCardB, eTB] = await drawTrumpCards(
+    {
+      username: playerB.username,
+    },
+    game.gameId,
+    2
+  );
 
   console.log("trump A");
   console.log(trumpCardA);
   console.log("trump B");
   console.log(trumpCardB);
 
-  if (eTA || eTB) throw ERR_INTERNAL;
-
-  // Deal the Trump Cards to the players
-  const [[_1A, err1A], [_1B, err1B]] = await Promise.all([
-    UserController.addTrumpCards(playerA, trumpCardA),
-    UserController.addTrumpCards(playerB, trumpCardB),
-  ]);
-  if (err1A || err1B) throw ERR_INTERNAL;
+  if (eTA || eTB) throw insertErrorStack(ERR_INTERNAL);
 
   // Set the turn owner
   const [newGame, e] = await setTurnOwner(gameId);
-  if (e) throw ERR_INTERNAL;
+  if (e) throw insertErrorStack(ERR_INTERNAL);
 
   return newGame;
 });
@@ -119,10 +138,10 @@ const drawCards = asyncTransaction(
 
     // check if the usesr has deny draw status
     if (userInstance.trumpStatus.includes("DENY_DRAW"))
-      throw ERR_ILLEGAL_ACTION;
+      throw insertErrorStack(ERR_ILLEGAL_ACTION);
 
     const [remainingCardsCount] = await getAmountOfRemainingCards(gameId);
-    if (remainingCardsCount === undefined) throw ERR_INTERNAL;
+    if (remainingCardsCount === undefined) throw insertErrorStack(ERR_INTERNAL);
 
     if (remainingCardsCount < amount) {
       amount = remainingCardsCount;
@@ -130,7 +149,7 @@ const drawCards = asyncTransaction(
 
     // shift the cards
     const [cardStuff, err1] = await shiftCards(gameId, amount);
-    if (err1) throw ERR_INTERNAL;
+    if (err1) throw insertErrorStack(ERR_INTERNAL);
 
     const [drawn, remaining] = cardStuff;
 
@@ -139,7 +158,7 @@ const drawCards = asyncTransaction(
       { username: userInstance.username },
       drawn
     );
-    if (err3) throw ERR_INTERNAL;
+    if (err3) throw insertErrorStack(ERR_INTERNAL);
 
     return userCards;
   }
@@ -149,7 +168,7 @@ const shiftCards = asyncTransaction(
   async (gameId: string, amount: number = 1) => {
     const [remainingCardsCount] = await getAmountOfRemainingCards(gameId);
 
-    if (remainingCardsCount === undefined) throw ERR_INTERNAL;
+    if (remainingCardsCount === undefined) throw insertErrorStack(ERR_INTERNAL);
 
     if (remainingCardsCount < amount) {
       amount = remainingCardsCount;
@@ -157,10 +176,10 @@ const shiftCards = asyncTransaction(
 
     // Get the game instance
     const [game, err] = await GameController.getGame({ gameId });
-    if (err) throw ERR_INVALID_GAME;
+    if (err) throw insertErrorStack(ERR_INVALID_GAME);
 
     const [cards, err2] = await getRemainingCards(gameId);
-    if (err2) throw ERR_INTERNAL;
+    if (err2) throw insertErrorStack(ERR_INTERNAL);
 
     const remaining = cards.slice(amount);
     const drawn = cards.slice(0, amount);
@@ -198,12 +217,12 @@ const drawMaxCard = asyncTransaction(async (gameId: string) => {
   const [remainingCardsCount, errRemain] = await getAmountOfRemainingCards(
     gameId
   );
-  if (errRemain) throw ERR_INTERNAL;
-  if (remainingCardsCount === undefined) throw ERR_INTERNAL;
+  if (errRemain) throw insertErrorStack(ERR_INTERNAL);
+  if (remainingCardsCount === undefined) throw insertErrorStack(ERR_INTERNAL);
   if (remainingCardsCount === 0) return null;
 
   const [cards, err] = await getRemainingCards(gameId);
-  if (err) throw ERR_INTERNAL;
+  if (err) throw insertErrorStack(ERR_INTERNAL);
 
   const maxCard = cards.reduce((prev, curr) => {
     if (Math.max(...prev.values) > Math.max(...curr.values)) return prev;
@@ -215,7 +234,7 @@ const drawMaxCard = asyncTransaction(async (gameId: string) => {
   );
 
   const [remain, err2] = await setRemainingCards(gameId, remainingCards);
-  if (err2) throw ERR_INTERNAL;
+  if (err2) throw insertErrorStack(ERR_INTERNAL);
 
   return maxCard;
 });
@@ -225,7 +244,7 @@ const getRemainingCards = asyncTransaction(async (gameId: string) => {
     gameId,
   }).select("remainingCards")) as unknown as _IGame;
 
-  if (!game.remainingCards) throw ERR_INTERNAL;
+  if (!game.remainingCards) throw insertErrorStack(ERR_INTERNAL);
 
   return game.remainingCards;
 });
@@ -250,7 +269,7 @@ const setTurnOwner = asyncTransaction(
       gameId,
     });
 
-    if (!game) throw ERR_INVALID_GAME;
+    if (!game) throw insertErrorStack(ERR_INVALID_GAME);
 
     const players = game.players;
 
@@ -261,7 +280,7 @@ const setTurnOwner = asyncTransaction(
       const [conn, err] = await UserController.getConnectionId({
         username: randomPlayer.username,
       });
-      if (err) throw ERR_INVALID_USER;
+      if (err) throw err;
       connectionId = conn;
     }
 
@@ -269,7 +288,7 @@ const setTurnOwner = asyncTransaction(
       connectionId: connectionId,
     });
 
-    if (!user) throw ERR_INVALID_USER;
+    if (!user) throw insertErrorStack(ERR_INVALID_USER);
 
     await Game.findOneAndUpdate(
       {
@@ -284,7 +303,7 @@ const setTurnOwner = asyncTransaction(
       gameId,
     });
 
-    if (err) throw ERR_INVALID_GAME;
+    if (err) throw err;
 
     return updatedGame;
   }
@@ -293,18 +312,19 @@ const setTurnOwner = asyncTransaction(
 const getAllPlayersCards = asyncTransaction(
   async (gameId: string, includeHidden: boolean = false) => {
     const [players, err] = await GameController.getPlayers(gameId);
-    if (err) throw ERR_INVALID_GAME;
+    if (err) throw err;
 
     const [playerA, playerB] = players;
 
     const [connectionA, errA] = await UserController.getConnectionId({
       username: players[0].username,
     });
+    if (errA) throw errA;
+
     const [connectionB, errB] = await UserController.getConnectionId({
       username: players[1].username,
     });
-
-    if (errA || errB) throw ERR_INTERNAL;
+    if (errB) throw errB;
 
     const [A, B] = players;
 
@@ -315,14 +335,14 @@ const getAllPlayersCards = asyncTransaction(
       },
       playerB.trumpStatus.includes("SEE_OPPONENT_CARDS") ? true : includeHidden
     );
+    if (eA) throw eA;
     const [cardsB, eB] = await UserController.getCards(
       {
         connectionId: connectionB,
       },
       playerA.trumpStatus.includes("SEE_OPPONENT_CARDS") ? true : includeHidden
     );
-
-    if (eA || eB) throw ERR_INVALID_USER;
+    if (eB) throw eB;
 
     return [
       {
@@ -346,15 +366,15 @@ const getPlayerCards = asyncTransaction(
     const [game, err] = await GameController.getGame({
       gameId,
     });
-    if (err) throw ERR_INVALID_GAME;
+    if (err) throw err;
 
     const [user, err2] = await UserController.getUserMeta({
       connectionId,
     });
-    if (err2) throw ERR_INVALID_USER;
+    if (err2) throw err2;
 
     if (game.players.find((p) => p.username === user.username) === undefined)
-      throw ERR_INVALID_USER;
+      throw insertErrorStack(ERR_INVALID_USER);
 
     const [cards, err3] = await UserController.getCards(
       {
@@ -362,7 +382,7 @@ const getPlayerCards = asyncTransaction(
       },
       includeHidden
     );
-    if (err3) throw ERR_INVALID_USER;
+    if (err3) throw err3;
 
     return cards;
   }
@@ -370,9 +390,17 @@ const getPlayerCards = asyncTransaction(
 
 const resetPlayersState = asyncTransaction(async (gameId: string) => {
   const [game, err] = await GameController.getGame({ gameId });
-  if (err) throw ERR_INVALID_GAME;
+  if (err) throw insertErrorStack(ERR_INVALID_GAME);
 
   const players = game.players;
+
+  // get connection ids
+  const [connectionIds, err1] = await GameController.getPlayerConnectionIds(
+    gameId
+  );
+  if (err1) throw err1;
+
+  // reset stand state
   const [[_1, err2], [_2, err3]] = await Promise.all(
     players.map(
       asyncTransaction(async (player) => {
@@ -385,7 +413,58 @@ const resetPlayersState = asyncTransaction(async (gameId: string) => {
       })
     )
   );
-  if (err2 || err3) throw ERR_INTERNAL;
+
+  if (err2) throw err2;
+  if (err3) throw err3;
+
+  // reset trump status
+  const [[_3, err4], [_4, err5]] = await Promise.all(
+    players.map(
+      asyncTransaction(async (player) => {
+        const [user, err] = await UserController.setTrumpStatus(
+          { username: player.username },
+          []
+        );
+        if (err) throw err;
+        return user;
+      })
+    )
+  );
+
+  if (err4) throw err4;
+  if (err5) throw err5;
+
+  // reset trump cards
+  const [[_5, err6], [_6, err7]] = await Promise.all(
+    players.map(
+      asyncTransaction(async (player) => {
+        const [user, err] = await UserController.setTrumpCards(
+          { username: player.username },
+          []
+        );
+        if (err) throw err;
+        return user;
+      })
+    )
+  );
+  if (err6) throw err6;
+  if (err7) throw err7;
+
+  // reset ready state
+  const [[_7, err8], [_8, err9]] = await Promise.all(
+    connectionIds.map(
+      asyncTransaction(async (connectionId) => {
+        const [user, err] = await UserController.setReadyState(
+          connectionId,
+          false
+        );
+        if (err) throw err;
+        return user;
+      })
+    )
+  );
+  if (err8) throw err8;
+  if (err9) throw err9;
 
   return players;
 });
@@ -404,14 +483,14 @@ const resetRemainingCards = asyncTransaction(async (gameId: string) => {
   );
 
   const [game, err] = await GameController.getGame({ gameId });
-  if (err) throw ERR_INVALID_GAME;
+  if (err) throw err;
   return ZodGameStrip.parse(game);
 });
 
 const shuffleRemainingCards = asyncTransaction(async (gameId: string) => {
   const [cards, err] = await getRemainingCards(gameId);
 
-  if (err) throw ERR_INTERNAL;
+  if (err) throw err;
 
   const shuffledCards = cards.sort(() => Math.random() - 0.5);
 
@@ -428,7 +507,7 @@ const shuffleRemainingCards = asyncTransaction(async (gameId: string) => {
   // const [newGame, err2] = await GameController.getGame({ gameId });
   const [newCards, err2] = await getRemainingCards(gameId);
 
-  if (err2) throw ERR_INTERNAL;
+  if (err2) throw err2;
 
   return newCards;
 });
@@ -436,7 +515,7 @@ const shuffleRemainingCards = asyncTransaction(async (gameId: string) => {
 const getAmountOfRemainingCards = asyncTransaction(async (gameId: string) => {
   const [cards, err] = await getRemainingCards(gameId);
 
-  if (err) throw ERR_INTERNAL;
+  if (err) throw err;
 
   return cards.length;
 });
@@ -445,7 +524,7 @@ const switchPlayerTurn = asyncTransaction(async (gameId: string) => {
   // Get the game instance
   const [game, err] = await GameController.getGame({ gameId });
 
-  if (err) throw ERR_INVALID_GAME;
+  if (err) throw err;
 
   // Get the current turn owner
   const currentTurnOwner = game.turnOwner;
@@ -464,7 +543,7 @@ const switchPlayerTurn = asyncTransaction(async (gameId: string) => {
     }
   );
 
-  if (err2) throw ERR_INTERNAL;
+  if (err2) throw err2;
 
   return newTurnOwner;
 });
@@ -487,15 +566,16 @@ const nextRound = asyncTransaction(async (gameId: string) => {
   if (err) throw err;
 
   // check is the on going game or not
-  if (game.gameState !== "onGoing") throw ERR_GAME_STATE;
+  if (game.gameState !== "onGoing") throw insertErrorStack(ERR_GAME_STATE);
 
   // players
   const [playerA, playerB] = game.players;
 
   // check if both players are in stand state
-  if (!playerA.stand || !playerB.stand) throw ERR_USER_STAND;
+  if (!playerA.stand || !playerB.stand) throw insertErrorStack(ERR_USER_STAND);
 
-  if (game.roundCounter >= GAME_ROUND_PLAYED_MAX) throw ERR_ROUND_COUNTER;
+  if (game.roundCounter >= GAME_ROUND_PLAYED_MAX)
+    throw insertErrorStack(ERR_ROUND_COUNTER);
 
   // proceed to next round
   const newGame = await Game.findOneAndUpdate(
@@ -520,7 +600,7 @@ const endGame = asyncTransaction(async (gameId: string) => {
   if (err) throw err;
 
   // check is the on going game or not
-  if (game.gameState !== "onGoing") throw ERR_GAME_STATE;
+  if (game.gameState !== "onGoing") throw insertErrorStack(ERR_GAME_STATE);
 
   // players
   const [playerA, playerB] = game.players;
@@ -550,16 +630,16 @@ const endGame = asyncTransaction(async (gameId: string) => {
  */
 const showdownRound = asyncTransaction(async (gameId: string) => {
   const [game, err] = await GameController.getGame({ gameId });
-  if (err) throw ERR_INVALID_GAME;
+  if (err) throw insertErrorStack(ERR_INVALID_GAME);
 
   // check is the on going game or not
-  if (game.gameState !== "onGoing") throw ERR_GAME_STATE;
+  if (game.gameState !== "onGoing") throw insertErrorStack(ERR_GAME_STATE);
 
   // players
   const [playerA, playerB] = game.players;
 
   // check if both players are in stand state
-  if (!playerA.stand || !playerB.stand) throw ERR_USER_STAND;
+  if (!playerA.stand || !playerB.stand) throw insertErrorStack(ERR_USER_STAND);
 
   // Find out who wins
   // get points sum
@@ -570,7 +650,7 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
   const [playerBSums, errB] = await UserController.getCardsSums({
     username: playerB.username,
   });
-  if (errA || errB) throw ERR_INTERNAL;
+  if (errA || errB) throw insertErrorStack(ERR_INTERNAL);
 
   let [isAExceed, isBExceed] = [false, false];
 
@@ -610,14 +690,14 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
   } else if (A_sum === B_sum) {
     winner = "AB";
   } else {
-    throw ERR_NO_WINNER;
+    throw insertErrorStack(ERR_NO_WINNER);
   }
 
   console.log(`winner: ${winner}`);
 
   // determine how many points the winner gets
   const winnerPoints = GAME_ROUND_SCORE_MAPPING[game.roundCounter];
-  if (!winnerPoints) throw ERR_WINNER_POINTS;
+  if (!winnerPoints) throw insertErrorStack(ERR_WINNER_POINTS);
 
   // Update winner points
   if (winner === "A") {
@@ -657,7 +737,8 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
         },
       }
     );
-    if (err || err2) throw ERR_INTERNAL;
+    if (err) throw err;
+    if (err2) throw err2;
   }
 
   // get cards for the reveal
@@ -668,10 +749,12 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
       UserController.getCards({ username: playerB.username }, true, true),
     ]);
 
-  if (err2 || err3 || err4) throw ERR_INTERNAL;
-  if (!updatedGame) throw ERR_INVALID_GAME;
-  if (!playerACards?.length) throw ERR_INVALID_CARDS;
-  if (!playerBCards?.length) throw ERR_INVALID_CARDS;
+  if (err2) throw err2;
+  if (err3) throw err3;
+  if (err4) throw err4;
+  if (!updatedGame) throw insertErrorStack(ERR_INVALID_GAME);
+  if (!playerACards?.length) throw insertErrorStack(ERR_INVALID_CARDS);
+  if (!playerBCards?.length) throw insertErrorStack(ERR_INVALID_CARDS);
 
   return {
     game: updatedGame,
@@ -693,33 +776,33 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
 const drawTrumpCards = asyncTransaction(
   async (user: FilterQuery<IUser>, gameId: string, amount: number = 1) => {
     const [game, err] = await GameController.getGame({ gameId });
-    if (err) throw ERR_INVALID_GAME;
+    if (err) throw insertErrorStack(ERR_INVALID_GAME);
 
     // check if the user is in the game or not
     if (!game.players.map((o) => o.username).includes(user.username))
-      throw ERR_INVALID_GAME;
+      throw insertErrorStack(ERR_INVALID_GAME);
 
     // check if the user exists
     const [userInGame, err2] = await UserController.getUserMeta(user);
-    if (err2) throw ERR_INVALID_USER;
+    if (err2) throw err2;
 
     // get user trump cards
     const [trumpCards, err3] = await UserController.getTrumpCards(user);
-    if (err3) throw ERR_INTERNAL;
+    if (err3) throw err3;
 
     // get randomized trump cards
     const [randomizedCards, err4] = await getRandomTrumpCards(
       amount,
       trumpCards
     );
-    if (err4) throw ERR_INTERNAL;
+    if (err4) throw err4;
 
     // add trump cards
     const [updatedCards, err5] = await UserController.addTrumpCards(
       user,
       randomizedCards
     );
-    if (err5) throw ERR_INTERNAL;
+    if (err5) throw err5;
 
     return updatedCards;
   }

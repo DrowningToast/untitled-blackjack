@@ -1,4 +1,9 @@
-import { ERR_INTERNAL, ErrorMessage, ZodErrorMessage } from "./error";
+import {
+  ERR_INTERNAL,
+  ErrorMessage,
+  ZodErrorMessage,
+  insertErrorStack,
+} from "./error";
 
 /**
  * @description Error handling function which accepts callbacks
@@ -16,11 +21,12 @@ export const asyncTransaction = <T, K extends any[]>(
       return [response, undefined];
     } catch (e: unknown) {
       console.log(e);
+      let err = insertErrorStack(e as ErrorMessage);
       try {
-        const error = ZodErrorMessage.parse(e);
+        const error = ZodErrorMessage.parse(err);
         return [undefined, error];
       } catch (e) {
-        return [undefined, ERR_INTERNAL];
+        return [undefined, insertErrorStack(ERR_INTERNAL)];
       }
     }
   };

@@ -2,7 +2,6 @@ import { Card, GlobalCardsContext } from "database/src/utils/Card";
 import { ConnectionId, WebsocketResponse } from "./type";
 import { IGame, IUser } from "database";
 import { TrumpCard } from "database/src/models/TrumpCardModel";
-import { Websocket } from "aws-sdk/clients/connectparticipant";
 
 export const healthCheckMessage = (): WebsocketResponse => {
   return {
@@ -214,6 +213,16 @@ export const useTrumpMessage = (
   };
 };
 
+export const updateTrumpCardStateMessage = (
+  trumpCards: TrumpCard[]
+): WebsocketResponse<TrumpCard[]> => {
+  return {
+    handler: "UPDATE_TRUMP_CARDS_STATE",
+    status: "OK",
+    content: trumpCards,
+  };
+};
+
 export const updateTrumpStatusMessage = (
   username: string,
   statuses: IUser["trumpStatus"]
@@ -233,15 +242,11 @@ export const updateTrumpStatusMessage = (
 
 export const updatePointTargetMessage = (
   pointTarget: number
-): WebsocketResponse<{
-  pointTarget: number;
-}> => {
+): WebsocketResponse<number> => {
   return {
     status: "OK",
     handler: "UPDATE_POINT_TARGET",
-    content: {
-      pointTarget,
-    },
+    content: pointTarget,
   };
 };
 
