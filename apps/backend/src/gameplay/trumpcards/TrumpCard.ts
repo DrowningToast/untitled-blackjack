@@ -127,32 +127,6 @@ const tenTrumps: TrumpCard<
     const king = await _handleDrawTrumpOnUse(kingCard)(cardUser, game);
     if (king) return king;
   },
-  // onUse: async (cardUser, game) => {
-  //   const [cards, err1] = await GameActionController.getRemainingCards(
-  //     game.gameId
-  //   );
-  //   if (err1) throw err1;
-
-  //   // check if ace card is in the deck
-  //   const tens = cards.find((card) => card.values[0] === 10);
-  //   if (!tens) return undefined;
-
-  //   // insert the ace card into the user hand
-  //   const [connectionId, err2] = await UserController.getConnectionId({
-  //     username: cardUser.username,
-  //   });
-  //   if (err2) throw err2;
-
-  //   const [user, err3] = await UserController.addCards(cardUser, [tens]);
-  //   if (err3) throw err3;
-
-  //   // return the ace indicating that the card was used
-  //   return tens as
-  //     | typeof tenCard
-  //     | typeof jackCard
-  //     | typeof queenCard
-  //     | typeof kingCard;
-  // },
   afterHandler: DrawTrumpEventHandler(tenCard),
 };
 
