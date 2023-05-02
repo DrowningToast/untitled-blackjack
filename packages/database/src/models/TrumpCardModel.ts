@@ -71,3 +71,11 @@ interface BaseTrumpCard<T> {
 
 export type TrumpCard<T = any> = BaseTrumpCard<T> &
   (drawTrumpCard | attackTrumpCard | utilityTrumpCard | dummyTrumpCard);
+
+/**
+ * @description Mongoose data compatable type
+ */
+export type TrumpCardDocument = {
+  handler: TrumpCard["handler"];
+  type: TrumpCard["type"];
+};

@@ -1,11 +1,15 @@
-import { TrumpCard } from "database/src/models/TrumpCardModel";
+import {
+  TrumpCard,
+  TrumpCardDocument,
+} from "database/src/models/TrumpCardModel";
 import { APIG } from "../APIGateway";
 import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
 import { updateTrumpCardStateMessage } from "../utils/WebsocketResponses";
+import { IUser, _IUser } from "database";
 
 interface TrumpCardStatetContext {
   connectionId: string;
-  trumpCards: TrumpCard[];
+  trumpCards: TrumpCardDocument[];
 }
 
 export const trumpCardStateBroadcast = AsyncExceptionHandler(

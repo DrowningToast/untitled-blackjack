@@ -102,7 +102,6 @@ export const DrawTrumpEventHandler = (card: Card) =>
       // if not, do not send hit event message
 
       await _cardUpdateEventHandler()(api, game);
-      await switchTurnEvent(api);
     }
   );
 

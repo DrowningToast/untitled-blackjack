@@ -5,13 +5,12 @@ import { useTrumpEvent } from "../events/gameplay/useTrumpEvent";
 import { ERR_BAD_REQUEST, ERR_ILLEGAL_ACTION } from "../utils/ErrorMessages";
 import { trumpCardsAsArray } from "../../gameplay/trumpcards/TrumpCard";
 import { GameController, UserController } from "database";
+import { switchTurnEvent } from "../events/gameplay/switchTurnEvent";
 
 const trumpCardHandlers = trumpCardsAsArray.map((card) => card.handler);
 
 const useTrumpBodyValidator = z.object({
-  trumpCard: z.enum(
-    trumpCardsAsArray.map((trump) => trump.handler) as [string, ...string[]]
-  ),
+  trumpCard: z.string(),
 });
 
 export const useTrumpRouter: WebsocketRouter = async (event, context) => {
@@ -61,6 +60,14 @@ export const useTrumpRouter: WebsocketRouter = async (event, context) => {
     return await apig.send({
       status: "INTERNAL_ERROR",
       error: err,
+    });
+  }
+
+  const [_3, err3] = await switchTurnEvent(apig);
+  if (err1) {
+    return await apig.send({
+      status: "INTERNAL_ERROR",
+      error: err1,
     });
   }
 };

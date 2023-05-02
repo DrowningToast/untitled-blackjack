@@ -10,7 +10,7 @@ import {
   ERR_TRUMP_USE_DENIED,
   insertErrorStack,
 } from "../utils/error";
-import { TrumpCard } from "../models/TrumpCardModel";
+import { TrumpCard, TrumpCardDocument } from "../models/TrumpCardModel";
 import { trumpCardsAsArray } from "../../../../apps/backend/src/gameplay/trumpcards/TrumpCard";
 import { GameController } from "./GameController";
 
@@ -312,7 +312,7 @@ const addTrumpCards = asyncTransaction(
 
 const removeTrumpCards = asyncTransaction(
   async (target: FilterQuery<IUser>, cards?: TrumpCard[]) => {
-    let updatedTrumps: _IUser["trumpCards"] = [];
+    let updatedTrumps: TrumpCardDocument[] = [];
 
     if (cards) {
       // get the current trump cards
@@ -464,14 +464,17 @@ const useTrumpCard = asyncTransaction(
     if (user.trumpStatus.includes("DENY_TRUMP_USE"))
       throw insertErrorStack(ERR_TRUMP_USE_DENIED);
 
+    console.log(user.username);
+
     // Check for opponent invincibility
     const [opponent, errOpponent] = await GameController.getOpponent(
       game.gameId,
       user.username
     );
+    console.log(opponent);
+
     if (errOpponent) throw errOpponent;
     console.log("Found the opponent");
-    console.log(opponent);
 
     if (
       trumpCard.type === "ATTACK" &&

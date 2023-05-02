@@ -219,12 +219,17 @@ const getOpponent = asyncTransaction(
     const [game, err] = await getGame({ gameId });
     if (err) throw insertErrorStack(ERR_INVALID_GAME);
 
-    const opponent = game.players.find(
-      (player) => player.username !== username
-    );
-    if (!opponent) throw insertErrorStack(ERR_INTERNAL);
+    const opponent = game.players.filter((player) => {
+      return player.username !== username;
+    });
+    console.log(opponent);
+    console.log(!opponent.length);
 
-    return opponent;
+    if (!opponent.length) throw insertErrorStack(ERR_INTERNAL);
+
+    console.log("returning opponent");
+
+    return opponent[0];
   }
 );
 

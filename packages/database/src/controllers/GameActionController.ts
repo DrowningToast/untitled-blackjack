@@ -28,7 +28,7 @@ import { GameController } from "./GameController";
 import { UserController } from "./UserController";
 import { FilterQuery } from "mongoose";
 import { IUser, _IUser } from "../models/UserModel";
-import { TrumpCard } from "../models/TrumpCardModel";
+import { TrumpCard, TrumpCardDocument } from "../models/TrumpCardModel";
 
 const initRound = asyncTransaction(async (gameId: string) => {
   console.log("INITING GAME");
@@ -249,7 +249,7 @@ const setRemainingCards = asyncTransaction(
   }
 );
 
-const drawMaxCard = asyncTransaction(async (gameId: string) => {
+const takeMaxCard = asyncTransaction(async (gameId: string) => {
   const [remainingCardsCount, errRemain] = await getAmountOfRemainingCards(
     gameId
   );
@@ -350,6 +350,8 @@ const getAllPlayersCards = asyncTransaction(
     const [players, err] = await GameController.getPlayers(gameId);
     if (err) throw err;
 
+    console.log(players);
+
     const [playerA, playerB] = players;
 
     const [connectionA, errA] = await UserController.getConnectionId({
@@ -397,7 +399,7 @@ const getPlayerCards = asyncTransaction(
   async (
     gameId: string,
     connectionId: string,
-    includeHidden: boolean = true
+    includeHidden: boolean = false
   ) => {
     const [game, err] = await GameController.getGame({
       gameId,
@@ -845,7 +847,7 @@ const drawTrumpCards = asyncTransaction(
 );
 
 const getRandomTrumpCards = asyncTransaction(
-  async (amount: number = 1, unwanted: _IUser["trumpCards"]) => {
+  async (amount: number = 1, unwanted: TrumpCardDocument[]) => {
     // generate random pool, garuntee unqiue cards
     const randomPool = [...trumpCardsAsArray].filter(
       (randomCard) =>
@@ -989,7 +991,7 @@ export const GameActionController = {
    *
    * @description Get the max card from the remaining cards
    */
-  drawMaxCard,
+  takeMaxCard,
   /**
    * @access Take a card out of a deck and add it to the player
    *

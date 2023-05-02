@@ -2,7 +2,7 @@ import mongoose, { ObjectId } from "mongoose";
 import { Card } from "../utils/Card";
 
 import { z } from "zod";
-import { TrumpCard } from "./TrumpCardModel";
+import { TrumpCardDocument } from "./TrumpCardModel";
 
 /**
  * @description Remove sensitive data from the model
@@ -53,7 +53,7 @@ export type _IUser = IUser & {
   _id: ObjectId;
   connectionId: string;
   cards: Card[];
-  trumpCards: { handler: TrumpCard["handler"]; type: TrumpCard["type"] }[];
+  trumpCards: TrumpCardDocument[];
 };
 
 const UserSchema = new mongoose.Schema({

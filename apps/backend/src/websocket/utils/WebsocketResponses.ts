@@ -1,7 +1,10 @@
 import { Card, GlobalCardsContext } from "database/src/utils/Card";
 import { ConnectionId, WebsocketResponse } from "./type";
-import { IGame, IUser } from "database";
-import { TrumpCard } from "database/src/models/TrumpCardModel";
+import { IGame, IUser, _IUser } from "database";
+import {
+  TrumpCard,
+  TrumpCardDocument,
+} from "database/src/models/TrumpCardModel";
 
 export const healthCheckMessage = (): WebsocketResponse => {
   return {
@@ -214,8 +217,8 @@ export const useTrumpMessage = (
 };
 
 export const updateTrumpCardStateMessage = (
-  trumpCards: TrumpCard[]
-): WebsocketResponse<TrumpCard[]> => {
+  trumpCards: TrumpCardDocument[]
+): WebsocketResponse<TrumpCardDocument[]> => {
   return {
     handler: "UPDATE_TRUMP_CARDS_STATE",
     status: "OK",

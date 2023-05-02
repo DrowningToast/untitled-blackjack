@@ -30,7 +30,6 @@ import {
   seeThroughTrumpEventHandler,
   undoHitTrumpEventHandler,
 } from "./TrumpCardEventHandler";
-import { ERR_INVALID_GAME } from "database/src/utils/error";
 
 const demoTrump: TrumpCard = {
   handler: "demo",
@@ -306,27 +305,36 @@ const maxCardOpponentTrump: TrumpCard<Card[]> = {
     );
     if (errTarget) throw errTarget;
 
+    console.log("taret accquied");
+    console.log(target);
+
     const [currCards, errCurr] = await UserController.getCards({
       username: target.username,
     });
     if (errCurr) throw errCurr;
 
     // check for invincibility
-    const [isInvinc, errInvinc] = await UserController.checkInvincibility(
-      target
-    );
+    const [isInvinc, errInvinc] = await UserController.checkInvincibility({
+      username: target.username,
+    });
     if (errInvinc) throw errInvinc;
     if (isInvinc) return currCards;
 
-    const [maxCard, errMax] = await GameActionController.drawMaxCard(
+    const [maxCard, errMax] = await GameActionController.takeMaxCard(
       game.gameId
     );
     if (errMax) throw errMax;
 
     if (!maxCard) return currCards;
 
-    const [newCards, err3] = await UserController.addCards(target, [maxCard]);
+    const [newCards, err3] = await UserController.addCards(
+      { username: target.username },
+      [maxCard]
+    );
     if (err3) throw err3;
+
+    console.log("card drawn is ");
+    console.log(newCards);
 
     return newCards;
   },
@@ -352,8 +360,10 @@ const seeThroughTrump: TrumpCard<IUser> = {
     if (errInvinc) throw errInvinc;
     if (isInvinc) return target;
 
+    console.log(isInvinc);
+
     const [statuses, err] = await UserController.addTrumpStatus(
-      cardUser,
+      { username: cardUser.username },
       "SEE_OPPONENT_CARDS"
     );
     if (err) throw err;
@@ -458,15 +468,45 @@ const hideCardsTrump: TrumpCard<IUser> = {
 
 // All trump cards in the game
 export const trumpCardsAsArray: TrumpCard[] = [
+  /**
+   * WIP
+   */
   blindDrawTrump,
+  /**
+   * WIP
+   */
   denyDrawTrump,
+  /**
+   * WIP
+   */
   preventTrumpCardTrump,
+  /**
+   * Draw the max card in the deck and add it to the opponent's hand
+   */
   maxCardOpponentTrump,
+  /**
+   * WIP
+   */
   seeThroughTrump,
+  /**
+   * WIP
+   */
   changePointsLimit25Trump,
+  /**
+   * WIP
+   */
   undoHitTrump,
+  /**
+   * WIP
+   */
   invincibilityTrump,
+  /**
+   * WIP
+   */
   hideCardsTrump,
+  /**
+   * WIP
+   */
   removeLastCardTrump,
   aceTrump,
   threeTrump,

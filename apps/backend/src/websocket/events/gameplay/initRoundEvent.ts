@@ -34,38 +34,40 @@ export const initRoundEvent = AsyncExceptionHandler(
 
     const [GlobalCardsContext, errAll] =
       await GameActionController.getAllPlayersCards(gameId);
-    if (errAll) throw errAll;
+
     console.log(GlobalCardsContext);
+    console.log("lmao");
+
+    if (errAll) throw errAll;
     if (!GlobalCardsContext[0]) throw insertErrorStack(ERR_INIT_GAME);
     if (!GlobalCardsContext[1]) throw insertErrorStack(ERR_INIT_GAME);
 
+    console.log("lmao2");
+
     // get visible cards
-    const [cardsA, errA] = await GameActionController.getPlayerCards(
-      gameId,
-      connectionIds[0],
-      true
+    // use Promise.all
+    const [[cardsA, errA], [cardsB, errB]] = await Promise.all(
+      connectionIds.map(async (connId) => {
+        return await GameActionController.getPlayerCards(gameId, connId, true);
+      })
     );
 
-    console.log(cardsA);
+    if (errA || !cardsA) throw errA;
+    if (errB || !cardsB) throw errB;
 
-    const [cardsB, errB] = await GameActionController.getPlayerCards(
-      gameId,
-      connectionIds[1],
-      true
-    );
-
-    if (errA) throw errA;
-    if (errB) throw errB;
-
-    console.log(cardsB);
+    console.log("getting trujmp");
 
     // get trump Cards
-    const [trumpCardA, errTrump] = await UserController.getTrumpCards({
-      connectionId: connectionIds[0],
-    });
-    const [trumpCardB, errTrump2] = await UserController.getTrumpCards({
-      connectionId: connectionIds[1],
-    });
+    // use Promise.all
+    const [[trumpCardA, errTrump], [trumpCardB, errTrump2]] = await Promise.all(
+      connectionIds.map(async (connId) => {
+        return await UserController.getTrumpCards({
+          connectionId: connId,
+        });
+      })
+    );
+    if (errTrump || !trumpCardA) throw errTrump;
+    if (errTrump2 || !trumpCardB) throw errTrump2;
 
     if (errTrump || errTrump2) throw errTrump;
 
