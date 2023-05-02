@@ -18,6 +18,7 @@ import {
 import { asyncTransaction } from "../utils/Transaction";
 import { UserController } from "./UserController";
 import {
+  ERR_EXISTED_GAME,
   ERR_INGAME_PLAYERS,
   ERR_INTERNAL,
   ERR_INVALID_GAME,
@@ -41,6 +42,12 @@ const createGame = asyncTransaction(
      */
     if (playersIDs.length !== 1)
       throw new Error("There should be at least one player");
+
+    /**
+     * Ensure no room with the same passcode already exists
+     */
+    const [game, err] = await getGame({ passcode });
+    if (game) throw insertErrorStack(ERR_EXISTED_GAME);
 
     const _ = new Game({
       players: playersIDs,
@@ -207,6 +214,8 @@ const getPlayerConnectionIds = asyncTransaction(async (gameId: string) => {
 
 const getOpponent = asyncTransaction(
   async (gameId: string, username: string) => {
+    console.log("searching for opponent");
+
     const [game, err] = await getGame({ gameId });
     if (err) throw insertErrorStack(ERR_INVALID_GAME);
 

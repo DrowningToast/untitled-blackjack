@@ -11,7 +11,7 @@ import {
   insertErrorStack,
 } from "../utils/error";
 import { TrumpCard } from "../models/TrumpCardModel";
-import { trumpCardsAsArray } from "../utils/TrumpCard";
+import { trumpCardsAsArray } from "../../../../apps/backend/src/gameplay/trumpcards/TrumpCard";
 import { GameController } from "./GameController";
 
 const getAllConnections = asyncTransaction(async () => {
@@ -51,7 +51,7 @@ const updateUser = asyncTransaction(
  * @description Delete a user instance
  */
 const deleteUser = asyncTransaction(async (args: FilterQuery<IUser>) => {
-  const _ = await User.deleteOne(args);
+  const _ = await User.deleteMany(args);
   return _;
 });
 
@@ -271,16 +271,26 @@ const setTrumpCards = asyncTransaction(
         trumpCards: cards,
       }
     );
+
+    const [updated, err] = await getUserMeta(target);
+    if (err) throw err;
+
+    return updated;
   }
 );
 
 const addTrumpCards = asyncTransaction(
   async (target: FilterQuery<IUser>, cards: TrumpCard[]) => {
     // check if already has the card or not
-    const [trumpCards, err] = await getTrumpCards(target);
+    const [ownedTrumpCardsAsDoc, err] = await getTrumpCards(target);
     if (err) throw err;
 
-    if (trumpCards.find((owned) => cards.includes(owned))) return trumpCards;
+    if (
+      ownedTrumpCardsAsDoc.find((owned) =>
+        cards.find((c) => c.handler === owned.handler)
+      )
+    )
+      return ownedTrumpCardsAsDoc;
 
     const _ = await User.findOneAndUpdate(
       {
@@ -302,31 +312,29 @@ const addTrumpCards = asyncTransaction(
 
 const removeTrumpCards = asyncTransaction(
   async (target: FilterQuery<IUser>, cards?: TrumpCard[]) => {
+    let updatedTrumps: _IUser["trumpCards"] = [];
+
     if (cards) {
-      const _ = await User.findOneAndUpdate(
-        {
-          ...target,
-        },
-        {
-          $pull: {
-            trumpCards: {
-              $in: cards,
-            },
-          },
-        }
-      );
-    } else {
-      const _ = await User.findOneAndUpdate(
-        {
-          ...target,
-        },
-        {
-          $set: {
-            trumpCards: [],
-          },
-        }
+      // get the current trump cards
+      const [ownedTrumpCardsAsDoc, err] = await getTrumpCards(target);
+      if (err) throw err;
+
+      // remove the cards
+      updatedTrumps = ownedTrumpCardsAsDoc.filter((owned) =>
+        cards.find((c) => c.handler !== owned.handler)
       );
     }
+
+    const _ = await User.findOneAndUpdate(
+      {
+        ...target,
+      },
+      {
+        $set: {
+          trumpCards: updatedTrumps,
+        },
+      }
+    );
 
     const [updated, err] = await getTrumpCards(target);
     if (err) throw err;
@@ -427,11 +435,15 @@ const checkInvincibility = asyncTransaction(
 
 const useTrumpCard = asyncTransaction(
   async (trumpUser: FilterQuery<IUser>, trumpCard: TrumpCard) => {
-    const [user, errUser] = await getUserMeta(trumpUser);
+    const [user, errUser] = await getUserMeta({ username: trumpUser.username });
     if (errUser) throw errUser;
+
+    console.log("Found user");
 
     const [cards, err] = await getTrumpCards(trumpUser);
     if (err) throw err;
+
+    console.log("Found all user trumpcards");
 
     if (!trumpCardsAsArray.find((card) => card.handler === trumpCard.handler))
       throw insertErrorStack(ERR_INVALID_TRUMP_CARD);
@@ -442,6 +454,9 @@ const useTrumpCard = asyncTransaction(
     const [game, errGame] = await GameController.getGame({
       players: user._id,
     });
+
+    console.log("Found the game user is in");
+
     if (errGame) throw errGame;
     if (!game) throw insertErrorStack(ERR_INVALID_GAME);
 
@@ -455,6 +470,8 @@ const useTrumpCard = asyncTransaction(
       user.username
     );
     if (errOpponent) throw errOpponent;
+    console.log("Found the opponent");
+    console.log(opponent);
 
     if (
       trumpCard.type === "ATTACK" &&
@@ -462,12 +479,35 @@ const useTrumpCard = asyncTransaction(
     )
       throw insertErrorStack(ERR_TRUMP_USE_DENIED);
 
-    await trumpCard.onUse(user, game);
+    console.log("removing turmp card");
 
-    const [updated, errUpdated] = await removeTrumpCards(user, [trumpCard]);
+    const [updated, errUpdated] = await removeTrumpCards(
+      { username: user.username },
+      [trumpCard]
+    );
     if (errUpdated) throw errUpdated;
 
+    console.log("Going for on use");
+
+    await trumpCard.onUse(
+      {
+        username: user.username,
+      },
+      game
+    );
+
     return updated;
+  }
+);
+
+const checkForTrumpStatus = asyncTransaction(
+  async (target: FilterQuery<IUser>, status: IUser["trumpStatus"]) => {
+    const [user, err] = await getUserMeta(target);
+    if (err) throw err;
+
+    return user.trumpStatus.find((st) =>
+      status.find((status) => status === st)
+    );
   }
 );
 
@@ -596,6 +636,22 @@ export const UserController = {
    * @description use the trump card
    */
   useTrumpCard,
+  /**
+   * @access System Level
+   *
+   * @description set the trump cards
+   */
   setTrumpCards,
+  /**
+   * @access System Level
+   *
+   * @description set the trump status
+   */
   setTrumpStatus,
+  /**
+   * @access System Level
+   *
+   * @description check for trump status
+   */
+  checkForTrumpStatus,
 };

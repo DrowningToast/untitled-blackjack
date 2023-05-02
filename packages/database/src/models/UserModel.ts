@@ -53,7 +53,7 @@ export type _IUser = IUser & {
   _id: ObjectId;
   connectionId: string;
   cards: Card[];
-  trumpCards: TrumpCard[];
+  trumpCards: { handler: TrumpCard["handler"]; type: TrumpCard["type"] }[];
 };
 
 const UserSchema = new mongoose.Schema({
@@ -104,6 +104,9 @@ const UserSchema = new mongoose.Schema({
    */
   trumpCards: [
     {
+      type: {
+        type: String,
+      },
       handler: {
         type: String,
       },

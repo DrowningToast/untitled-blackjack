@@ -7,7 +7,7 @@ import { authRouter } from "./router/authRouter";
 import { readyRouter } from "./router/readyRouter";
 import { hitRouter } from "./router/hitRouter";
 import { standRouter } from "./router/standRouter";
-import { dev_giveTrump } from "./router/dev_giveTrump";
+import { dev_cheatTrump } from "./router/dev_cheatTrump";
 import { useTrumpRouter } from "./router/useTrumpRouter";
 
 export const WebsocketRouters: Record<string, WebsocketRouter> = {
@@ -22,7 +22,7 @@ export const WebsocketRouters: Record<string, WebsocketRouter> = {
   useTrump: useTrumpRouter,
 
   // Dev routers
-  dev_giveTrump: dev_giveTrump,
+  dev_cheatTrump: dev_cheatTrump,
 
   $default: $defaultRouter,
 };

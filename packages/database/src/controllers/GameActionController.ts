@@ -16,7 +16,7 @@ import {
   insertErrorStack,
 } from "../utils/error";
 import { asyncTransaction } from "../utils/Transaction";
-import { trumpCardsAsArray } from "../utils/TrumpCard";
+import { trumpCardsAsArray } from "../../../../apps/backend/src/gameplay/trumpcards/TrumpCard";
 // import { trumpCards } from "../utils/TrumpCard";
 import {
   GAME_ROUND_PLAYED_MAX,
@@ -27,7 +27,7 @@ import {
 import { GameController } from "./GameController";
 import { UserController } from "./UserController";
 import { FilterQuery } from "mongoose";
-import { IUser } from "../models/UserModel";
+import { IUser, _IUser } from "../models/UserModel";
 import { TrumpCard } from "../models/TrumpCardModel";
 
 const initRound = asyncTransaction(async (gameId: string) => {
@@ -136,10 +136,6 @@ const drawCards = asyncTransaction(
     const [userInstance, err] = await UserController.getUserMeta(user);
     if (err) throw err;
 
-    // check if the usesr has deny draw status
-    if (userInstance.trumpStatus.includes("DENY_DRAW"))
-      throw insertErrorStack(ERR_ILLEGAL_ACTION);
-
     const [remainingCardsCount] = await getAmountOfRemainingCards(gameId);
     if (remainingCardsCount === undefined) throw insertErrorStack(ERR_INTERNAL);
 
@@ -161,6 +157,46 @@ const drawCards = asyncTransaction(
     if (err3) throw insertErrorStack(ERR_INTERNAL);
 
     return userCards;
+  }
+);
+
+const takeCards = asyncTransaction(
+  async (user: FilterQuery<IUser>, gameId: string, cards: Card[]) => {
+    // validate the user
+    const [userInstance, err] = await UserController.getUserMeta(user);
+    if (err) throw err;
+
+    // check if the user is in the game or not
+    const [game] = await GameController.getGame({
+      gameId,
+      players: userInstance._id,
+    });
+    if (!game) throw insertErrorStack(ERR_INVALID_GAME);
+
+    // Add the drawn cards to the user
+    const [userCards, err3] = await UserController.addCards(
+      { username: userInstance.username },
+      cards
+    );
+    if (err3) throw insertErrorStack(ERR_INTERNAL);
+
+    // filter out drawn card
+    const _ = await Game.updateOne(
+      { gameId },
+      {
+        $pull: {
+          remainingCards: {
+            $in: cards,
+          },
+        },
+      }
+    );
+
+    // get remaining cards
+    const [remainingCards, errRemain] = await getRemainingCards(gameId);
+    if (errRemain) throw insertErrorStack(ERR_INTERNAL);
+
+    return remainingCards;
   }
 );
 
@@ -809,7 +845,7 @@ const drawTrumpCards = asyncTransaction(
 );
 
 const getRandomTrumpCards = asyncTransaction(
-  async (amount: number = 1, unwanted: TrumpCard[]) => {
+  async (amount: number = 1, unwanted: _IUser["trumpCards"]) => {
     // generate random pool, garuntee unqiue cards
     const randomPool = [...trumpCardsAsArray].filter(
       (randomCard) =>
@@ -954,4 +990,10 @@ export const GameActionController = {
    * @description Get the max card from the remaining cards
    */
   drawMaxCard,
+  /**
+   * @access Take a card out of a deck and add it to the player
+   *
+   * @description returns the remaining cards
+   */
+  takeCards,
 };

@@ -1,3 +1,4 @@
+import { FilterQuery } from "mongoose";
 import { APIG } from "../../../../apps/backend/src/websocket/APIGateway";
 import { Card } from "../utils/Card";
 import { IGame, ZodGameStrip } from "./GameModel";
@@ -8,7 +9,7 @@ export const TrumpCardValidator = z.object({
   handler: z.string(),
   type: z.enum(["DRAW", "ATTACK", "UTILITY"]),
   onUse: z.function(z.tuple([ZodUserStrip, ZodGameStrip]), z.promise(z.any())),
-  eventHandler: z.function(z.tuple([z.any(), z.string()]), z.promise(z.any())),
+  afterHandler: z.function(z.tuple([z.any(), z.string()]), z.promise(z.any())),
 });
 
 /**
@@ -24,60 +25,49 @@ export const TrumpCardValidator = z.object({
  */
 
 /**
- * eventHandler: is invoked by the websocket events
+ * afterHandler: is invoked by the websocket events
  */
 
-export interface drawTrumpCard<T = Card[]> {
+export interface drawTrumpCard {
   handler: string;
   type: "DRAW";
   // Handle the effeec of the card
-  onUse: (
-    // The user who used the card
-    cardUser: IUser,
-
-    // The game the user is in
-    game: IGame
-  ) => Promise<T>;
-  eventHandler: (api: APIG, userConnectionId: string) => Promise<any>;
+  afterHandler: (
+    api: APIG,
+    userConnectionId: string,
+    success: boolean
+  ) => Promise<any>;
 }
 
-export interface attackTrumpCard<T = IUser> {
+export interface attackTrumpCard {
   handler: string;
   type: "ATTACK";
   // Handle the effeec of the card
-  onUse: (
-    // The user who used the card
-    cardUser: IUser,
-
-    // The game the user is in
-    game: IGame
-  ) => Promise<T>;
-  eventHandler: (api: APIG, userConnectionId: string) => Promise<any>;
+  afterHandler: (api: APIG, userConnectionId: string) => Promise<any>;
 }
 
-export interface utilityTrumpCard<T = IUser> {
+export interface utilityTrumpCard {
   handler: string;
   type: "UTILITY";
   // Handle the effeec of the card
+  afterHandler: (api: APIG, userConnectionId: string) => Promise<any>;
+}
+
+export interface dummyTrumpCard {
+  type: "dummy";
+  afterHandler: () => Promise<any>;
+}
+
+interface BaseTrumpCard<T> {
+  handler: string;
   onUse: (
     // The user who used the card
-    cardUser: IUser,
+    cardUser: FilterQuery<IUser>,
 
     // The game the user is in
     game: IGame
   ) => Promise<T>;
-  eventHandler: (api: APIG, userConnectionId: string) => Promise<any>;
 }
 
-export interface dummyTrumpCard {
-  handler: string;
-  type: "dummy";
-  onUse: (cardUser: IUser, game: IGame) => any;
-  eventHandler: (api: APIG, userConnectionId: string) => Promise<any>;
-}
-
-export type TrumpCard<T = any> =
-  | drawTrumpCard<T>
-  | attackTrumpCard<T>
-  | utilityTrumpCard<T>
-  | dummyTrumpCard;
+export type TrumpCard<T = any> = BaseTrumpCard<T> &
+  (drawTrumpCard | attackTrumpCard | utilityTrumpCard | dummyTrumpCard);

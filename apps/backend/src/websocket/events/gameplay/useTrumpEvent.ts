@@ -1,4 +1,5 @@
 import {
+  ERR_INTERNAL,
   ERR_INVALID_TRUMP_CARD,
   ERR_INVALID_USER,
   ERR_NO_TRUMP_FOUND,
@@ -6,9 +7,9 @@ import {
   insertErrorStack,
 } from "database";
 import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
-import { trumpCardsAsArray } from "database/src/utils/TrumpCard";
 import { useTrumpBroadcast } from "../../broadcast/useTrumpBroadcast";
 import { APIG } from "../../APIGateway";
+import { trumpCardsAsArray } from "../../../gameplay/trumpcards/TrumpCard";
 
 export const useTrumpEvent = AsyncExceptionHandler(
   async (api: APIG, userConnectionId: string, trumpHandler: string) => {
@@ -32,17 +33,33 @@ export const useTrumpEvent = AsyncExceptionHandler(
     console.log(validTrump);
 
     // check if the user has the trump card
-    const [trumpCards, err2] = await UserController.getTrumpCards({
+    const [trumpCardsAsDoc, err2] = await UserController.getTrumpCards({
       username: user.username,
     });
     if (err2) throw err2;
 
-    console.log(trumpCards);
+    console.log(trumpCardsAsDoc);
 
-    const trumpCard = trumpCards.find(
+    const trumpCardAsDoc = trumpCardsAsDoc.find(
       (trump) => trump.handler === trumpHandler
     );
-    if (!trumpCard) throw ERR_NO_TRUMP_FOUND;
+    if (!trumpCardAsDoc) throw ERR_NO_TRUMP_FOUND;
+
+    // get the trump card as an object
+    const trumpCard = trumpCardsAsArray.find(
+      (trump) => trump.handler === trumpCardAsDoc.handler
+    );
+    if (!trumpCard) throw ERR_INTERNAL;
+
+    // user cards before using trump card
+    const [oldCards, errCards] = await UserController.getCards({
+      username: user.username,
+    });
+    if (errCards) throw errCards;
+
+    console.log({
+      username: user.username,
+    });
 
     // use trump card
     const [res, err3] = await UserController.useTrumpCard(
@@ -53,11 +70,36 @@ export const useTrumpEvent = AsyncExceptionHandler(
     );
     if (err3) throw err3;
 
+    console.log("Used the trump card");
+
     // announce use or trump card
-    const [_, errBroadcast] = await useTrumpBroadcast(api, user, trumpCard);
+    const [_, errBroadcast] = await useTrumpBroadcast(
+      api,
+      user.username,
+      trumpCard
+    );
     if (errBroadcast) throw errBroadcast;
 
-    // trigger trump card events
-    await trumpCard.eventHandler(api, userConnectionId);
+    if (trumpCard.type === "DRAW") {
+      // check if the user has drawn the card successfully or not
+      // get user cards
+      const [newCards, errCards2] = await UserController.getCards({
+        username: user.username,
+      });
+      if (errCards2) throw errCards2;
+
+      console.log(oldCards);
+      console.log(newCards);
+
+      const success = newCards.length > oldCards.length;
+
+      console.log(success);
+
+      // trigger trump card events with success
+      await trumpCard.afterHandler(api, userConnectionId, success);
+    } else {
+      // trigger trump card events
+      await trumpCard.afterHandler(api, userConnectionId);
+    }
   }
 );

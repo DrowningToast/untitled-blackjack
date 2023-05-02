@@ -1,22 +1,24 @@
 import { FilterQuery } from "mongoose";
-import { APIG } from "../../../../apps/backend/src/websocket/APIGateway";
-import { cardStateBroadcast } from "../../../../apps/backend/src/websocket/broadcast/cardStateBroadcast";
-import { hitBroadcast } from "../../../../apps/backend/src/websocket/broadcast/hitBroadcast";
+import { AsyncExceptionHandler } from "../../websocket/AsyncExceptionHandler";
+import { APIG } from "../../websocket/APIGateway";
 import {
-  cardStateMessage,
+  ERR_INTERNAL,
+  ERR_INVALID_GAME,
+  GameActionController,
+  GameController,
+  IGame,
+  IUser,
+  UserController,
+} from "database";
+import { cardStateBroadcast } from "../../websocket/broadcast/cardStateBroadcast";
+import {
   hitEventMessage,
-  switchTurnMessage,
   updatePointTargetMessage,
   updateTrumpStatusMessage,
-} from "../../../../apps/backend/src/websocket/utils/WebsocketResponses";
-import { GameActionController } from "../controllers/GameActionController";
-import { GameController } from "../controllers/GameController";
-import { UserController } from "../controllers/UserController";
-import { IGame } from "../models/GameModel";
-import { Card } from "./Card";
-import { ERR_INTERNAL, ERR_INVALID_GAME } from "./error";
-import { IUser } from "../models/UserModel";
-import { AsyncExceptionHandler } from "../../../../apps/backend/src/websocket/AsyncExceptionHandler";
+} from "../../websocket/utils/WebsocketResponses";
+import { Card } from "database/src/utils/Card";
+import { hitBroadcast } from "../../websocket/broadcast/hitBroadcast";
+import { switchTurnEvent } from "../../websocket/events/gameplay/switchTurnEvent";
 
 const _cardUpdateEventHandler = () =>
   AsyncExceptionHandler(async (api: APIG, game: IGame) => {
@@ -71,29 +73,38 @@ const _trumpStatusUpdateEventHandler = () =>
   );
 
 export const DrawTrumpEventHandler = (card: Card) =>
-  AsyncExceptionHandler(async (api: APIG, userConnectionId: string) => {
-    const { broadcast } = api;
-    const [user, err] = await UserController.getUserMeta({
-      connectionId: userConnectionId,
-    });
-    if (err) throw err;
+  AsyncExceptionHandler(
+    async (api: APIG, userConnectionId: string, success: boolean) => {
+      const { broadcast } = api;
+      console.log(userConnectionId);
+      const [user, err] = await UserController.getUserMeta({
+        connectionId: userConnectionId,
+      });
+      if (err) throw err;
 
-    const [game, err1] = await GameController.getGame({
-      players: user._id,
-    });
-    if (err1) throw err1;
+      const [game, err1] = await GameController.getGame({
+        players: user._id,
+      });
+      if (err1) throw err1;
 
-    const [connectionIds, err2] = await GameController.getPlayerConnectionIds(
-      game.gameId
-    );
-    if (err2) throw err2;
+      const [connectionIds, err2] = await GameController.getPlayerConnectionIds(
+        game.gameId
+      );
+      if (err2) throw err2;
 
-    if (!game.turnOwner?.username) throw ERR_INVALID_GAME;
+      if (!game.turnOwner?.username) throw ERR_INVALID_GAME;
 
-    await broadcast(hitEventMessage(user.username, card), connectionIds);
-    await _cardUpdateEventHandler()(api, game);
-    await broadcast(switchTurnMessage(game.turnOwner?.username), connectionIds);
-  });
+      console.log(success);
+      if (success) {
+        // draw successful
+        await broadcast(hitEventMessage(user.username, card), connectionIds);
+      }
+      // if not, do not send hit event message
+
+      await _cardUpdateEventHandler()(api, game);
+      await switchTurnEvent(api);
+    }
+  );
 
 export const removeLastCardTrumpEventHandler = () =>
   AsyncExceptionHandler(async (api: APIG, userConnectionId: string) => {
