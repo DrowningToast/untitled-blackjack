@@ -19,6 +19,7 @@ import {
 import { Card } from "database/src/utils/Card";
 import { hitBroadcast } from "../../websocket/broadcast/hitBroadcast";
 import { switchTurnEvent } from "../../websocket/events/gameplay/switchTurnEvent";
+import { trumpStatusBroadcast } from "../../websocket/broadcast/trumpStatusBroadcast";
 
 const _cardUpdateEventHandler = () =>
   AsyncExceptionHandler(async (api: APIG, game: IGame) => {
@@ -52,25 +53,10 @@ const _cardUpdateEventHandler = () =>
   });
 
 const _trumpStatusUpdateEventHandler = () =>
-  AsyncExceptionHandler(
-    async (api: APIG, target: FilterQuery<IUser>, game: IGame) => {
-      // get user
-      const [user, err1] = await UserController.getUserMeta(target);
-      if (err1) throw err1;
-
-      // get connection ids
-      const [connectionIds, err2] = await GameController.getPlayerConnectionIds(
-        game.gameId
-      );
-      if (err2) throw err2;
-
-      // broadcast
-      await api.broadcast(
-        updateTrumpStatusMessage(user.username, user.trumpStatus),
-        connectionIds
-      );
-    }
-  );
+  AsyncExceptionHandler(async (api: APIG, game: IGame) => {
+    // broadcast
+    await trumpStatusBroadcast(api, game.gameId);
+  });
 
 export const DrawTrumpEventHandler = (card: Card) =>
   AsyncExceptionHandler(
@@ -147,7 +133,7 @@ export const blindDrawTrumpEventHandler = () =>
     if (errConn) throw errConn;
 
     // broadcast user status
-    await _trumpStatusUpdateEventHandler()(api, opponent, game);
+    await _trumpStatusUpdateEventHandler()(api, game);
 
     await _cardUpdateEventHandler()(api, game);
   });
@@ -210,7 +196,7 @@ export const seeThroughTrumpEventHandler = () =>
     if (err3) throw err3;
 
     // broadcast user status
-    await _trumpStatusUpdateEventHandler()(api, user, game);
+    await _trumpStatusUpdateEventHandler()(api, game);
 
     await _cardUpdateEventHandler()(api, game);
   });
@@ -281,7 +267,7 @@ export const invincibilityTrumpEventHandler = () =>
     if (err3) throw err3;
 
     // broadcast user status
-    await _trumpStatusUpdateEventHandler()(api, user, game);
+    await _trumpStatusUpdateEventHandler()(api, game);
   });
 
 export const hideCardsTrumpEventHandler = () =>
@@ -304,11 +290,11 @@ export const hideCardsTrumpEventHandler = () =>
 
     // broadcast user status
 
-    await _trumpStatusUpdateEventHandler()(api, user, game);
+    await _trumpStatusUpdateEventHandler()(api, game);
     await _cardUpdateEventHandler()(api, game);
   });
 
-export const denyDrawTrumpEventHandler = () =>
+export const denyHitTrumpEventHandler = () =>
   AsyncExceptionHandler(async (api: APIG, userConnectionId: string) => {
     // get user meta
     const [user, err1] = await UserController.getUserMeta({
@@ -328,5 +314,5 @@ export const denyDrawTrumpEventHandler = () =>
     if (err3) throw err3;
 
     // broadcast user status
-    await _trumpStatusUpdateEventHandler()(api, opponent, game);
+    await _trumpStatusUpdateEventHandler()(api, game);
   });

@@ -9,8 +9,11 @@ import {
 
 import {
   ERR_GAME_STATE,
+  ERR_HIT_WHEN_DEINED_HIT,
   ERR_ILLEGAL_ACTION,
   ERR_INVALID_USER,
+  ERR_TRUMP_USE_DENIED,
+  insertErrorStack,
 } from "../../utils/ErrorMessages";
 import { hitBroadcast } from "../../broadcast/hitBroadcast";
 import { cardStateBroadcast } from "../../broadcast/cardStateBroadcast";
@@ -41,7 +44,24 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
     throw ERR_ILLEGAL_ACTION;
   }
 
-  // DONE CHECKING
+  // Check for deny hit status
+  const isDeniedHit = user.trumpStatus.includes("DENY_HIT");
+
+  // set stand state
+  // Clear stand status on both players
+  const [[p1, errP1], [p2, errP2]] = await Promise.all([
+    UserController.setStandState({ username: game.players[0].username }, false),
+    UserController.setStandState({ username: game.players[1].username }, false),
+  ]);
+  if (errP1 || errP2) throw ERR_INTERNAL;
+  if (!p1 || !p2) throw ERR_INVALID_USER;
+
+  const [connectionIds, errIds] = await GameController.getPlayerConnectionIds(
+    game.gameId
+  );
+  if (errIds) throw errIds;
+
+  if (isDeniedHit) throw insertErrorStack(ERR_HIT_WHEN_DEINED_HIT);
 
   // Draw
   const [drawnCards, err5] = await GameActionController.drawCards(
@@ -53,18 +73,6 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
   );
   if (err5) throw err5;
 
-  const [connectionIds, errIds] = await GameController.getPlayerConnectionIds(
-    game.gameId
-  );
-  if (errIds) throw errIds;
-
-  // Clear stand status on both players
-  const [[p1, errP1], [p2, errP2]] = await Promise.all([
-    UserController.setStandState({ username: game.players[0].username }, false),
-    UserController.setStandState({ username: game.players[1].username }, false),
-  ]);
-  if (errP1 || errP2) throw ERR_INTERNAL;
-  if (!p1 || !p2) throw ERR_INVALID_USER;
   console.log(drawnCards);
   // Broadcast hit event
   const [_, error] = await hitBroadcast(

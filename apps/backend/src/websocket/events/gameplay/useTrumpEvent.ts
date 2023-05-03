@@ -3,6 +3,7 @@ import {
   ERR_INVALID_TRUMP_CARD,
   ERR_INVALID_USER,
   ERR_NO_TRUMP_FOUND,
+  ERR_TRUMP_USE_DENIED,
   UserController,
   insertErrorStack,
 } from "database";
@@ -19,7 +20,9 @@ export const useTrumpEvent = AsyncExceptionHandler(
     if (err) throw err;
     if (!user) throw ERR_INVALID_USER;
 
-    console.log(user);
+    // check for deny use trumpcard
+    if (user.trumpStatus.includes("DENY_TRUMP_USE"))
+      throw insertErrorStack(ERR_TRUMP_USE_DENIED);
 
     // find if trump card is valid or not
     // if not valid, throw error

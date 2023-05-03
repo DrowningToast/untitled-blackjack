@@ -109,6 +109,11 @@ export const ERR_NO_TRUMP_FOUND: ErrorMessage = {
   description: "trump card is not found in the player's hand",
 };
 
+export const ERR_HIT_WHEN_DEINED_HIT: ErrorMessage = {
+  error: "hit-when-denied-hit",
+  description: "You're trying to perform hit action while you're deined hit",
+};
+
 export const ERR_TRUMP_USE_DENIED: ErrorMessage = {
   error: "trump-use-denied",
   description: "The user attempt to use trump card while being denied",

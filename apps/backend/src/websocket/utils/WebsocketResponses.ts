@@ -227,19 +227,20 @@ export const updateTrumpCardStateMessage = (
 };
 
 export const updateTrumpStatusMessage = (
-  username: string,
-  statuses: IUser["trumpStatus"]
-): WebsocketResponse<{
-  username: string;
-  statuses: IUser["trumpStatus"];
-}> => {
+  users: { username: string; trumpStatus: IUser["trumpStatus"] }[]
+): WebsocketResponse<
+  {
+    username: string;
+    statuses: IUser["trumpStatus"];
+  }[]
+> => {
   return {
     status: "OK",
     handler: "UPDATE_TRUMP_STATUS",
-    content: {
-      username,
-      statuses,
-    },
+    content: users.map((user) => ({
+      username: user.username,
+      statuses: user.trumpStatus,
+    })),
   };
 };
 

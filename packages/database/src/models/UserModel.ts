@@ -35,7 +35,7 @@ export const ZodUserStrip = z.object({
       /**
        * OPPONENT CANT DRAW THE CARDS
        */
-      z.literal("DENY_DRAW"),
+      z.literal("DENY_HIT"),
       /**
        * OPPONENT CANT USE ANY TRUMP CARDS AFTER THIS
        */
@@ -137,7 +137,7 @@ const UserSchema = new mongoose.Schema({
         "BLIND",
         "HIDE_CARDS",
         "SEE_OPPONENT_CARDS",
-        "DENY_DRAW",
+        "DENY_HIT",
         "DENY_TRUMP_USE",
       ],
     },

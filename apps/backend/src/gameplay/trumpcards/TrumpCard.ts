@@ -22,7 +22,7 @@ import {
   DrawTrumpEventHandler,
   blindDrawTrumpEventHandler,
   changePointTargetTrumpEventHandler,
-  denyDrawTrumpEventHandler,
+  denyHitTrumpEventHandler,
   hideCardsTrumpEventHandler,
   invincibilityTrumpEventHandler,
   maxCardOpponentTrumpEventHandler,
@@ -222,12 +222,12 @@ const blindDrawTrump: TrumpCard<IUser> = {
 
 /**
  * Deny the opponent from drawing cards in the current round
- * gives opponent the trump status "DENY_DRAW"
+ * gives opponent the trump status "DENY_HIT"
  *
  * @return the target IUser
  */
-const denyDrawTrump: TrumpCard<IUser> = {
-  handler: "denyDraw",
+const denyHitTrump: TrumpCard<IUser> = {
+  handler: "denyHit",
   type: "ATTACK",
   onUse: async (cardUser, game) => {
     const [target, errTarget] = await GameController.getOpponent(
@@ -235,38 +235,51 @@ const denyDrawTrump: TrumpCard<IUser> = {
       cardUser.username
     );
 
+    console.log("denyHit");
+    console.log(target);
+
     if (errTarget) throw errTarget;
 
-    const [isInvinc, errInvinc] = await UserController.checkInvincibility(
-      target
-    );
+    const [isInvinc, errInvinc] = await UserController.checkInvincibility({
+      username: target.username,
+    });
     if (errInvinc) throw errInvinc;
     if (isInvinc) return target;
 
-    if (target.trumpStatus.find((status) => status === "DENY_DRAW"))
+    console.log(isInvinc);
+
+    if (target.trumpStatus.find((status) => status === "DENY_HIT"))
       return target;
+
+    console.log(target);
 
     // add blind status
     const [statuses, errStatus] = await UserController.addTrumpStatus(
-      { username: cardUser.username },
-      "DENY_DRAW"
+      { username: target.username },
+      "DENY_HIT"
     );
     if (errStatus) throw errStatus;
 
+    console.log(statuses);
+
     // return the updated user
-    const [updated, errUpdated] = await UserController.getUserMeta(target);
+    const [updated, errUpdated] = await UserController.getUserMeta({
+      username: target.username,
+    });
     if (errUpdated) throw errUpdated;
+
+    console.log(updated);
 
     return updated;
   },
-  afterHandler: denyDrawTrumpEventHandler(),
+  afterHandler: denyHitTrumpEventHandler(),
 };
 
 /**
- *  Opponent cards will be hidden for a round
+ *  Prevent opponent from using trump cards and cleanse my
  */
-const denyTrumpCardTrump: TrumpCard<IUser> = {
-  handler: "preventOpponentTrumpCards",
+const denyUseTrumpCardTrump: TrumpCard<IUser> = {
+  handler: "denyUseTrumpCard",
   type: "ATTACK",
   onUse: async (cardUser, game) => {
     const [target, errTarget] = await GameController.getOpponent(
@@ -275,18 +288,24 @@ const denyTrumpCardTrump: TrumpCard<IUser> = {
     );
     if (errTarget) throw errTarget;
 
-    if (target.trumpStatus.find((status) => status === "DENY_TRUMP_USE"))
-      return target;
+    console.log(target);
 
-    // cleanse my status
-    const [statuses, errStatus] = await UserController.removeTrumpStatus(
-      cardUser
+    // add deny trump use status
+    const [_, errStatus] = await UserController.addTrumpStatus(
+      { username: target.username },
+      "DENY_TRUMP_USE"
     );
     if (errStatus) throw errStatus;
 
+    console.log(_);
+
     // get updated user
-    const [updated, errUpdated] = await UserController.getUserMeta(target);
+    const [updated, errUpdated] = await UserController.getUserMeta({
+      username: target.username,
+    });
     if (errUpdated) throw errUpdated;
+
+    console.log(updated);
 
     return updated;
   },
@@ -440,10 +459,9 @@ const invincibilityTrump: TrumpCard<IUser> = {
   handler: "invincibility",
   type: "UTILITY",
   onUse: async (cardUser, game) => {
-    const [statuses, err] = await UserController.addTrumpStatus(
-      cardUser,
-      "INVINCIBLE"
-    );
+    const [statuses, err] = await UserController.setTrumpStatus(cardUser, [
+      "INVINCIBLE",
+    ]);
     if (err) throw err;
 
     // get the updated user meta
@@ -481,13 +499,13 @@ export const trumpCardsAsArray: TrumpCard[] = [
    */
   blindDrawTrump,
   /**
-   * WIP
+   * Prevent the opponent from hitting
    */
-  denyDrawTrump,
+  denyHitTrump,
   /**
-   * WIP
+   * Prevent the opponent from using trump cards
    */
-  denyTrumpCardTrump,
+  denyUseTrumpCardTrump,
   /**
    * Draw the max card in the deck and add it to the opponent's hand
    */
@@ -542,8 +560,8 @@ export const trumpCardsAsArray: TrumpCard[] = [
 
 export const trumpCardsAsObject: { [key: string]: TrumpCard } = {
   blindDrawTrump,
-  denyDrawTrump,
-  denyTrumpCardTrump,
+  denyHitTrump,
+  denyUseTrumpCardTrump,
   maxCardOpponentTrump,
   seeThroughTrump,
   changePointsLimit25Trump,
