@@ -142,9 +142,12 @@ const removeLastCardTrump: TrumpCard<Card[] | undefined> = {
     );
     if (errTarget) throw errTarget;
 
-    const [targetCards, errTargetCards] = await UserController.getCards({
-      username: target.username,
-    });
+    const [targetCards, errTargetCards] = await UserController.getCards(
+      {
+        username: target.username,
+      },
+      true
+    );
     if (errTargetCards) throw errTargetCards;
 
     // check if the target has only 2 cards
@@ -262,7 +265,7 @@ const denyDrawTrump: TrumpCard<IUser> = {
 /**
  *  Opponent cards will be hidden for a round
  */
-const preventTrumpCardTrump: TrumpCard<IUser> = {
+const denyTrumpCardTrump: TrumpCard<IUser> = {
   handler: "preventOpponentTrumpCards",
   type: "ATTACK",
   onUse: async (cardUser, game) => {
@@ -402,8 +405,11 @@ const undoHitTrump: TrumpCard<Card[]> = {
   handler: "undoHit",
   type: "UTILITY",
   onUse: async (cardUser, game) => {
-    const [currCards, errCurr] = await UserController.getCards(cardUser);
+    const [currCards, errCurr] = await UserController.getCards(cardUser, true);
     if (errCurr) throw errCurr;
+
+    console.log("using undo trump");
+    console.log(currCards);
 
     if (currCards.length < 3) return currCards;
 
@@ -418,6 +424,8 @@ const undoHitTrump: TrumpCard<Card[]> = {
 
     const [cards, errCards] = await UserController.getCards(cardUser);
     if (errCards) throw errCards;
+
+    console.log(cards);
 
     return cards;
   },
@@ -479,7 +487,7 @@ export const trumpCardsAsArray: TrumpCard[] = [
   /**
    * WIP
    */
-  preventTrumpCardTrump,
+  denyTrumpCardTrump,
   /**
    * Draw the max card in the deck and add it to the opponent's hand
    */
@@ -489,11 +497,11 @@ export const trumpCardsAsArray: TrumpCard[] = [
    */
   seeThroughTrump,
   /**
-   * WIP
+   * Change the target point in the round from 21 to 25, resets back to default target point next round
    */
   changePointsLimit25Trump,
   /**
-   * WIP
+   * When the user has more than 3 cards, they can use this card to remove their last card
    */
   undoHitTrump,
   /**
@@ -505,20 +513,37 @@ export const trumpCardsAsArray: TrumpCard[] = [
    */
   hideCardsTrump,
   /**
-   * WIP
+   * Prevented by: Invincibility status
+   *
+   *
    */
   removeLastCardTrump,
+  /**
+   * Draws Ace card, if it's still in the deck
+   */
   aceTrump,
+  /**
+   * Draws Three card, if it's still in the deck
+   */
   threeTrump,
+  /**
+   * Draws Five card, if it's still in the deck
+   */
   fiveTrump,
+  /**
+   * Draws Seven card, if it's still in the deck
+   */
   sevenTrump,
+  /**
+   * Draws any cards with value of 10, if it's still in the deck
+   */
   tenTrumps,
 ];
 
 export const trumpCardsAsObject: { [key: string]: TrumpCard } = {
   blindDrawTrump,
   denyDrawTrump,
-  preventTrumpCardTrump,
+  denyTrumpCardTrump,
   maxCardOpponentTrump,
   seeThroughTrump,
   changePointsLimit25Trump,

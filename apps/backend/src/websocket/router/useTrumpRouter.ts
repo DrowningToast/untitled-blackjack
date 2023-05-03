@@ -2,7 +2,12 @@ import { z } from "zod";
 import { WebsocketRouter } from "../utils/type";
 import { getAPIG } from "../APIGateway";
 import { useTrumpEvent } from "../events/gameplay/useTrumpEvent";
-import { ERR_BAD_REQUEST, ERR_ILLEGAL_ACTION } from "../utils/ErrorMessages";
+import {
+  ERR_BAD_REQUEST,
+  ERR_ILLEGAL_ACTION,
+  ERR_INTERNAL,
+  ERR_INVALID_USER,
+} from "../utils/ErrorMessages";
 import { trumpCardsAsArray } from "../../gameplay/trumpcards/TrumpCard";
 import { GameController, UserController } from "database";
 import { switchTurnEvent } from "../events/gameplay/switchTurnEvent";
@@ -52,6 +57,15 @@ export const useTrumpRouter: WebsocketRouter = async (event, context) => {
     });
     return;
   }
+
+  // reset players stand state to false
+  const [[p1, errP1], [p2, errP2]] = await Promise.all([
+    UserController.setStandState({ username: game.players[0].username }, false),
+    UserController.setStandState({ username: game.players[1].username }, false),
+  ]);
+  if (errP1) throw errP1;
+  if (errP2) throw errP2;
+  if (!p1 || !p2) throw ERR_INVALID_USER;
 
   const body = useTrumpBodyValidator.parse(JSON.parse(event.body));
 
