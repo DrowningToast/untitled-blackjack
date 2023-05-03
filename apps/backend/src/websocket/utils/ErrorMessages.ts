@@ -59,3 +59,8 @@ export const ERR_INVALID_JSON: ErrorMessage = {
   error: "invalid-json",
   description: "Invalid body JSON",
 };
+
+export const ERR_OPPONENT_INVINCIBILITY: ErrorMessage = {
+  error: "opponent-invincibility",
+  description: "Opponent is invincible, and you're trying to use attack card",
+};

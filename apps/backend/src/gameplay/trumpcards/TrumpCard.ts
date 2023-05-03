@@ -523,7 +523,7 @@ export const trumpCardsAsArray: TrumpCard[] = [
    */
   undoHitTrump,
   /**
-   * WIP
+   * Prevent opponent from using attack trump cards, and cleanse the statuses on the user
    */
   invincibilityTrump,
   /**
@@ -532,8 +532,6 @@ export const trumpCardsAsArray: TrumpCard[] = [
   hideCardsTrump,
   /**
    * Prevented by: Invincibility status
-   *
-   *
    */
   removeLastCardTrump,
   /**

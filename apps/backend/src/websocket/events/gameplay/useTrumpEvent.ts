@@ -4,6 +4,7 @@ import {
   ERR_INVALID_USER,
   ERR_NO_TRUMP_FOUND,
   ERR_TRUMP_USE_DENIED,
+  GameController,
   UserController,
   insertErrorStack,
 } from "database";
@@ -11,6 +12,7 @@ import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
 import { useTrumpBroadcast } from "../../broadcast/useTrumpBroadcast";
 import { APIG } from "../../APIGateway";
 import { trumpCardsAsArray } from "../../../gameplay/trumpcards/TrumpCard";
+import { ERR_OPPONENT_INVINCIBILITY } from "../../utils/ErrorMessages";
 
 export const useTrumpEvent = AsyncExceptionHandler(
   async (api: APIG, userConnectionId: string, trumpHandler: string) => {
@@ -64,6 +66,26 @@ export const useTrumpEvent = AsyncExceptionHandler(
       username: user.username,
     });
 
+    if (trumpCard.type === "ATTACK") {
+      console.log("checking for invincibility");
+
+      // get game
+      const [game, errGame] = await GameController.getGame({
+        players: user._id,
+      });
+      if (errGame) throw errGame;
+
+      // get opponent
+      const [opponent, errOpponent] = await GameController.getOpponent(
+        game.gameId,
+        user.username
+      );
+      if (errOpponent) throw errOpponent;
+
+      if (opponent.trumpStatus.includes("INVINCIBLE"))
+        throw insertErrorStack(ERR_OPPONENT_INVINCIBILITY);
+    }
+
     // use trump card
     const [res, err3] = await UserController.useTrumpCard(
       {
@@ -100,9 +122,11 @@ export const useTrumpEvent = AsyncExceptionHandler(
 
       // trigger trump card events with success
       await trumpCard.afterHandler(api, userConnectionId, success);
-    } else {
-      // trigger trump card events
-      await trumpCard.afterHandler(api, userConnectionId);
+
+      return;
     }
+
+    // trigger trump card events
+    await trumpCard.afterHandler(api, userConnectionId);
   }
 );

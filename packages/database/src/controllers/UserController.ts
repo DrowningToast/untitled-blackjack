@@ -242,6 +242,7 @@ const resetPlayersState = asyncTransaction(
           gameScore: 0,
           cards: [],
           trumpCards: [],
+          trumpStatus: [],
         },
       }
     );
@@ -353,7 +354,7 @@ const setTrumpStatus = asyncTransaction(
         ...target,
       },
       {
-        $push: {
+        $set: {
           trumpStatus: status,
         },
       }
@@ -594,6 +595,7 @@ export const UserController = {
    * 3. Game score
    * 4. Cards
    * 5. Trump cards
+   * 6. Trump Status
    *
    */
   resetPlayersState,
