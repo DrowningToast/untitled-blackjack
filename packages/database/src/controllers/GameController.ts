@@ -1,6 +1,7 @@
 import { FilterQuery, Types, UpdateQuery } from "mongoose";
 import { Game, IGame, ZodGameStrip } from "../models/GameModel";
 import {
+  GlobalCardsContext,
   aceCard,
   eightCard,
   fiveCard,
@@ -241,6 +242,84 @@ const deleteGame = asyncTransaction(async (gameId: string) => {
   return;
 });
 
+const getCardsOnPerspectives = asyncTransaction(
+  async (gameId: string): Promise<GlobalCardsContext[]> => {
+    const [game, err] = await getGame({ gameId });
+    if (err) throw insertErrorStack(ERR_INVALID_GAME);
+
+    // player A in eyes of A
+    const [cardsAofA, errAofA] = await UserController.getCards(
+      {
+        username: game.players[0].username,
+      },
+      false,
+      false
+    );
+    if (errAofA) throw errAofA;
+
+    // player B in eyes of A
+    const [cardsBofA, errBofA] = await UserController.getCards(
+      {
+        username: game.players[1].username,
+      },
+      false,
+      true
+    );
+    if (errBofA) throw errBofA;
+
+    // player A in eyes of B
+    const [cardsAofB, errAofB] = await UserController.getCards(
+      {
+        username: game.players[0].username,
+      },
+      false,
+      true
+    );
+    if (errAofB) throw errAofB;
+
+    // player B in eyes of B
+    const [cardsBofB, errBofB] = await UserController.getCards(
+      {
+        username: game.players[1].username,
+      },
+      false,
+      false
+    );
+    if (errBofB) throw errBofB;
+
+    const result: GlobalCardsContext[] = [
+      {
+        user: game.players[0].username,
+        pov: [
+          {
+            username: game.players[0].username,
+            cards: cardsAofA,
+          },
+          {
+            username: game.players[1].username,
+            cards: cardsBofA,
+          },
+        ],
+      },
+      {
+        user: game.players[1].username,
+        pov: [
+          {
+            username: game.players[0].username,
+            cards: cardsAofB,
+          },
+          {
+            username: game.players[1].username,
+            cards: cardsBofB,
+          },
+        ],
+      },
+    ];
+
+    return result;
+  }
+);
+
 export const GameController = {
   /**
    * @access Any authorized users
@@ -304,4 +383,8 @@ export const GameController = {
    */
   deleteGame,
   getOpponent,
+  /**
+   * Get all players card based on each player perspective
+   */
+  getCardsOnPerspectives,
 };

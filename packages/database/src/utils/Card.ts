@@ -6,9 +6,9 @@ export const ZodCard = z.object({
 });
 
 export type GlobalCardsContext = {
-  username: string;
-  cards: Card[];
-}[];
+  user: string;
+  pov: { username: string; cards: Card[] }[];
+};
 
 export type Card = z.infer<typeof ZodCard>;
 

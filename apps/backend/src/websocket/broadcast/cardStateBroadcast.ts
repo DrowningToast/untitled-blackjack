@@ -23,7 +23,7 @@ export const cardStateBroadcast = AsyncExceptionHandler(
   async (
     api: APIG,
     cardInfo: {
-      cards: GlobalCardsContext;
+      cards: GlobalCardsContext[];
       pov_A: {
         username: string;
         cards: Card[];
@@ -51,8 +51,8 @@ export const cardStateBroadcast = AsyncExceptionHandler(
 
     // send to clients
     await Promise.all([
-      send(cardStateMessage(pov_A.cards, cards), connectionA),
-      send(cardStateMessage(pov_B.cards, cards), connectionB),
+      send(cardStateMessage(pov_A.cards, cards[0]), connectionA),
+      send(cardStateMessage(pov_B.cards, cards[1]), connectionB),
     ]);
   }
 );

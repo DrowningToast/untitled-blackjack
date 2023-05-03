@@ -197,12 +197,6 @@ const blindDrawTrump: TrumpCard<IUser> = {
     );
     if (errTarget) throw errTarget;
 
-    const [isInvinc, errInvinc] = await UserController.checkInvincibility(
-      target
-    );
-    if (errInvinc) throw errInvinc;
-    if (isInvinc) return target;
-
     if (target.trumpStatus.find((status) => status === "BLIND")) return target;
 
     // add blind status
@@ -235,18 +229,7 @@ const denyHitTrump: TrumpCard<IUser> = {
       cardUser.username
     );
 
-    console.log("denyHit");
-    console.log(target);
-
     if (errTarget) throw errTarget;
-
-    const [isInvinc, errInvinc] = await UserController.checkInvincibility({
-      username: target.username,
-    });
-    if (errInvinc) throw errInvinc;
-    if (isInvinc) return target;
-
-    console.log(isInvinc);
 
     if (target.trumpStatus.find((status) => status === "DENY_HIT"))
       return target;

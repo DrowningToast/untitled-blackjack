@@ -549,6 +549,9 @@ export const UserController = {
   /**
    * @access System level, User themselves
    *
+   * Use bypassBlind argument to ignore the blind check,
+   * use this function when you're trying to get the blind user card in the blind person perspective
+   *
    * @description Get all of the target user cards (the first one should be hidden from opponenet)
    */
   getCards,

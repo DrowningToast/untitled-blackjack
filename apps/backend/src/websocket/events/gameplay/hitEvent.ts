@@ -88,6 +88,10 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
     false
   );
 
+  const [cardsInPerspectives, errCardsPerspectives] =
+    await GameController.getCardsOnPerspectives(game.gameId);
+  if (errCardsPerspectives) throw errCardsPerspectives;
+
   const [[cards_A, err4], [cards_B, err7]] = await Promise.all([
     UserController.getCards({ username: p1.username }, true),
     UserController.getCards({ username: p2.username }, true),
@@ -99,7 +103,7 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
 
   // Update the client state
   return await cardStateBroadcast(api, {
-    cards: visibleCards,
+    cards: cardsInPerspectives,
     pov_A: {
       username: game.players[0].username,
       cards: cards_A,
