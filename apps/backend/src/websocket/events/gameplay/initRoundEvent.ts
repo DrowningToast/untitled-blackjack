@@ -14,15 +14,10 @@ export const initRoundEvent = AsyncExceptionHandler(
     const api = APIG;
 
     console.log("INITING ROUND EVENT");
-    console.log(gameId);
 
     // init the game
     const [game, err2] = await GameActionController.initRound(gameId);
     if (err2) throw err2;
-
-    console.log(game);
-
-    console.log("FUCK YOU");
 
     // get connection ids
     const [connectionIds, errIds] = await GameController.getPlayerConnectionIds(
@@ -30,19 +25,12 @@ export const initRoundEvent = AsyncExceptionHandler(
     );
     if (errIds) throw errIds;
 
-    console.log(connectionIds);
-
     const [GlobalCardsContext, errAll] =
       await GameController.getCardsOnPerspectives(gameId);
-
-    console.log(GlobalCardsContext);
-    console.log("lmao");
 
     if (errAll) throw errAll;
     if (!GlobalCardsContext[0]) throw insertErrorStack(ERR_INIT_GAME);
     if (!GlobalCardsContext[1]) throw insertErrorStack(ERR_INIT_GAME);
-
-    console.log("lmao2");
 
     // get visible cards
     // use Promise.all
@@ -54,8 +42,6 @@ export const initRoundEvent = AsyncExceptionHandler(
 
     if (errA || !cardsA) throw errA;
     if (errB || !cardsB) throw errB;
-
-    console.log("getting trujmp");
 
     // get trump Cards
     // use Promise.all
@@ -71,12 +57,7 @@ export const initRoundEvent = AsyncExceptionHandler(
 
     if (errTrump || errTrump2) throw errTrump;
 
-    console.log(trumpCardA);
-    console.log(trumpCardB);
-
     const [_, error] = await initRoundBroadcast(api, game, connectionIds);
-
-    console.log(_);
 
     const [_2, error2] = await cardStateBroadcast(api, GlobalCardsContext);
     if (error || error2) throw ERR_INIT_GAME;

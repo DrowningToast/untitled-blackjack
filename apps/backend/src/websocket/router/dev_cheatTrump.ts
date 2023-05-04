@@ -6,7 +6,7 @@ import { trumpCardsAsArray } from "../../gameplay/trumpcards/TrumpCard";
 export const dev_cheatTrump: WebsocketRouter = async (event, context) => {
   const { send, connectionId } = getAPIG(event, context);
 
-  console.log("dev_cheatTrump");
+  console.log("TRIGGERING DEV_CHEATRUMP");
 
   // get user
   const [user, err] = await UserController.getUserMeta({ connectionId });
@@ -33,8 +33,6 @@ export const dev_cheatTrump: WebsocketRouter = async (event, context) => {
     });
     return;
   }
-
-  console.log(updated);
 
   await send({
     status: "OK",

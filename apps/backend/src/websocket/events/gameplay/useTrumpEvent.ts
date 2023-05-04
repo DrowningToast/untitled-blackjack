@@ -29,21 +29,15 @@ export const useTrumpEvent = AsyncExceptionHandler(
     // find if trump card is valid or not
     // if not valid, throw error
     const validTrump = trumpCardsAsArray.find((trump) => {
-      console.log(`${trump.handler} ${trumpHandler}`);
       return trump.handler === trumpHandler;
     });
-    console.log(validTrump);
     if (!validTrump) throw insertErrorStack(ERR_INVALID_TRUMP_CARD);
-
-    console.log(validTrump);
 
     // check if the user has the trump card
     const [trumpCardsAsDoc, err2] = await UserController.getTrumpCards({
       username: user.username,
     });
     if (err2) throw err2;
-
-    console.log(trumpCardsAsDoc);
 
     const trumpCardAsDoc = trumpCardsAsDoc.find(
       (trump) => trump.handler === trumpHandler
@@ -62,13 +56,7 @@ export const useTrumpEvent = AsyncExceptionHandler(
     });
     if (errCards) throw errCards;
 
-    console.log({
-      username: user.username,
-    });
-
     if (trumpCard.type === "ATTACK") {
-      console.log("checking for invincibility");
-
       // get game
       const [game, errGame] = await GameController.getGame({
         players: user._id,
@@ -95,8 +83,6 @@ export const useTrumpEvent = AsyncExceptionHandler(
     );
     if (err3) throw err3;
 
-    console.log("Used the trump card");
-
     // announce use or trump card
     const [_, errBroadcast] = await useTrumpBroadcast(
       api,
@@ -113,12 +99,7 @@ export const useTrumpEvent = AsyncExceptionHandler(
       });
       if (errCards2) throw errCards2;
 
-      console.log(oldCards);
-      console.log(newCards);
-
       const success = newCards.length > oldCards.length;
-
-      console.log(success);
 
       // trigger trump card events with success
       await trumpCard.afterHandler(api, userConnectionId, success);

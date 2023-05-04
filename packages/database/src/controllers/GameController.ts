@@ -215,20 +215,14 @@ const getPlayerConnectionIds = asyncTransaction(async (gameId: string) => {
 
 const getOpponent = asyncTransaction(
   async (gameId: string, username: string) => {
-    console.log("searching for opponent");
-
     const [game, err] = await getGame({ gameId });
     if (err) throw insertErrorStack(ERR_INVALID_GAME);
 
     const opponent = game.players.filter((player) => {
       return player.username !== username;
     });
-    console.log(opponent);
-    console.log(!opponent.length);
 
     if (!opponent.length) throw insertErrorStack(ERR_INTERNAL);
-
-    console.log("returning opponent");
 
     return opponent[0];
   }

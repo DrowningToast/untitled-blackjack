@@ -14,7 +14,7 @@ export const hitBroadcast = AsyncExceptionHandler(
     drawnCard: Card | undefined,
     connectionIds: [string, string]
   ) => {
-    const { send, connectionId, broadcast } = api;
+    const { send, broadcast } = api;
 
     // check if the first user is blind or not
     const [userA, errA] = await UserController.getUserMeta({
@@ -34,11 +34,11 @@ export const hitBroadcast = AsyncExceptionHandler(
 
     // send the hit message
     await Promise.all([
-      await send(
+      send(
         hitEventMessage(username, isABlind ? hiddenCard : drawnCard),
         connectionIds[0]
       ),
-      await send(
+      send(
         hitEventMessage(username, isBBlind ? hiddenCard : drawnCard),
         connectionIds[1]
       ),

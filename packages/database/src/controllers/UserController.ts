@@ -449,12 +449,8 @@ const useTrumpCard = asyncTransaction(
     const [user, errUser] = await getUserMeta({ username: trumpUser.username });
     if (errUser) throw errUser;
 
-    console.log("Found user");
-
     const [cards, err] = await getTrumpCards(trumpUser);
     if (err) throw err;
-
-    console.log("Found all user trumpcards");
 
     if (!trumpCardsAsArray.find((card) => card.handler === trumpCard.handler))
       throw insertErrorStack(ERR_INVALID_TRUMP_CARD);
@@ -466,8 +462,6 @@ const useTrumpCard = asyncTransaction(
       players: user._id,
     });
 
-    console.log("Found the game user is in");
-
     if (errGame) throw errGame;
     if (!game) throw insertErrorStack(ERR_INVALID_GAME);
 
@@ -475,17 +469,13 @@ const useTrumpCard = asyncTransaction(
     if (user.trumpStatus.includes("DENY_TRUMP_USE"))
       throw insertErrorStack(ERR_TRUMP_USE_DENIED);
 
-    console.log(user.username);
-
     // Check for opponent invincibility
     const [opponent, errOpponent] = await GameController.getOpponent(
       game.gameId,
       user.username
     );
-    console.log(opponent);
 
     if (errOpponent) throw errOpponent;
-    console.log("Found the opponent");
 
     if (
       trumpCard.type === "ATTACK" &&
@@ -493,15 +483,11 @@ const useTrumpCard = asyncTransaction(
     )
       throw insertErrorStack(ERR_TRUMP_USE_DENIED);
 
-    console.log("removing turmp card");
-
     const [updated, errUpdated] = await removeTrumpCards(
       { username: user.username },
       [trumpCard]
     );
     if (errUpdated) throw errUpdated;
-
-    console.log("Going for on use");
 
     await trumpCard.onUse(
       {

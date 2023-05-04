@@ -11,8 +11,6 @@ export const cardStateBroadcast = AsyncExceptionHandler(
   async (api: APIG, cardInfo: GlobalCardsContext[]) => {
     const { send } = api;
 
-    console.log(cardInfo);
-
     const [[connectionA, errA], [connectionB, errB]] = await Promise.all([
       UserController.getConnectionId({
         username: cardInfo[0].username,

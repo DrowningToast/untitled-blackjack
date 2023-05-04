@@ -31,19 +31,14 @@ import { IUser, _IUser } from "../models/UserModel";
 import { TrumpCard, TrumpCardDocument } from "../models/TrumpCardModel";
 
 const initRound = asyncTransaction(async (gameId: string) => {
-  console.log("INITING GAME");
-  console.log(gameId);
+  console.log(`INITING GAME: ${gameId}`);
 
   const [game] = await GameController.getGame({ gameId, gameState: "onGoing" });
-
-  console.log(game);
 
   if (!game) throw insertErrorStack(ERR_INVALID_GAME);
 
   const [players, err] = await GameController.getPlayers(gameId);
   if (err) throw err;
-
-  console.log(players);
 
   const [playerA, playerB] = players;
 
@@ -69,8 +64,6 @@ const initRound = asyncTransaction(async (gameId: string) => {
     gameId,
     2
   );
-
-  console.log(_A);
 
   const [_B, eB] = await drawCards(
     {
@@ -98,11 +91,6 @@ const initRound = asyncTransaction(async (gameId: string) => {
     game.gameId,
     2
   );
-
-  console.log("trump A");
-  console.log(trumpCardA);
-  console.log("trump B");
-  console.log(trumpCardB);
 
   if (eTA || eTB) throw insertErrorStack(ERR_INTERNAL);
 
@@ -343,8 +331,6 @@ const getAllPlayersCards = asyncTransaction(
   async (gameId: string, includeHidden: boolean = false) => {
     const [players, err] = await GameController.getPlayers(gameId);
     if (err) throw err;
-
-    console.log(players);
 
     const [playerA, playerB] = players;
 
@@ -704,9 +690,6 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
       ? Math.max(...playerBSums)
       : Math.min(...playerBSums);
 
-  console.log(`player A sum: ${A_sum}`);
-  console.log(`player B sum: ${B_sum}`);
-
   let winner: string = "";
 
   if (isAExceed && !isBExceed) {
@@ -724,8 +707,6 @@ const showdownRound = asyncTransaction(async (gameId: string) => {
   } else {
     throw insertErrorStack(ERR_NO_WINNER);
   }
-
-  console.log(`winner: ${winner}`);
 
   // determine how many points the winner gets
   const winnerPoints = GAME_ROUND_SCORE_MAPPING[game.roundCounter];

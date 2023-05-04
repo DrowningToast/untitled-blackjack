@@ -88,14 +88,12 @@ export const readyRouter: WebsocketRouter = async (event, context) => {
   if (players.length !== 2) return;
 
   const bothReady = players[0].ready && players[1].ready;
-  console.log(bothReady);
 
   if (bothReady) {
     const [newGame, errNew] = await newGameEvent(api, gameId);
     if (errNew) throw errNew;
 
     const [_, err] = await initRoundEvent(api, gameId);
-    console.log(_);
     if (err)
       return await send({
         status: "INTERNAL_ERROR",
