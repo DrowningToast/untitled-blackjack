@@ -29,7 +29,6 @@ export const TrumpCardValidator = z.object({
  */
 
 export interface drawTrumpCard {
-  handler: string;
   type: "DRAW";
   // Handle the effeec of the card
   afterHandler: (
@@ -40,14 +39,12 @@ export interface drawTrumpCard {
 }
 
 export interface attackTrumpCard {
-  handler: string;
   type: "ATTACK";
   // Handle the effeec of the card
   afterHandler: (api: APIG, userConnectionId: string) => Promise<any>;
 }
 
 export interface utilityTrumpCard {
-  handler: string;
   type: "UTILITY";
   // Handle the effeec of the card
   afterHandler: (api: APIG, userConnectionId: string) => Promise<any>;

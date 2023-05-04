@@ -1,6 +1,4 @@
-import { APIG } from "../../websocket/APIGateway";
 import { AsyncExceptionHandler } from "../../websocket/AsyncExceptionHandler";
-import { hitEventMessage } from "../../websocket/utils/WebsocketResponses";
 import { GameActionController } from "database/src/controllers/GameActionController";
 import { GameController } from "database/src/controllers/GameController";
 import { UserController } from "database/src/controllers/UserController";
@@ -23,7 +21,6 @@ import {
   blindDrawTrumpEventHandler,
   changePointTargetTrumpEventHandler,
   denyHitTrumpEventHandler,
-  hideCardsTrumpEventHandler,
   invincibilityTrumpEventHandler,
   maxCardOpponentTrumpEventHandler,
   removeLastCardTrumpEventHandler,

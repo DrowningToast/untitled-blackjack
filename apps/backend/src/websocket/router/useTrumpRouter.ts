@@ -5,14 +5,10 @@ import { useTrumpEvent } from "../events/gameplay/useTrumpEvent";
 import {
   ERR_BAD_REQUEST,
   ERR_ILLEGAL_ACTION,
-  ERR_INTERNAL,
   ERR_INVALID_USER,
 } from "../utils/ErrorMessages";
-import { trumpCardsAsArray } from "../../gameplay/trumpcards/TrumpCard";
 import { GameController, UserController } from "database";
 import { switchTurnEvent } from "../events/gameplay/switchTurnEvent";
-
-const trumpCardHandlers = trumpCardsAsArray.map((card) => card.handler);
 
 const useTrumpBodyValidator = z.object({
   trumpCard: z.string(),

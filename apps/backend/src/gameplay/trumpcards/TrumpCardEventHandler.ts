@@ -1,4 +1,3 @@
-import { FilterQuery } from "mongoose";
 import { AsyncExceptionHandler } from "../../websocket/AsyncExceptionHandler";
 import { APIG } from "../../websocket/APIGateway";
 import {
@@ -7,7 +6,6 @@ import {
   GameActionController,
   GameController,
   IGame,
-  IUser,
   UserController,
 } from "database";
 import { cardStateBroadcast } from "../../websocket/broadcast/cardStateBroadcast";
@@ -15,11 +13,9 @@ import {
   hitEventMessage,
   nextHitCardTrumpEffect,
   updatePointTargetMessage,
-  updateTrumpStatusMessage,
 } from "../../websocket/utils/WebsocketResponses";
 import { Card } from "database/src/utils/Card";
 import { hitBroadcast } from "../../websocket/broadcast/hitBroadcast";
-import { switchTurnEvent } from "../../websocket/events/gameplay/switchTurnEvent";
 import { trumpStatusBroadcast } from "../../websocket/broadcast/trumpStatusBroadcast";
 
 const _cardUpdateEventHandler = () =>
@@ -261,30 +257,6 @@ export const invincibilityTrumpEventHandler = () =>
 
     // broadcast user status
     await _trumpStatusUpdateEventHandler()(api, game);
-  });
-
-export const hideCardsTrumpEventHandler = () =>
-  AsyncExceptionHandler(async (api: APIG, userConnectionId: string) => {
-    // get user meta
-    const [user, err1] = await UserController.getUserMeta({
-      connectionId: userConnectionId,
-    });
-    if (err1) throw err1;
-
-    // get game
-    const [game, err2] = await GameController.getGame({ players: user._id });
-    if (err2) throw err2;
-
-    // get connection ids
-    const [connectionIds, err3] = await GameController.getPlayerConnectionIds(
-      game.gameId
-    );
-    if (err3) throw err3;
-
-    // broadcast user status
-
-    await _trumpStatusUpdateEventHandler()(api, game);
-    await _cardUpdateEventHandler()(api, game);
   });
 
 export const denyHitTrumpEventHandler = () =>
