@@ -2,7 +2,7 @@ import {
   ERR_GAME_STATE,
   ERR_ILLEGAL_ACTION,
 } from "../../../../apps/backend/src/websocket/utils/ErrorMessages";
-import { Game, ZodGameStrip, _IGame } from "../models/GameModel";
+import { Game, IGame, ZodGameStrip, _IGame } from "../models/GameModel";
 import { Card, sortedGlobalCardsContext } from "../utils/Card";
 import {
   ERR_INTERNAL,
@@ -642,6 +642,11 @@ const endGame = asyncTransaction(async (gameId: string) => {
     return null;
   }
 });
+
+export interface RoundReport {
+  game: IGame;
+  winner: _IUser | null;
+}
 
 /**
  * @description Find the winner and ends
