@@ -73,7 +73,6 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
   );
   if (err5) throw err5;
 
-  console.log(drawnCards);
   // Broadcast hit event
   const [_, error] = await hitBroadcast(
     api,

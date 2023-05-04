@@ -18,7 +18,6 @@ export const AsyncExceptionHandler = <T extends any[], K>(
   return async (...args: T) => {
     try {
       const response = await callback(...args);
-      console.log(response);
       return [response, undefined];
     } catch (e: unknown) {
       console.log(e);

@@ -49,7 +49,6 @@ export const DrawTrumpEventHandler = (card: Card) =>
   AsyncExceptionHandler(
     async (api: APIG, userConnectionId: string, success: boolean) => {
       const { broadcast } = api;
-      console.log(userConnectionId);
       const [user, err] = await UserController.getUserMeta({
         connectionId: userConnectionId,
       });
@@ -67,7 +66,6 @@ export const DrawTrumpEventHandler = (card: Card) =>
 
       if (!game.turnOwner?.username) throw ERR_INVALID_GAME;
 
-      console.log(success);
       if (success) {
         // draw successful
         await broadcast(hitEventMessage(user.username, card), connectionIds);
