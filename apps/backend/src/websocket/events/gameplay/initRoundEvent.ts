@@ -33,7 +33,7 @@ export const initRoundEvent = AsyncExceptionHandler(
     console.log(connectionIds);
 
     const [GlobalCardsContext, errAll] =
-      await GameActionController.getAllPlayersCards(gameId);
+      await GameController.getCardsOnPerspectives(gameId);
 
     console.log(GlobalCardsContext);
     console.log("lmao");
@@ -78,17 +78,7 @@ export const initRoundEvent = AsyncExceptionHandler(
 
     console.log(_);
 
-    const [_2, error2] = await cardStateBroadcast(api, {
-      cards: [GlobalCardsContext[0], GlobalCardsContext[1]],
-      pov_A: {
-        username: game.players[0].username,
-        cards: cardsA,
-      },
-      pov_B: {
-        username: game.players[1].username,
-        cards: cardsB,
-      },
-    });
+    const [_2, error2] = await cardStateBroadcast(api, GlobalCardsContext);
     if (error || error2) throw ERR_INIT_GAME;
 
     // trump state update

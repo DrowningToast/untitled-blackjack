@@ -13,6 +13,7 @@ import {
 import { cardStateBroadcast } from "../../websocket/broadcast/cardStateBroadcast";
 import {
   hitEventMessage,
+  nextHitCardTrumpEffect,
   updatePointTargetMessage,
   updateTrumpStatusMessage,
 } from "../../websocket/utils/WebsocketResponses";
@@ -24,7 +25,7 @@ import { trumpStatusBroadcast } from "../../websocket/broadcast/trumpStatusBroad
 const _cardUpdateEventHandler = () =>
   AsyncExceptionHandler(async (api: APIG, game: IGame) => {
     // get visible cards and update everybody's card state
-    const [visibleCards, err5] = await GameActionController.getAllPlayersCards(
+    const [visibleCards, err5] = await GameController.getCardsOnPerspectives(
       game.gameId
     );
     if (err5) throw err5;
@@ -39,17 +40,7 @@ const _cardUpdateEventHandler = () =>
       throw ERR_INTERNAL;
     }
 
-    await cardStateBroadcast(api, {
-      cards: visibleCards,
-      pov_A: {
-        username: game.players[0].username,
-        cards: cards_A,
-      },
-      pov_B: {
-        username: game.players[1].username,
-        cards: cards_B,
-      },
-    });
+    await cardStateBroadcast(api, visibleCards);
   });
 
 const _trumpStatusUpdateEventHandler = () =>
@@ -177,9 +168,12 @@ export const maxCardOpponentTrumpEventHandler = () =>
   });
 
 // see through
-export const seeThroughTrumpEventHandler = () =>
+export const seeNextHitTrumpEventHandlder = () =>
   AsyncExceptionHandler(async (api: APIG, userConnectionId: string) => {
-    // get game
+    // get remaining cards
+    const { send } = api;
+
+    // get user
     const [user, err1] = await UserController.getUserMeta({
       connectionId: userConnectionId,
     });
@@ -189,16 +183,12 @@ export const seeThroughTrumpEventHandler = () =>
     const [game, err2] = await GameController.getGame({ players: user._id });
     if (err2) throw err2;
 
-    // broadcast see through status
-    const [connectionIds, err3] = await GameController.getPlayerConnectionIds(
+    const [cards, errCards] = await GameActionController.getRemainingCards(
       game.gameId
     );
-    if (err3) throw err3;
+    if (errCards) throw errCards;
 
-    // broadcast user status
-    await _trumpStatusUpdateEventHandler()(api, game);
-
-    await _cardUpdateEventHandler()(api, game);
+    await send(nextHitCardTrumpEffect([cards[0]]));
   });
 
 // change point target

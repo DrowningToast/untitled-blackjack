@@ -85,17 +85,27 @@ const getCards = asyncTransaction(
   async (
     args: FilterQuery<IUser>,
     all: boolean = false,
-    bypassBlind: boolean = false
+    /**
+     * Bypass the blind check
+     */
+    bypassBlind: boolean = false,
+    /**
+     * Overwrite the blind status
+     */
+    overwriteIsBlind: boolean = false
   ) => {
     const _ = (await User.findOne(args)) as unknown as _IUser;
 
     let cards =
-      _.trumpStatus.includes("BLIND") && !bypassBlind
+      (_.trumpStatus.includes("BLIND") && !bypassBlind) || overwriteIsBlind
         ? _.cards.map((_) => hiddenCard)
         : _.cards;
 
     if (all) return cards! ?? [];
-    return cards!.slice(1) ?? [];
+
+    cards[0] = hiddenCard;
+
+    return cards;
   }
 );
 

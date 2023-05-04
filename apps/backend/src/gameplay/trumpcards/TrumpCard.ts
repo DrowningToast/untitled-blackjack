@@ -27,7 +27,7 @@ import {
   invincibilityTrumpEventHandler,
   maxCardOpponentTrumpEventHandler,
   removeLastCardTrumpEventHandler,
-  seeThroughTrumpEventHandler,
+  seeNextHitTrumpEventHandlder,
   undoHitTrumpEventHandler,
 } from "./TrumpCardEventHandler";
 
@@ -188,9 +188,11 @@ const removeLastCardTrump: TrumpCard<Card[] | undefined> = {
  * @return the target IUser
  */
 const blindDrawTrump: TrumpCard<IUser> = {
-  handler: "blindDraw",
+  handler: "blind",
   type: "ATTACK",
   onUse: async (cardUser, game) => {
+    console.log(cardUser);
+
     const [target, errTarget] = await GameController.getOpponent(
       game.gameId,
       cardUser.username
@@ -201,12 +203,16 @@ const blindDrawTrump: TrumpCard<IUser> = {
 
     // add blind status
     const [statuses, errStatus] = await UserController.addTrumpStatus(
-      { username: cardUser.username },
+      { username: target.username },
       "BLIND"
     );
     if (errStatus) throw errStatus;
 
-    const [updated, errUpdated] = await UserController.getUserMeta(target);
+    console.log(target);
+
+    const [updated, errUpdated] = await UserController.getUserMeta({
+      username: target.username,
+    });
     if (errUpdated) throw errUpdated;
 
     return updated;
@@ -347,39 +353,13 @@ const maxCardOpponentTrump: TrumpCard<Card[]> = {
 };
 
 /**
- * Ability to see through the opponent's cards
+ * Notify the user of what card is the next card in the deck
  */
-const seeThroughTrump: TrumpCard<IUser> = {
-  handler: "seeThrough",
-  type: "ATTACK",
-  onUse: async (cardUser, game) => {
-    const [target, errTarget] = await GameController.getOpponent(
-      game.gameId,
-      cardUser.username
-    );
-    if (errTarget) throw errTarget;
-
-    const [isInvinc, errInvinc] = await UserController.checkInvincibility(
-      target
-    );
-    if (errInvinc) throw errInvinc;
-    if (isInvinc) return target;
-
-    console.log(isInvinc);
-
-    const [statuses, err] = await UserController.addTrumpStatus(
-      { username: cardUser.username },
-      "SEE_OPPONENT_CARDS"
-    );
-    if (err) throw err;
-
-    // updated opponent
-    const [updated, errUpdated] = await UserController.getUserMeta(target);
-    if (errUpdated) throw errUpdated;
-
-    return updated;
-  },
-  afterHandler: seeThroughTrumpEventHandler(),
+const seeNextHitTrump: TrumpCard<void> = {
+  handler: "seeNextHit",
+  type: "UTILITY",
+  onUse: async (cardUser, game) => {},
+  afterHandler: seeNextHitTrumpEventHandlder(),
 };
 
 /**
@@ -478,7 +458,7 @@ const hideCardsTrump: TrumpCard<IUser> = {
 // All trump cards in the game
 export const trumpCardsAsArray: TrumpCard[] = [
   /**
-   * WIP
+   * Blind the opponent from seeing any cards, including hitting cards
    */
   blindDrawTrump,
   /**
@@ -509,10 +489,6 @@ export const trumpCardsAsArray: TrumpCard[] = [
    * Prevent opponent from using attack trump cards, and cleanse the statuses on the user
    */
   invincibilityTrump,
-  /**
-   * WIP
-   */
-  hideCardsTrump,
   /**
    * Prevented by: Invincibility status
    */

@@ -102,15 +102,5 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
   }
 
   // Update the client state
-  return await cardStateBroadcast(api, {
-    cards: cardsInPerspectives,
-    pov_A: {
-      username: game.players[0].username,
-      cards: cards_A,
-    },
-    pov_B: {
-      username: game.players[1].username,
-      cards: cards_B,
-    },
-  });
+  return await cardStateBroadcast(api, cardsInPerspectives);
 });

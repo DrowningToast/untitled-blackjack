@@ -76,11 +76,6 @@ export const initRoundMessage = (game: IGame): WebsocketResponse<IGame> => {
   };
 };
 
-interface CardState {
-  cards: Card[];
-  gameCards: GlobalCardsContext;
-}
-
 /**
  * @description Update the cards state of both players
  *@param
@@ -88,16 +83,12 @@ interface CardState {
  * @returns
  */
 export const cardStateMessage = (
-  cards: CardState["cards"],
-  gameCards: CardState["gameCards"]
-): WebsocketResponse<CardState> => {
+  cardsFromPov: GlobalCardsContext["pov"]
+): WebsocketResponse<GlobalCardsContext["pov"]> => {
   return {
     status: "OK",
     handler: "UPDATE_CARDS",
-    content: {
-      cards,
-      gameCards,
-    },
+    content: cardsFromPov,
   };
 };
 
@@ -251,6 +242,16 @@ export const updatePointTargetMessage = (
     status: "OK",
     handler: "UPDATE_POINT_TARGET",
     content: pointTarget,
+  };
+};
+
+export const nextHitCardTrumpEffect = (
+  card: Card[]
+): WebsocketResponse<Card[]> => {
+  return {
+    status: "OK",
+    handler: "NEXT_HIT_CARD_TRUMP_EFFECT",
+    content: card,
   };
 };
 

@@ -25,14 +25,6 @@ export const ZodUserStrip = z.object({
        */
       z.literal("BLIND"),
       /**
-       * OPPONENT CANT SEE THE MY CARDS
-       */
-      z.literal("HIDE_CARDS"),
-      /**
-       * I CAN SEE OPPONENT CARDS
-       */
-      z.literal("SEE_OPPONENT_CARDS"),
-      /**
        * OPPONENT CANT DRAW THE CARDS
        */
       z.literal("DENY_HIT"),

@@ -247,13 +247,28 @@ const getCardsOnPerspectives = asyncTransaction(
     const [game, err] = await getGame({ gameId });
     if (err) throw insertErrorStack(ERR_INVALID_GAME);
 
+    const [userA, errA] = await UserController.getUserMeta({
+      username: game.players[0].username,
+    });
+    if (errA) throw errA;
+
+    const isABlind = userA.trumpStatus.includes("BLIND");
+
+    const [userB, errB] = await UserController.getUserMeta({
+      username: game.players[1].username,
+    });
+    if (errB) throw errB;
+
+    const isBBlind = userB.trumpStatus.includes("BLIND");
+
     // player A in eyes of A
     const [cardsAofA, errAofA] = await UserController.getCards(
       {
         username: game.players[0].username,
       },
+      true,
       false,
-      false
+      isABlind
     );
     if (errAofA) throw errAofA;
 
@@ -263,7 +278,8 @@ const getCardsOnPerspectives = asyncTransaction(
         username: game.players[1].username,
       },
       false,
-      true
+      true,
+      isABlind
     );
     if (errBofA) throw errBofA;
 
@@ -273,7 +289,8 @@ const getCardsOnPerspectives = asyncTransaction(
         username: game.players[0].username,
       },
       false,
-      true
+      true,
+      isBBlind
     );
     if (errAofB) throw errAofB;
 
@@ -282,14 +299,15 @@ const getCardsOnPerspectives = asyncTransaction(
       {
         username: game.players[1].username,
       },
+      true,
       false,
-      false
+      isBBlind
     );
     if (errBofB) throw errBofB;
 
     const result: GlobalCardsContext[] = [
       {
-        user: game.players[0].username,
+        username: game.players[0].username,
         pov: [
           {
             username: game.players[0].username,
@@ -302,7 +320,7 @@ const getCardsOnPerspectives = asyncTransaction(
         ],
       },
       {
-        user: game.players[1].username,
+        username: game.players[1].username,
         pov: [
           {
             username: game.players[0].username,

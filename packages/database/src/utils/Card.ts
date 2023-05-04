@@ -6,7 +6,7 @@ export const ZodCard = z.object({
 });
 
 export type GlobalCardsContext = {
-  user: string;
+  username: string;
   pov: { username: string; cards: Card[] }[];
 };
 
