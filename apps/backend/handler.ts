@@ -11,7 +11,6 @@ import {
 } from "./src/websocket/utils/ErrorMessages";
 
 const proxy = awsLambdaFastify(initFastify());
-// const handler = awsLambdaFastify(app());
 
 /**
  * @description HTTP Connection Handler
@@ -25,7 +24,6 @@ const handler = (
   context: Context,
   callback: Callback
 ) => {
-  console.log(event.body);
   context.callbackWaitsForEmptyEventLoop = false;
   return connectToDatabase().then(() => proxy(event, context));
 };
@@ -77,7 +75,6 @@ const websocket: Handler<
           connected: true,
         }),
       };
-      break;
 
     default:
       try {

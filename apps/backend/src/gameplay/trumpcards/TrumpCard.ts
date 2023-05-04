@@ -46,15 +46,10 @@ const demoTrump: TrumpCard = {
 const _handleDrawTrumpOnUse =
   (targetCard: Card): TrumpCard["onUse"] =>
   async (cardUser, game) => {
-    console.log("choosenCard on use");
-    console.log(cardUser);
-
     const [cards, err1] = await GameActionController.getRemainingCards(
       game.gameId
     );
     if (err1) throw err1;
-
-    console.log(cards);
 
     // check if choosenCard card is in the deck
     const choosenCard = cards.find(
@@ -62,18 +57,12 @@ const _handleDrawTrumpOnUse =
     );
     if (!choosenCard) return undefined;
 
-    console.log(choosenCard);
-    console.log(game.gameId);
-
     const [allCards, err3] = await GameActionController.takeCards(
       cardUser,
       game.gameId,
       [choosenCard]
     );
-    console.log(allCards);
     if (err3) throw err3;
-
-    console.log("returning");
 
     // return the choosenCard indicating that the card was used
     return choosenCard as typeof aceCard;
@@ -191,8 +180,6 @@ const blindDrawTrump: TrumpCard<IUser> = {
   handler: "blind",
   type: "ATTACK",
   onUse: async (cardUser, game) => {
-    console.log(cardUser);
-
     const [target, errTarget] = await GameController.getOpponent(
       game.gameId,
       cardUser.username
@@ -207,8 +194,6 @@ const blindDrawTrump: TrumpCard<IUser> = {
       "BLIND"
     );
     if (errStatus) throw errStatus;
-
-    console.log(target);
 
     const [updated, errUpdated] = await UserController.getUserMeta({
       username: target.username,
@@ -240,8 +225,6 @@ const denyHitTrump: TrumpCard<IUser> = {
     if (target.trumpStatus.find((status) => status === "DENY_HIT"))
       return target;
 
-    console.log(target);
-
     // add blind status
     const [statuses, errStatus] = await UserController.addTrumpStatus(
       { username: target.username },
@@ -249,15 +232,11 @@ const denyHitTrump: TrumpCard<IUser> = {
     );
     if (errStatus) throw errStatus;
 
-    console.log(statuses);
-
     // return the updated user
     const [updated, errUpdated] = await UserController.getUserMeta({
       username: target.username,
     });
     if (errUpdated) throw errUpdated;
-
-    console.log(updated);
 
     return updated;
   },
@@ -277,8 +256,6 @@ const denyUseTrumpCardTrump: TrumpCard<IUser> = {
     );
     if (errTarget) throw errTarget;
 
-    console.log(target);
-
     // add deny trump use status
     const [_, errStatus] = await UserController.addTrumpStatus(
       { username: target.username },
@@ -286,15 +263,11 @@ const denyUseTrumpCardTrump: TrumpCard<IUser> = {
     );
     if (errStatus) throw errStatus;
 
-    console.log(_);
-
     // get updated user
     const [updated, errUpdated] = await UserController.getUserMeta({
       username: target.username,
     });
     if (errUpdated) throw errUpdated;
-
-    console.log(updated);
 
     return updated;
   },
@@ -315,9 +288,6 @@ const maxCardOpponentTrump: TrumpCard<Card[]> = {
       cardUser.username
     );
     if (errTarget) throw errTarget;
-
-    console.log("taret accquied");
-    console.log(target);
 
     const [currCards, errCurr] = await UserController.getCards({
       username: target.username,
@@ -343,9 +313,6 @@ const maxCardOpponentTrump: TrumpCard<Card[]> = {
       [maxCard]
     );
     if (err3) throw err3;
-
-    console.log("card drawn is ");
-    console.log(newCards);
 
     return newCards;
   },
@@ -390,9 +357,6 @@ const undoHitTrump: TrumpCard<Card[]> = {
     const [currCards, errCurr] = await UserController.getCards(cardUser, true);
     if (errCurr) throw errCurr;
 
-    console.log("using undo trump");
-    console.log(currCards);
-
     if (currCards.length < 3) return currCards;
 
     const [connectionId, err2] = await UserController.getConnectionId(cardUser);
@@ -406,8 +370,6 @@ const undoHitTrump: TrumpCard<Card[]> = {
 
     const [cards, errCards] = await UserController.getCards(cardUser);
     if (errCards) throw errCards;
-
-    console.log(cards);
 
     return cards;
   },

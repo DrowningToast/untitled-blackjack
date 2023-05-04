@@ -28,7 +28,7 @@ export const WebsocketRouters: Record<string, WebsocketRouter> = {
 };
 
 export const getEvents = (eventId: keyof typeof WebsocketRouters) => {
-  console.log(`Finding router of ${eventId} BRUH MOMENT`);
+  console.log(`DEBUG: Finding router of ${eventId}`);
 
   return WebsocketRouters[eventId];
 };
