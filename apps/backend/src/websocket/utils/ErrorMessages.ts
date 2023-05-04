@@ -1,6 +1,6 @@
 import { ErrorMessage } from "database";
 
-export * from "database/src/utils/error";
+export * from "database";
 
 export const ERR_BAD_REQUEST: ErrorMessage = {
   error: "bad-request",
