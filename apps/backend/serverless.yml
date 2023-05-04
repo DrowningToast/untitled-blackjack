@@ -24,6 +24,7 @@ functions:
           route: $connect
       - websocket:
           route: $default
+    timeout: 10
 
 plugins:
   - serverless-esbuild

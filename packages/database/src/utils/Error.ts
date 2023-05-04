@@ -1,12 +1,21 @@
 import z from "zod";
 
-export type ErrorMessage = z.infer<typeof ZodErrorMessage>;
+export type ErrorMessage = z.infer<typeof ZodErrorMessage> & {
+  stack?: string;
+};
 
 export const ZodErrorMessage = z.object({
   error: z.string(),
+  stack: z.string().optional(),
   description: z.string(),
 });
 
+export const insertErrorStack = (error: ErrorMessage) => {
+  return {
+    ...error,
+    stack: new Error(error.error).stack,
+  };
+};
 export const ERR_INTERNAL: ErrorMessage = {
   error: "internal-error",
   description:
@@ -30,6 +39,7 @@ export const ERR_INVALID_PASSCODE: ErrorMessage = {
 
 export const ERR_INVALID_GAME: ErrorMessage = {
   error: "invalid-game",
+
   description: "Game not found",
 };
 
@@ -60,12 +70,12 @@ export const ERR_ILLEGAL_OPERATION: ErrorMessage = {
 };
 
 export const ERR_INGAME_PLAYERS: ErrorMessage = {
-  error: "invalid-ingame-players",
+  error: "invalid-imgame-player",
   description: "Players in the game instance is invalid and maybe broken",
 };
 
 export const ERR_USER_STAND: ErrorMessage = {
-  error: "user-stand",
+  error: "invalid-user-stand",
   description: "Both users aren't in stand state",
 };
 
@@ -75,16 +85,36 @@ export const ERR_NO_WINNER: ErrorMessage = {
 };
 
 export const ERR_ROUND_COUNTER: ErrorMessage = {
-  error: "round-counter",
+  error: "invalid-round-counter",
   description: "Round counter is invalid. It may exceed maximum round counter.",
 };
 
 export const ERR_WINNER_POINTS: ErrorMessage = {
-  error: "winner-points",
+  error: "invalid-winner-points",
   description: "Can't determine how much scores/points the winner should get.",
 };
 
 export const ERR_INVALID_CARDS: ErrorMessage = {
   error: "invalid-cards",
   description: "Players cards are invalid",
+};
+
+export const ERR_INVALID_TRUMP_CARD: ErrorMessage = {
+  error: "invalid-trump-card",
+  description: "Trump card is invalid",
+};
+
+export const ERR_NO_TRUMP_FOUND: ErrorMessage = {
+  error: "no-trump-found",
+  description: "trump card is not found in the player's hand",
+};
+
+export const ERR_HIT_WHEN_DEINED_HIT: ErrorMessage = {
+  error: "hit-when-denied-hit",
+  description: "You're trying to perform hit action while you're deined hit",
+};
+
+export const ERR_TRUMP_USE_DENIED: ErrorMessage = {
+  error: "trump-use-denied",
+  description: "The user attempt to use trump card while being denied",
 };

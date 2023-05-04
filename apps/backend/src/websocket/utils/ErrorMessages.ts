@@ -1,6 +1,6 @@
 import { ErrorMessage } from "database";
 
-export * from "database/src/utils/Error";
+export * from "database";
 
 export const ERR_BAD_REQUEST: ErrorMessage = {
   error: "bad-request",
@@ -39,7 +39,7 @@ export const ERR_INVALID_AUTHORIZE_CONNECTION_INSTANCE: ErrorMessage = {
 };
 
 export const ERR_GAME_STATE: ErrorMessage = {
-  error: "game-state",
+  error: "invalid-game-state",
   description: "The game is in a state that doesn't allow this action",
 };
 
@@ -58,4 +58,9 @@ export const ERR_INIT_GAME: ErrorMessage = {
 export const ERR_INVALID_JSON: ErrorMessage = {
   error: "invalid-json",
   description: "Invalid body JSON",
+};
+
+export const ERR_OPPONENT_INVINCIBILITY: ErrorMessage = {
+  error: "opponent-invincibility",
+  description: "Opponent is invincible, and you're trying to use attack card",
 };

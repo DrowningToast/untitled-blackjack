@@ -1,4 +1,9 @@
-import { ERR_INTERNAL, ErrorMessage, ZodErrorMessage } from "database";
+import {
+  ERR_INTERNAL,
+  ErrorMessage,
+  ZodErrorMessage,
+  insertErrorStack,
+} from "database";
 
 /**
  *
@@ -13,14 +18,15 @@ export const AsyncExceptionHandler = <T extends any[], K>(
   return async (...args: T) => {
     try {
       const response = await callback(...args);
-      console.log(response);
       return [response, undefined];
     } catch (e: unknown) {
+      console.log(e);
+      let err = insertErrorStack(e as ErrorMessage);
       try {
-        const error = ZodErrorMessage.parse(e);
+        const error = ZodErrorMessage.parse(err);
         return [undefined, error];
       } catch (e) {
-        return [undefined, ERR_INTERNAL];
+        return [undefined, insertErrorStack(ERR_INTERNAL)];
       }
     }
   };

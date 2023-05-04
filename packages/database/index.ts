@@ -9,6 +9,6 @@ export * from "./src/controllers/GameActionController";
 
 export * from "./src/utils/config";
 
-export * from "./src/utils/Error";
+export * from "./src/utils/error";
 
 export * from "mongoose";

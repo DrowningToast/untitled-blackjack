@@ -10,7 +10,7 @@ export const gameWinnerBroadcast = AsyncExceptionHandler(
     winner: IUser | null,
     connectionIds: string[]
   ) => {
-    const { broadcast, connectionId } = API;
+    const { broadcast } = API;
     const [game, err] = await GameController.getGame({ gameId });
     if (err) throw err;
 

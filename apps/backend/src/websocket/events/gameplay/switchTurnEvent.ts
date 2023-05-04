@@ -4,7 +4,7 @@ import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
 import { switchTurnBroadcast } from "../../broadcast/switchTurnBroadcast";
 
 export const switchTurnEvent = AsyncExceptionHandler(async (api: APIG) => {
-  const { broadcast, connectionId } = api;
+  const { connectionId } = api;
 
   const [user, err] = await UserController.getUserMeta({ connectionId });
   if (err) throw err;
