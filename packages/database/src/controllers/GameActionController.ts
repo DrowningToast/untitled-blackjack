@@ -351,14 +351,14 @@ const getAllPlayersCards = asyncTransaction(
       {
         connectionId: connectionA,
       },
-      playerB.trumpStatus.includes("SEE_OPPONENT_CARDS") ? true : includeHidden
+      includeHidden
     );
     if (eA) throw eA;
     const [cardsB, eB] = await UserController.getCards(
       {
         connectionId: connectionB,
       },
-      playerA.trumpStatus.includes("SEE_OPPONENT_CARDS") ? true : includeHidden
+      includeHidden
     );
     if (eB) throw eB;
 
