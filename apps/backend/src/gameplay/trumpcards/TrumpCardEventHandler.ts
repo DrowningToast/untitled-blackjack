@@ -188,7 +188,10 @@ export const seeNextHitTrumpEventHandlder = () =>
     );
     if (errCards) throw errCards;
 
-    await send(nextHitCardTrumpEffect([cards[0]]));
+    // the first 2 cards
+    const shownCards = cards.slice(0, 2);
+
+    await send(nextHitCardTrumpEffect(shownCards));
   });
 
 // change point target

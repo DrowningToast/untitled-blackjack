@@ -436,25 +436,6 @@ const invincibilityTrump: TrumpCard<IUser> = {
   afterHandler: invincibilityTrumpEventHandler(),
 };
 
-const hideCardsTrump: TrumpCard<IUser> = {
-  handler: "hideCards",
-  type: "UTILITY",
-  onUse: async (cardUser, game) => {
-    const [statuses, err] = await UserController.addTrumpStatus(
-      cardUser,
-      "HIDE_CARDS"
-    );
-    if (err) throw err;
-
-    // get the user meta
-    const [user, err2] = await UserController.getUserMeta(cardUser);
-    if (err2) throw err2;
-
-    return user;
-  },
-  afterHandler: hideCardsTrumpEventHandler(),
-};
-
 // All trump cards in the game
 export const trumpCardsAsArray: TrumpCard[] = [
   /**
@@ -474,9 +455,9 @@ export const trumpCardsAsArray: TrumpCard[] = [
    */
   maxCardOpponentTrump,
   /**
-   * WIP
+   * Return the next 2 cards in the deck
    */
-  seeThroughTrump,
+  seeNextHitTrump,
   /**
    * Change the target point in the round from 21 to 25, resets back to default target point next round
    */
@@ -520,11 +501,10 @@ export const trumpCardsAsObject: { [key: string]: TrumpCard } = {
   denyHitTrump,
   denyUseTrumpCardTrump,
   maxCardOpponentTrump,
-  seeThroughTrump,
+  seeNextHitTrump,
   changePointsLimit25Trump,
   undoHitTrump,
   invincibilityTrump,
-  hideCardsTrump,
   removeLastCardTrump,
   aceTrump,
   threeTrump,
