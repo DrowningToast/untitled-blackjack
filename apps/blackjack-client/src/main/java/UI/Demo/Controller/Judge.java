@@ -2,8 +2,6 @@ package UI.Demo.Controller;
 import Development.Card;
 import Development.CardHandler;
 import Development.Player;
-import Development.PlayerOne;
-import Development.PlayerTwo;
 import Development.TrumpChip;
 import UI.Demo.Display.*;
 
@@ -20,8 +18,8 @@ public class Judge {
     private static Random random = new Random();
     private static boolean isEndGame = false;
     private static GamePlayDisplayGUI gameGUI = new GamePlayDisplayGUI();
-    private static PlayerOne playerOne = new PlayerOne();
-    private static PlayerTwo playerTwo = new PlayerTwo();
+    private static Player playerOne = new Player();
+    private static Player playerTwo = new Player();
     
 
     public static Card giveCard(Player p) {

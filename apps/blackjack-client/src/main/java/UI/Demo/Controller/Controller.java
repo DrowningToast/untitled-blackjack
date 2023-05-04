@@ -5,8 +5,6 @@ import UI.Demo.Display.GamePlayDisplayGUI;
 import Development.Card;
 import Development.CardHandler;
 import Development.Player;
-import Development.PlayerOne;
-import Development.PlayerTwo;
 import UI.Demo.Controller.Judge;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -17,15 +15,15 @@ import java.awt.Component;
 
 public class Controller implements ActionListener{
     public GamePlayDisplayGUI gameGUI;
-    public PlayerOne playerOne;
-    public PlayerTwo playerTwo;
+    public Player playerOne;
+    public Player playerTwo;
     public createImageCard randomCard;
     public Judge judge;
     
     public Controller(){
         gameGUI = new GamePlayDisplayGUI();
-        playerOne = new PlayerOne();
-        playerTwo = new PlayerTwo();
+        playerOne = new Player();
+        playerTwo = new Player();
         randomCard = new createImageCard();
         
         gameGUI.init();

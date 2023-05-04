@@ -1,7 +1,6 @@
 package UI.Demo.Controller;
 
-import Development.PlayerOne;
-import Development.PlayerTwo;
+import Development.Player;
 import UI.Demo.Display.GamePlayDisplayGUI;
 
 public class TestGame {
@@ -34,8 +33,8 @@ public class TestGame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                PlayerOne player1 = new PlayerOne();
-                PlayerTwo player2 = new PlayerTwo();
+                Player player1 = new Player();
+                Player player2 = new Player();
                 
                 Judge.join(player1);
                 Judge.join(player2);

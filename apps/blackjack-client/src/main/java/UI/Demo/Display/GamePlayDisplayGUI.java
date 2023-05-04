@@ -39,8 +39,6 @@ public class GamePlayDisplayGUI extends javax.swing.JFrame {
         playerOneNamePanel = new javax.swing.JPanel();
         trumpHoldChipPlayerOnePanel = new javax.swing.JPanel();
         trumpChipPlayerOnePanel = new javax.swing.JPanel();
-        deckCardPanel = new javax.swing.JPanel();
-        deckCardLabel = new javax.swing.JLabel();
         playerTwoNamePanel = new javax.swing.JPanel();
         scoreGamePlayerOnePanel = new javax.swing.JPanel();
         scoreGamePlayerOneLabel = new javax.swing.JLabel();
@@ -55,7 +53,9 @@ public class GamePlayDisplayGUI extends javax.swing.JFrame {
         hitButtonPlayerTwo = new javax.swing.JButton();
         standButtonPlayerTwo = new javax.swing.JButton();
         scoreCardTwoLabel = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        deckCardPanel = new javax.swing.JPanel();
+        deckCardLabel = new javax.swing.JLabel();
+        gameplayBackground = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -142,15 +142,6 @@ public class GamePlayDisplayGUI extends javax.swing.JFrame {
         trumpChipPlayerOnePanel.setAutoscrolls(true);
         trumpChipPlayerOnePanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         gamePlayPanel.add(trumpChipPlayerOnePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 440, 600, 70));
-
-        deckCardPanel.setBackground(new java.awt.Color(0, 0, 0));
-        deckCardPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        deckCardLabel.setBackground(new java.awt.Color(0, 0, 0));
-        deckCardLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Back (2).png"))); // NOI18N
-        deckCardPanel.add(deckCardLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
-        gamePlayPanel.add(deckCardPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 270, 150, 210));
 
         playerTwoNamePanel.setBackground(new java.awt.Color(102, 102, 102));
         gamePlayPanel.add(playerTwoNamePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 40, 250, 90));
@@ -269,9 +260,29 @@ public class GamePlayDisplayGUI extends javax.swing.JFrame {
 
         gamePlayPanel.add(buttonPanelPlayerTwo, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 10, 150, 210));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UI/Demo/resources/GamePlayBackground.PNG"))); // NOI18N
-        jLabel1.setText("jLabel1");
-        gamePlayPanel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1280, 800));
+        deckCardPanel.setPreferredSize(new java.awt.Dimension(107, 157));
+
+        deckCardLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UI/Demo/resources/download.png"))); // NOI18N
+
+        javax.swing.GroupLayout deckCardPanelLayout = new javax.swing.GroupLayout(deckCardPanel);
+        deckCardPanel.setLayout(deckCardPanelLayout);
+        deckCardPanelLayout.setHorizontalGroup(
+            deckCardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, deckCardPanelLayout.createSequentialGroup()
+                .addComponent(deckCardLabel)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        deckCardPanelLayout.setVerticalGroup(
+            deckCardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, deckCardPanelLayout.createSequentialGroup()
+                .addComponent(deckCardLabel)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        gamePlayPanel.add(deckCardPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1107, 247, 150, 210));
+
+        gameplayBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UI/Demo/resources/GamePlayBackground.PNG"))); // NOI18N
+        gamePlayPanel.add(gameplayBackground, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1280, 800));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -303,9 +314,9 @@ public class GamePlayDisplayGUI extends javax.swing.JFrame {
     private javax.swing.JLabel deckCardLabel;
     private javax.swing.JPanel deckCardPanel;
     private javax.swing.JPanel gamePlayPanel;
+    private javax.swing.JLabel gameplayBackground;
     private javax.swing.JButton hitButtonPlayerOne;
     private javax.swing.JButton hitButtonPlayerTwo;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel playerOneNamePanel;
     private java.awt.Label playerOneNameScoreLabel;
     private javax.swing.JPanel playerOneTable;
@@ -360,6 +371,14 @@ public class GamePlayDisplayGUI extends javax.swing.JFrame {
         this.deckCardLabel = deckCardLabel;
     }
 
+    public JLabel getGameplayBackground() {
+        return gameplayBackground;
+    }
+
+    public void setGameplayBackground(JLabel gameplayBackground) {
+        this.gameplayBackground = gameplayBackground;
+    }
+
     public JPanel getDeckCardPanel() {
         return deckCardPanel;
     }
@@ -390,14 +409,6 @@ public class GamePlayDisplayGUI extends javax.swing.JFrame {
 
     public void setHitButtonPlayerTwo(JButton hitButtonPlayerTwo) {
         this.hitButtonPlayerTwo = hitButtonPlayerTwo;
-    }
-
-    public JLabel getjLabel1() {
-        return jLabel1;
-    }
-
-    public void setjLabel1(JLabel jLabel1) {
-        this.jLabel1 = jLabel1;
     }
 
     public JPanel getPlayerOneNamePanel() {

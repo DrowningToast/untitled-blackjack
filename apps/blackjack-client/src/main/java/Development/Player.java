@@ -4,12 +4,13 @@ package Development;
 import javax.swing.*;
 import java.util.ArrayList;
 
-public abstract class Player {
+public class Player {
 
     private String name;
     private boolean status = true;
     private int numOfCard = 0;
     private int numOfTrumpChip = 0;
+    private int score;
     private String connectID;
      //player's card
     private ArrayList<Card> myCard = new ArrayList<Card>();
@@ -66,6 +67,14 @@ public abstract class Player {
 
     public void setConnectID(String connectID) {
         this.connectID = connectID;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
     
 }
