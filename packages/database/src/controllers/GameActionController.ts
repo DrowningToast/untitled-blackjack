@@ -29,6 +29,7 @@ import { UserController } from "./UserController";
 import { FilterQuery } from "mongoose";
 import { IUser, _IUser } from "../models/UserModel";
 import { TrumpCard, TrumpCardDocument } from "../models/TrumpCardModel";
+import { RoundWinner } from "../../../../apps/backend/src/websocket/utils/WebsocketResponses";
 
 const initRound = asyncTransaction(async (gameId: string) => {
   console.log(`INITING GAME: ${gameId}`);
@@ -651,145 +652,148 @@ export interface RoundReport {
 /**
  * @description Find the winner and ends
  */
-const showdownRound = asyncTransaction(async (gameId: string) => {
-  const [game, err] = await GameController.getGame({ gameId });
-  if (err) throw insertErrorStack(ERR_INVALID_GAME);
+const showdownRound = asyncTransaction(
+  async (gameId: string): Promise<RoundWinner> => {
+    const [game, err] = await GameController.getGame({ gameId });
+    if (err) throw insertErrorStack(ERR_INVALID_GAME);
 
-  // check is the on going game or not
-  if (game.gameState !== "onGoing") throw insertErrorStack(ERR_GAME_STATE);
+    // check is the on going game or not
+    if (game.gameState !== "onGoing") throw insertErrorStack(ERR_GAME_STATE);
 
-  // players
-  const [playerA, playerB] = game.players;
+    // players
+    const [playerA, playerB] = game.players;
 
-  // check if both players are in stand state
-  if (!playerA.stand || !playerB.stand) throw insertErrorStack(ERR_USER_STAND);
+    // check if both players are in stand state
+    if (!playerA.stand || !playerB.stand)
+      throw insertErrorStack(ERR_USER_STAND);
 
-  // Find out who wins
-  // get points sum
-  const targetPoints = game.cardPointTarget;
-  const [playerASums, errA] = await UserController.getCardsSums({
-    username: playerA.username,
-  });
-  const [playerBSums, errB] = await UserController.getCardsSums({
-    username: playerB.username,
-  });
-  if (errA || errB) throw insertErrorStack(ERR_INTERNAL);
+    // Find out who wins
+    // get points sum
+    const targetPoints = game.cardPointTarget;
+    const [playerASums, errA] = await UserController.getCardsSums({
+      username: playerA.username,
+    });
+    const [playerBSums, errB] = await UserController.getCardsSums({
+      username: playerB.username,
+    });
+    if (errA || errB) throw insertErrorStack(ERR_INTERNAL);
 
-  let [isAExceed, isBExceed] = [false, false];
+    let [isAExceed, isBExceed] = [false, false];
 
-  // Check if both players exceed the target points
-  if (playerASums[0] > targetPoints && playerASums[1] > targetPoints) {
-    isAExceed = true;
-  }
-  if (playerBSums[0] > targetPoints && playerBSums[1] > targetPoints) {
-    isBExceed = true;
-  }
+    // Check if both players exceed the target points
+    if (playerASums[0] > targetPoints && playerASums[1] > targetPoints) {
+      isAExceed = true;
+    }
+    if (playerBSums[0] > targetPoints && playerBSums[1] > targetPoints) {
+      isBExceed = true;
+    }
 
-  // Get safe best sum
-  let A_sum =
-    Math.max(...playerASums) <= targetPoints
-      ? Math.max(...playerASums)
-      : Math.min(...playerASums);
-  let B_sum =
-    Math.max(...playerBSums) <= targetPoints
-      ? Math.max(...playerBSums)
-      : Math.min(...playerBSums);
+    // Get safe best sum
+    let A_sum =
+      Math.max(...playerASums) <= targetPoints
+        ? Math.max(...playerASums)
+        : Math.min(...playerASums);
+    let B_sum =
+      Math.max(...playerBSums) <= targetPoints
+        ? Math.max(...playerBSums)
+        : Math.min(...playerBSums);
 
-  let winner: string = "";
+    let winner: string = "";
 
-  if (isAExceed && !isBExceed) {
-    winner = "A";
-  } else if (!isAExceed && isBExceed) {
-    winner = "B";
-  } else if (isAExceed && isBExceed) {
-    winner = "AB";
-  } else if (A_sum > B_sum) {
-    winner = "A";
-  } else if (A_sum < B_sum) {
-    winner = "B";
-  } else if (A_sum === B_sum) {
-    winner = "AB";
-  } else {
-    throw insertErrorStack(ERR_NO_WINNER);
-  }
+    if (isAExceed && !isBExceed) {
+      winner = "A";
+    } else if (!isAExceed && isBExceed) {
+      winner = "B";
+    } else if (isAExceed && isBExceed) {
+      winner = "AB";
+    } else if (A_sum > B_sum) {
+      winner = "A";
+    } else if (A_sum < B_sum) {
+      winner = "B";
+    } else if (A_sum === B_sum) {
+      winner = "AB";
+    } else {
+      throw insertErrorStack(ERR_NO_WINNER);
+    }
 
-  // determine how many points the winner gets
-  const winnerPoints = GAME_ROUND_SCORE_MAPPING[game.roundCounter];
-  if (!winnerPoints) throw insertErrorStack(ERR_WINNER_POINTS);
+    // determine how many points the winner gets
+    const winnerPoints = GAME_ROUND_SCORE_MAPPING[game.roundCounter];
+    if (!winnerPoints) throw insertErrorStack(ERR_WINNER_POINTS);
 
-  // Update winner points
-  if (winner === "A") {
-    const [_, err] = await UserController.updateUser(
-      { username: playerA.username },
-      {
-        $inc: {
-          gameScore: winnerPoints,
-        },
-      }
-    );
-    if (err) throw err;
-  } else if (winner === "B") {
-    const [_, err] = await UserController.updateUser(
-      { username: playerB.username },
-      {
-        $inc: {
-          gameScore: winnerPoints,
-        },
-      }
-    );
-    if (err) throw err;
-  } else if (winner === "AB") {
-    const [_, err] = await UserController.updateUser(
-      { username: playerA.username },
-      {
-        $inc: {
-          gameScore: winnerPoints,
-        },
-      }
-    );
-    const [_2, err2] = await UserController.updateUser(
-      { username: playerB.username },
-      {
-        $inc: {
-          gameScore: winnerPoints,
-        },
-      }
-    );
-    if (err) throw err;
+    // Update winner points
+    if (winner === "A") {
+      const [_, err] = await UserController.updateUser(
+        { username: playerA.username },
+        {
+          $inc: {
+            gameScore: winnerPoints,
+          },
+        }
+      );
+      if (err) throw err;
+    } else if (winner === "B") {
+      const [_, err] = await UserController.updateUser(
+        { username: playerB.username },
+        {
+          $inc: {
+            gameScore: winnerPoints,
+          },
+        }
+      );
+      if (err) throw err;
+    } else if (winner === "AB") {
+      const [_, err] = await UserController.updateUser(
+        { username: playerA.username },
+        {
+          $inc: {
+            gameScore: winnerPoints,
+          },
+        }
+      );
+      const [_2, err2] = await UserController.updateUser(
+        { username: playerB.username },
+        {
+          $inc: {
+            gameScore: winnerPoints,
+          },
+        }
+      );
+      if (err) throw err;
+      if (err2) throw err2;
+    }
+
+    // get cards for the reveal
+    const [[updatedGame, err2], [playerACards, err3], [playerBCards, err4]] =
+      await Promise.all([
+        GameController.getGame({ gameId }),
+        UserController.getCards({ username: playerA.username }, true, true),
+        UserController.getCards({ username: playerB.username }, true, true),
+      ]);
+
     if (err2) throw err2;
+    if (err3) throw err3;
+    if (err4) throw err4;
+    if (!updatedGame) throw insertErrorStack(ERR_INVALID_GAME);
+    if (!playerACards?.length) throw insertErrorStack(ERR_INVALID_CARDS);
+    if (!playerBCards?.length) throw insertErrorStack(ERR_INVALID_CARDS);
+
+    return {
+      game: updatedGame,
+      winner: winner === "A" ? playerA : winner === "B" ? playerB : null,
+      pointsEarned: winnerPoints,
+      cards: [
+        {
+          username: playerA.username,
+          cards: playerACards,
+        },
+        {
+          username: playerB.username,
+          cards: playerBCards,
+        },
+      ],
+    };
   }
-
-  // get cards for the reveal
-  const [[updatedGame, err2], [playerACards, err3], [playerBCards, err4]] =
-    await Promise.all([
-      GameController.getGame({ gameId }),
-      UserController.getCards({ username: playerA.username }, true, true),
-      UserController.getCards({ username: playerB.username }, true, true),
-    ]);
-
-  if (err2) throw err2;
-  if (err3) throw err3;
-  if (err4) throw err4;
-  if (!updatedGame) throw insertErrorStack(ERR_INVALID_GAME);
-  if (!playerACards?.length) throw insertErrorStack(ERR_INVALID_CARDS);
-  if (!playerBCards?.length) throw insertErrorStack(ERR_INVALID_CARDS);
-
-  return {
-    game: updatedGame,
-    winner: winner === "A" ? playerA : winner === "B" ? playerB : null,
-    pointsEarned: winnerPoints,
-    cards: [
-      {
-        username: playerA.username,
-        cards: playerACards,
-      },
-      {
-        username: playerB.username,
-        cards: playerBCards,
-      },
-    ],
-  };
-});
+);
 
 const drawTrumpCards = asyncTransaction(
   async (user: FilterQuery<IUser>, gameId: string, amount: number = 1) => {

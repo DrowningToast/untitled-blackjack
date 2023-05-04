@@ -155,7 +155,7 @@ export interface RoundWinner {
   winner: IUser | null;
   pointsEarned: number;
   game: IGame;
-  cards: GlobalCardsContext;
+  cards: GlobalCardsContext["pov"];
 }
 
 export const roundWinnerMessage = (
