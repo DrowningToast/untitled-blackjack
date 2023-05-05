@@ -54,8 +54,8 @@ public class GamePlayDisplayGUI extends javax.swing.JFrame {
         standButtonPlayerTwo = new javax.swing.JButton();
         scoreCardTwoLabel = new javax.swing.JLabel();
         deckCardPanel = new javax.swing.JPanel();
-        deckCardLabel = new javax.swing.JLabel();
-        gameplayBackground = new javax.swing.JLabel();
+        deckCardBackground = new javax.swing.JLabel();
+        background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -69,9 +69,15 @@ public class GamePlayDisplayGUI extends javax.swing.JFrame {
         buttonPanelPlayerOne.setForeground(new java.awt.Color(255, 255, 255));
         buttonPanelPlayerOne.setPreferredSize(new java.awt.Dimension(150, 200));
 
-        hitButtonPlayerOne.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UI/Demo/resources/HitButton_1.PNG"))); // NOI18N
+        hitButtonPlayerOne.setBackground(new java.awt.Color(0, 0, 0));
+        hitButtonPlayerOne.setFont(new java.awt.Font("Book Antiqua", 1, 20)); // NOI18N
+        hitButtonPlayerOne.setForeground(new java.awt.Color(255, 255, 255));
+        hitButtonPlayerOne.setText("Hit");
 
-        standButtonPlayerOne.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UI/Demo/resources/StandButton_1.PNG"))); // NOI18N
+        standButtonPlayerOne.setBackground(new java.awt.Color(255, 0, 0));
+        standButtonPlayerOne.setFont(new java.awt.Font("Book Antiqua", 1, 20)); // NOI18N
+        standButtonPlayerOne.setForeground(new java.awt.Color(255, 255, 0));
+        standButtonPlayerOne.setText("Stand");
 
         scoreCardOneLabel.setFont(new java.awt.Font("Segoe UI", 0, 30)); // NOI18N
         scoreCardOneLabel.setForeground(new java.awt.Color(255, 255, 255));
@@ -109,11 +115,9 @@ public class GamePlayDisplayGUI extends javax.swing.JFrame {
         gamePlayPanel.add(buttonPanelPlayerOne, new org.netbeans.lib.awtextra.AbsoluteConstraints(1118, 520, 156, 212));
 
         playerOneTable.setBackground(new java.awt.Color(102, 0, 0));
-        playerOneTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon(getClass().getResource("/UI/Demo/resources/Table.PNG")))); // NOI18N
         gamePlayPanel.add(playerOneTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 520, 730, 240));
 
         playerTwoTable.setBackground(new java.awt.Color(102, 0, 0));
-        playerTwoTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon(getClass().getResource("/UI/Demo/resources/Table.PNG")))); // NOI18N
         playerTwoTable.setPreferredSize(new java.awt.Dimension(720, 330));
         gamePlayPanel.add(playerTwoTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 10, 730, 240));
 
@@ -223,9 +227,15 @@ public class GamePlayDisplayGUI extends javax.swing.JFrame {
 
         buttonPanelPlayerTwo.setBackground(new java.awt.Color(153, 153, 153));
 
-        hitButtonPlayerTwo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UI/Demo/resources/HitButton_1.PNG"))); // NOI18N
+        hitButtonPlayerTwo.setBackground(new java.awt.Color(0, 0, 0));
+        hitButtonPlayerTwo.setFont(new java.awt.Font("Book Antiqua", 1, 20)); // NOI18N
+        hitButtonPlayerTwo.setForeground(new java.awt.Color(255, 255, 255));
+        hitButtonPlayerTwo.setText("Hit");
 
-        standButtonPlayerTwo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UI/Demo/resources/StandButton_1.PNG"))); // NOI18N
+        standButtonPlayerTwo.setBackground(new java.awt.Color(255, 0, 0));
+        standButtonPlayerTwo.setFont(new java.awt.Font("Book Antiqua", 1, 20)); // NOI18N
+        standButtonPlayerTwo.setForeground(new java.awt.Color(255, 255, 0));
+        standButtonPlayerTwo.setText("Stand");
 
         scoreCardTwoLabel.setFont(new java.awt.Font("Segoe UI", 0, 30)); // NOI18N
         scoreCardTwoLabel.setForeground(new java.awt.Color(255, 255, 255));
@@ -262,27 +272,19 @@ public class GamePlayDisplayGUI extends javax.swing.JFrame {
 
         deckCardPanel.setPreferredSize(new java.awt.Dimension(107, 157));
 
-        deckCardLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UI/Demo/resources/download.png"))); // NOI18N
-
         javax.swing.GroupLayout deckCardPanelLayout = new javax.swing.GroupLayout(deckCardPanel);
         deckCardPanel.setLayout(deckCardPanelLayout);
         deckCardPanelLayout.setHorizontalGroup(
             deckCardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, deckCardPanelLayout.createSequentialGroup()
-                .addComponent(deckCardLabel)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(deckCardBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         deckCardPanelLayout.setVerticalGroup(
             deckCardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, deckCardPanelLayout.createSequentialGroup()
-                .addComponent(deckCardLabel)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(deckCardBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         gamePlayPanel.add(deckCardPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1107, 247, 150, 210));
-
-        gameplayBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UI/Demo/resources/GamePlayBackground.PNG"))); // NOI18N
-        gamePlayPanel.add(gameplayBackground, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1280, 800));
+        gamePlayPanel.add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1280, 800));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -304,17 +306,25 @@ public class GamePlayDisplayGUI extends javax.swing.JFrame {
 
     public void init() {
         initComponents();
+        playerTwoTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
+        playerOneTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
+        hitButtonPlayerOne.setIcon(new javax.swing.ImageIcon("resources/HitButton_1.PNG"));
+        hitButtonPlayerTwo.setIcon(new javax.swing.ImageIcon("resources/HitButton_1.PNG"));
+        standButtonPlayerTwo.setIcon(new javax.swing.ImageIcon("resources/StandButton_1.PNG"));
+        standButtonPlayerOne.setIcon(new javax.swing.ImageIcon("resources/StandButton_1.PNG"));
+        deckCardBackground.setIcon(new javax.swing.ImageIcon("resources/download.png"));
+        background.setIcon(new javax.swing.ImageIcon("resources/GamePlayBackground.PNG"));
         this.setExtendedState(this.MAXIMIZED_BOTH);
         this.setVisible(true);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel background;
     private javax.swing.JPanel buttonPanelPlayerOne;
     private javax.swing.JPanel buttonPanelPlayerTwo;
-    private javax.swing.JLabel deckCardLabel;
+    private javax.swing.JLabel deckCardBackground;
     private javax.swing.JPanel deckCardPanel;
     private javax.swing.JPanel gamePlayPanel;
-    private javax.swing.JLabel gameplayBackground;
     private javax.swing.JButton hitButtonPlayerOne;
     private javax.swing.JButton hitButtonPlayerTwo;
     private javax.swing.JPanel playerOneNamePanel;
@@ -361,22 +371,6 @@ public class GamePlayDisplayGUI extends javax.swing.JFrame {
 
     public void setButtonPanelPlayerTwo(JPanel buttonPanelPlayerTwo) {
         this.buttonPanelPlayerTwo = buttonPanelPlayerTwo;
-    }
-
-    public JLabel getDeckCardLabel() {
-        return deckCardLabel;
-    }
-
-    public void setDeckCardLabel(JLabel deckCardLabel) {
-        this.deckCardLabel = deckCardLabel;
-    }
-
-    public JLabel getGameplayBackground() {
-        return gameplayBackground;
-    }
-
-    public void setGameplayBackground(JLabel gameplayBackground) {
-        this.gameplayBackground = gameplayBackground;
     }
 
     public JPanel getDeckCardPanel() {
@@ -553,6 +547,14 @@ public class GamePlayDisplayGUI extends javax.swing.JFrame {
 
     public void setTrumpHoldChipPlayerTwoPanel(JPanel trumpHoldChipPlayerTwoPanel) {
         this.trumpHoldChipPlayerTwoPanel = trumpHoldChipPlayerTwoPanel;
+    }
+
+    public JLabel getDeckCardBackground() {
+        return deckCardBackground;
+    }
+
+    public void setDeckCardBackground(JLabel deckCardBackground) {
+        this.deckCardBackground = deckCardBackground;
     }
     
 }

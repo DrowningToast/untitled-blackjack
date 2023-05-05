@@ -1,6 +1,8 @@
-package UI.Demo.Controller;
+package Development;
 
-import Development.Player;
+import UI.Demo.Controller.Controller;
+import UI.Demo.Controller.Judge;
+import UI.Demo.Model.Player;
 import UI.Demo.Display.GamePlayDisplayGUI;
 
 public class TestGame {
@@ -29,19 +31,20 @@ public class TestGame {
         }
         //</editor-fold>
         //</editor-fold>
-
+        
         /* Create and display the form */
+        System.out.println("main test");
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 Player player1 = new Player();
                 Player player2 = new Player();
-                
                 Judge.join(player1);
                 Judge.join(player2);
-                Judge.setCurrentPlayer(player1);
-                
-                new Controller();
+                Judge.setCurrentPlayer(player2);
+                Controller control = new Controller();
+                // new Controller();
             }
         });
+        
     }
 }

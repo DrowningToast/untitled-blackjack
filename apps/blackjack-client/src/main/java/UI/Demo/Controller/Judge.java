@@ -1,27 +1,23 @@
 package UI.Demo.Controller;
-import Development.Card;
-import Development.CardHandler;
-import Development.Player;
-import Development.TrumpChip;
+import UI.Demo.Model.Card;
+import UI.Demo.Model.CardHandler;
+import UI.Demo.Model.TrumpChip;
+import UI.Demo.Model.Player;
 import UI.Demo.Display.*;
-
 import java.util.*;
 
 public class Judge {
-
+    
     private static final CardHandler CARDS = new CardHandler();
     private static HashMap<String, Card> deckCard = CARDS.getHashMap(); //deckCard have hashmap of handler
     private static ArrayList<TrumpChip> deckChip;
     // Players in the game
     private static ArrayList<Player> players = new ArrayList<Player>();
-    private static Player currentPlayer;
+    private static Player currentTurnPlayer = new Player();
     private static Random random = new Random();
     private static boolean isEndGame = false;
     private static GamePlayDisplayGUI gameGUI = new GamePlayDisplayGUI();
-    private static Player playerOne = new Player();
-    private static Player playerTwo = new Player();
     
-
     public static Card giveCard(Player p) {
         Object[] values = deckCard.values().toArray();
         Card randomCard = (Card) values[random.nextInt(values.length)];
@@ -39,36 +35,33 @@ public class Judge {
     }
 
     // player join the game
-    public static void join(Player p) {
+    public static void join(Player player) {
         if (players.size() <= 2) {
-            players.add(p);
+            players.add(player);
         } else {
             System.out.println("Error");
         }
     }
 
-    public static void setCurrentPlayer(Player currentPlayer) {
-        Judge.currentPlayer = currentPlayer;
+    public static void setCurrentPlayer(Player currentTurnPlayer) {
+        Judge.currentTurnPlayer = currentTurnPlayer;
     }
-    
-    
 
     // getter which turn th game current is
     public static Player getPlayerTurn() {
-        return currentPlayer;
+        return currentTurnPlayer;
     }
-//    
-
+    
     // Switch play turn
     public static void switchTurn() {
-        if (currentPlayer.equals(players.get(0))) {
-            currentPlayer = players.get(1);
+        if (currentTurnPlayer.equals(players.get(0))) {
+            currentTurnPlayer = players.get(1);
         } else {
-            currentPlayer = players.get(0);
+            currentTurnPlayer = players.get(0);
         }
     }
     public void currentTurnPlayer(){
-        if(currentPlayer == players.get(0)){
+        if(currentTurnPlayer == players.get(0)){
             gameGUI.getHitButtonPlayerOne().setEnabled(true);
             gameGUI.getStandButtonPlayerOne().setEnabled(true);
             System.out.println("1232131232");
@@ -88,7 +81,7 @@ public class Judge {
         return players;
     }
     
-    public void stand(){
+    public void stand(Player playerOne, Player playerTwo){
         if(((playerOne.isStatus() == false) & (playerTwo.isStatus() == true))|((playerOne.isStatus() == true) & (playerTwo.isStatus() == false))){
             switchTurn();
         }

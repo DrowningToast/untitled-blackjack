@@ -1,11 +1,12 @@
 
-package Development;
+package UI.Demo.Model;
 
+import UI.Demo.Model.Card;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-public class createImageCard {
+public class ImageCard {
     private JLabel showCard;
     
     public JLabel randomCard(Card randomCard){

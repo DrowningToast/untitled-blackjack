@@ -1,6 +1,7 @@
-package Development;
+package UI.Demo.Model;
 
 
+import UI.Demo.Model.Card;
 import javax.swing.*;
 import java.util.ArrayList;
 
@@ -8,19 +9,13 @@ public class Player {
 
     private String name;
     private boolean status = true;
-    private int numOfCard = 0;
-    private int numOfTrumpChip = 0;
     private int score;
-    private String connectID;
+    private String connectionId;
      //player's card
     private ArrayList<Card> myCard = new ArrayList<Card>();
      //player's chip
-    private ArrayList<TrumpChip> myChip = new ArrayList<TrumpChip>();
+    private ArrayList<TrumpChip> myTrumpChip = new ArrayList<TrumpChip>();
     
-    public Player(){
-        
-    }
-
     public String getName() {
         return name;
     }
@@ -45,28 +40,20 @@ public class Player {
         return myCard;
     }
     
-    public void addMyChip(TrumpChip myChip){
-        this.myChip.add(myChip);
+    public void addMyTrumpChip(TrumpChip myChip){
+        this.myTrumpChip.add(myChip);
     }
     
-    public ArrayList<TrumpChip> getMyChip() {
-        return myChip;
-    }
-
-    public int getNumOfCard() {
-        return numOfCard;
-    }
-
-    public void setNumOfCard(int numOfcard) {
-        this.numOfCard = numOfcard;
+    public ArrayList<TrumpChip> getMyTrumpChip() {
+        return myTrumpChip;
     }
 
     public String getConnectID() {
-        return connectID;
+        return connectionId;
     }
 
-    public void setConnectID(String connectID) {
-        this.connectID = connectID;
+    public void setConnectID(String connectionId) {
+        this.connectionId= connectionId;
     }
 
     public int getScore() {
@@ -75,6 +62,14 @@ public class Player {
 
     public void setScore(int score) {
         this.score = score;
+    }
+    
+    public int getCardsCount(){
+        return myCard.size();
+    }
+    
+    public int getTrumpCount(){
+        return myTrumpChip.size();
     }
     
 }

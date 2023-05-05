@@ -1,4 +1,4 @@
-package Development;
+package UI.Demo.Model;
 
 
 import java.awt.Image;
@@ -31,11 +31,7 @@ public class Card {
     public ImageIcon getImage() {
         return this.image;
     }
-//    
-//    public void setPathIcon(String image) {
-//        this.image = image;
-//    }
-//    
+    
 //     get and set value
     public int getValue() {
         return value;

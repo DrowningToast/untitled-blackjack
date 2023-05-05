@@ -1,10 +1,10 @@
 package UI.Demo.Controller;
 
-import Development.createImageCard;
+import UI.Demo.Model.ImageCard;
 import UI.Demo.Display.GamePlayDisplayGUI;
-import Development.Card;
-import Development.CardHandler;
-import Development.Player;
+import UI.Demo.Model.Card;
+import UI.Demo.Model.CardHandler;
+import UI.Demo.Model.Player;
 import UI.Demo.Controller.Judge;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -13,51 +13,45 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import java.awt.Component;
 
-public class Controller implements ActionListener{
+public class Controller{
     public GamePlayDisplayGUI gameGUI;
     public Player playerOne;
     public Player playerTwo;
-    public createImageCard randomCard;
+    public ImageCard randomCard;
     public Judge judge;
+//    private Session RealFinalClient.getSession();
     
     public Controller(){
         gameGUI = new GamePlayDisplayGUI();
         playerOne = new Player();
         playerTwo = new Player();
-        randomCard = new createImageCard();
-        
+        randomCard = new ImageCard();
+        System.out.println("Controller");
         gameGUI.init();
-        gameGUI.getHitButtonPlayerOne().addActionListener(this);
-        gameGUI.getStandButtonPlayerOne().addActionListener(this);
-        gameGUI.getHitButtonPlayerTwo().addActionListener(this);
-        gameGUI.getStandButtonPlayerTwo().addActionListener(this);
-        
-        randomCard = new createImageCard();
-    }
-    @Override
-    public void actionPerformed(ActionEvent e){
-        if (e.getSource() == gameGUI.getHitButtonPlayerOne()){
+        gameGUI.getHitButtonPlayerOne().addActionListener(event -> {
             Player currentTurn = (Player) Judge.getPlayerTurn();
             Card card = (Card) Judge.giveCard(currentTurn);
             showRandomCard(card, "PlayerOne's hit");
             judge.switchTurn();
-        }
-        else if (e.getSource() == gameGUI.getStandButtonPlayerOne()){
+        });
+        gameGUI.getStandButtonPlayerOne().addActionListener(event -> {
             gameGUI.getHitButtonPlayerOne().setVisible(false);
             gameGUI.getStandButtonPlayerOne().setVisible(false);
             playerOne.setStatus(false);
-        }
-        else if (e.getSource() == gameGUI.getHitButtonPlayerTwo()){
+        });
+        gameGUI.getHitButtonPlayerTwo().addActionListener(event -> {
             Player currentTurn = (Player) Judge.getPlayerTurn();
             Card card = (Card) Judge.giveCard(currentTurn);
             showRandomCard(card, "PlayerTwo's hit");
             judge.switchTurn();
-        }
-        else if (e.getSource() == gameGUI.getStandButtonPlayerTwo()){
+        });
+        gameGUI.getStandButtonPlayerTwo().addActionListener(event -> {
             gameGUI.getHitButtonPlayerTwo().setVisible(false);
             gameGUI.getStandButtonPlayerTwo().setVisible(false);
             playerOne.setStatus(false);
-        }
+        });
+        
+        randomCard = new ImageCard();
     }
     
     public void showRandomCard(Card card, String hit) {

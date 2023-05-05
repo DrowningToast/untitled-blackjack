@@ -1,5 +1,5 @@
 
-package Development;
+package UI.Demo.Model;
 
 public interface TrumpChipAbilities {
     

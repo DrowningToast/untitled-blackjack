@@ -1,4 +1,4 @@
-package Development;
+package UI.Demo.Model;
 
 import javax.swing.ImageIcon;
 

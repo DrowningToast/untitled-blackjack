@@ -1,5 +1,6 @@
-package Development;
+package UI.Demo.Model;
 
+import UI.Demo.Model.TrumpChip;
 import java.util.HashMap;
 import javax.swing.ImageIcon;
 
@@ -23,7 +24,7 @@ public class TrumpChipHandler {
         chips.put("Give the max value card in deck to enemy", new TrumpChip("Give the max value card in deck to enemy", new ImageIcon()));
         chips.put("Know upside down card", new TrumpChip("Know upside down card", new ImageIcon()));
 //        The utility chip
-        chips.put("Change limite to 25", new TrumpChip("Change limite to 25", new ImageIcon()));
+        chips.put("Change limit to 25", new TrumpChip("Change limit to 25", new ImageIcon()));
         chips.put("Remove last card", new TrumpChip("Remove last card", new ImageIcon()));
         chips.put("Protect chip", new TrumpChip("Protect chip", new ImageIcon()));
         chips.put("Enemy can't see your card", new TrumpChip("Enemy can't see your card", new ImageIcon()));

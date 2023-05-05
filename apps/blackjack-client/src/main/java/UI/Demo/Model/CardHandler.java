@@ -1,8 +1,7 @@
-package Development;
+package UI.Demo.Model;
 
 
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.util.HashMap;
 import javax.swing.ImageIcon;
 
@@ -11,7 +10,7 @@ public class CardHandler {
     
     private HashMap<String, Card> cards = new HashMap<>();
     private ClassLoader classLoader = getClass().getClassLoader();
-    private final Card card_image = new Card();
+//    private final Card card_image = new Card();
     
     public CardHandler() {
         cards.put("A", new Card("A", 1, new ImageIcon("resources/A.PNG")));// card A
