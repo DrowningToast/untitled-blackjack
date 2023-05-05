@@ -4,46 +4,19 @@ import { AsyncExceptionHandler } from "../AsyncExceptionHandler";
 import { GlobalCardsContext, Card } from "database/src/utils/Card";
 import { cardStateMessage } from "../utils/WebsocketResponses";
 
-interface args {
-  cards: GlobalCardsContext;
-  pov_A: {
-    username: string;
-    cards: Card[];
-  };
-  pov_B: {
-    username: string;
-    cards: Card[];
-  };
-}
-
 /**
  * @description Send card state messages to both players
  */
 export const cardStateBroadcast = AsyncExceptionHandler(
-  async (
-    api: APIG,
-    cardInfo: {
-      cards: GlobalCardsContext;
-      pov_A: {
-        username: string;
-        cards: Card[];
-      };
-      pov_B: {
-        username: string;
-        cards: Card[];
-      };
-    }
-  ) => {
+  async (api: APIG, cardInfo: GlobalCardsContext[]) => {
     const { send } = api;
-
-    const { pov_A, pov_B, cards } = cardInfo;
 
     const [[connectionA, errA], [connectionB, errB]] = await Promise.all([
       UserController.getConnectionId({
-        username: pov_A.username,
+        username: cardInfo[0].username,
       }),
       UserController.getConnectionId({
-        username: pov_B.username,
+        username: cardInfo[1].username,
       }),
     ]);
 
@@ -51,8 +24,8 @@ export const cardStateBroadcast = AsyncExceptionHandler(
 
     // send to clients
     await Promise.all([
-      send(cardStateMessage(pov_A.cards, cards), connectionA),
-      send(cardStateMessage(pov_B.cards, cards), connectionB),
+      send(cardStateMessage(cardInfo[0]["pov"]), connectionA),
+      send(cardStateMessage(cardInfo[1]["pov"]), connectionB),
     ]);
   }
 );

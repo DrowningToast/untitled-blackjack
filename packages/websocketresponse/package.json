@@ -1,0 +1,19 @@
+{
+  "name": "websocketresponse",
+  "version": "0.0.0",
+  "main": "index.ts",
+  "license": "MIT",
+  "dependencies": {
+    "env": "0.0.0",
+    "mongoose": "^7.0.3",
+    "@types/aws-lambda": "^8.10.114",
+    "@types/node": "^18.15.11",
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-apigatewaymanagementapi": "^3.306.0",
+    "aws-sdk": "^2.1353.0",
+    "database": "0.0.0"
+  },
+  "types": "index.ts"
+}

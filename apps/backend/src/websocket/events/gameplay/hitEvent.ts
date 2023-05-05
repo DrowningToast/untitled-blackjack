@@ -9,8 +9,11 @@ import {
 
 import {
   ERR_GAME_STATE,
+  ERR_HIT_WHEN_DEINED_HIT,
   ERR_ILLEGAL_ACTION,
   ERR_INVALID_USER,
+  ERR_TRUMP_USE_DENIED,
+  insertErrorStack,
 } from "../../utils/ErrorMessages";
 import { hitBroadcast } from "../../broadcast/hitBroadcast";
 import { cardStateBroadcast } from "../../broadcast/cardStateBroadcast";
@@ -41,25 +44,10 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
     throw ERR_ILLEGAL_ACTION;
   }
 
-  // DONE CHECKING
+  // Check for deny hit status
+  const isDeniedHit = user.trumpStatus.includes("DENY_HIT");
 
-  // Draw
-  const [drawnCards, err5] = await GameActionController.drawCard(
-    game.gameId,
-    1
-  );
-  if (err5) throw err5;
-  let [cards, err6] = await UserController.addCards(
-    connectionId,
-    drawnCards ?? []
-  );
-  if (err6) throw err6;
-
-  const [connectionIds, errIds] = await GameController.getPlayerConnectionIds(
-    game.gameId
-  );
-  if (errIds) throw errIds;
-
+  // set stand state
   // Clear stand status on both players
   const [[p1, errP1], [p2, errP2]] = await Promise.all([
     UserController.setStandState({ username: game.players[0].username }, false),
@@ -67,7 +55,24 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
   ]);
   if (errP1 || errP2) throw ERR_INTERNAL;
   if (!p1 || !p2) throw ERR_INVALID_USER;
-  console.log(drawnCards);
+
+  const [connectionIds, errIds] = await GameController.getPlayerConnectionIds(
+    game.gameId
+  );
+  if (errIds) throw errIds;
+
+  if (isDeniedHit) throw insertErrorStack(ERR_HIT_WHEN_DEINED_HIT);
+
+  // Draw
+  const [drawnCards, err5] = await GameActionController.drawCards(
+    {
+      username: user.username,
+    },
+    game.gameId,
+    1
+  );
+  if (err5) throw err5;
+
   // Broadcast hit event
   const [_, error] = await hitBroadcast(
     api,
@@ -82,25 +87,19 @@ export const hitEvent = AsyncExceptionHandler(async (api: APIG) => {
     false
   );
 
+  const [cardsInPerspectives, errCardsPerspectives] =
+    await GameController.getCardsOnPerspectives(game.gameId);
+  if (errCardsPerspectives) throw errCardsPerspectives;
+
   const [[cards_A, err4], [cards_B, err7]] = await Promise.all([
     UserController.getCards({ username: p1.username }, true),
     UserController.getCards({ username: p2.username }, true),
   ]);
 
-  if (err4 || err7 || !cards || !cards_A || !cards_B || !visibleCards) {
+  if (err4 || err7 || !cards_A || !cards_B || !visibleCards) {
     throw ERR_INTERNAL;
   }
 
   // Update the client state
-  return await cardStateBroadcast(api, {
-    cards: visibleCards,
-    pov_A: {
-      username: game.players[0].username,
-      cards: cards_A,
-    },
-    pov_B: {
-      username: game.players[1].username,
-      cards: cards_B,
-    },
-  });
+  return await cardStateBroadcast(api, cardsInPerspectives);
 });

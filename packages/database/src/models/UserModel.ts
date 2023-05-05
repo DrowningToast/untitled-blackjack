@@ -2,6 +2,7 @@ import mongoose, { ObjectId } from "mongoose";
 import { Card } from "../utils/Card";
 
 import { z } from "zod";
+import { TrumpCardDocument } from "./TrumpCardModel";
 
 /**
  * @description Remove sensitive data from the model
@@ -13,6 +14,26 @@ export const ZodUserStrip = z.object({
   gameScore: z.number().min(0),
   ready: z.boolean(),
   stand: z.boolean(),
+  trumpStatus: z.array(
+    z.union([
+      /**
+       * THEIR TRUMP CARDS WON'T AFFECT ME
+       */
+      z.literal("INVINCIBLE"),
+      /**
+       * TARGET CANT SEE THEIR OWN CARDS
+       */
+      z.literal("BLIND"),
+      /**
+       * OPPONENT CANT DRAW THE CARDS
+       */
+      z.literal("DENY_HIT"),
+      /**
+       * OPPONENT CANT USE ANY TRUMP CARDS AFTER THIS
+       */
+      z.literal("DENY_TRUMP_USE"),
+    ])
+  ),
 });
 
 export type IUser = z.infer<typeof ZodUserStrip>;
@@ -24,6 +45,7 @@ export type _IUser = IUser & {
   _id: ObjectId;
   connectionId: string;
   cards: Card[];
+  trumpCards: TrumpCardDocument[];
 };
 
 const UserSchema = new mongoose.Schema({
@@ -74,6 +96,9 @@ const UserSchema = new mongoose.Schema({
    */
   trumpCards: [
     {
+      type: {
+        type: String,
+      },
       handler: {
         type: String,
       },
@@ -93,6 +118,22 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  /**
+   * The effect from trump status
+   */
+  trumpStatus: [
+    {
+      type: String,
+      enum: [
+        "INVINCIBLE",
+        "BLIND",
+        "HIDE_CARDS",
+        "SEE_OPPONENT_CARDS",
+        "DENY_HIT",
+        "DENY_TRUMP_USE",
+      ],
+    },
+  ],
   /**
    * TODO: Prevent prolonging the game by keep hitting an empty deck
    */

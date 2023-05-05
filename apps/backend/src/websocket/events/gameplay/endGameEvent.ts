@@ -1,4 +1,9 @@
-import { GameActionController, GameController } from "database";
+import {
+  ERR_INVALID_USER,
+  GameActionController,
+  GameController,
+  insertErrorStack,
+} from "database";
 import { APIG } from "../../APIGateway";
 import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
 import { gameWinnerBroadcast } from "../../broadcast/gameWinnerBroadcast";
@@ -6,14 +11,14 @@ import { endGameBroadcast } from "../../broadcast/endGameBroadcast";
 
 export const endGameEvent = AsyncExceptionHandler(
   async (api: APIG, gameId: string) => {
-    // get connection ids for who to send from game instance
-    const [connectionIds, errConn] =
-      await GameController.getPlayerConnectionIds(gameId);
+    const [[connectionIds, errConn], [winner, errEnd]] = await Promise.all([
+      GameController.getPlayerConnectionIds(gameId),
+      GameActionController.endGame(gameId),
+    ]);
     if (errConn) throw errConn;
-
-    // end the game and delete the instnace
-    const [winner, errEnd] = await GameActionController.endGame(gameId);
     if (errEnd) throw errEnd;
+    if (!winner) throw insertErrorStack(ERR_INVALID_USER);
+    if (!connectionIds) throw insertErrorStack(ERR_INVALID_USER);
 
     // announce winner
     const [_, errWinner] = await gameWinnerBroadcast(
