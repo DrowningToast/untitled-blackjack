@@ -6,8 +6,7 @@ import UI.Demo.Model.Player;
 import UI.Demo.Display.*;
 import java.util.*;
 
-public class Judge {
-    
+public class GameSystem {   
     private static final CardHandler CARDS = new CardHandler();
     private static HashMap<String, Card> deckCard = CARDS.getHashMap(); //deckCard have hashmap of handler
     private static ArrayList<TrumpChip> deckChip;
@@ -44,7 +43,7 @@ public class Judge {
     }
 
     public static void setCurrentPlayer(Player currentTurnPlayer) {
-        Judge.currentTurnPlayer = currentTurnPlayer;
+        GameSystem.currentTurnPlayer = currentTurnPlayer;
     }
 
     // getter which turn th game current is

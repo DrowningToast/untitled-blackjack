@@ -1,9 +1,7 @@
 package UI.Demo.Model;
-
 import UI.Demo.Model.TrumpChip;
 import java.util.HashMap;
 import javax.swing.ImageIcon;
-
 public class TrumpChipHandler {
 
     private HashMap<String, TrumpChip> chips;

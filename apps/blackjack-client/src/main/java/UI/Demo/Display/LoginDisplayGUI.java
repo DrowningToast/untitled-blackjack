@@ -9,17 +9,26 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+
+import ClientEndPoint.Controller.WebsocketController;
+import UI.Demo.Model.Player;
+
 /**
- *
  * @author Suchanan
  */
 public class LoginDisplayGUI extends javax.swing.JFrame {
 
+    private String username;
+    public LobbyDisplayGUI lobbyGUI = new LobbyDisplayGUI();
+    private WebsocketController controller;
+
     /**
      * Creates new form LoginDisplayGUI
      */
-    public LoginDisplayGUI() {
+    public LoginDisplayGUI(WebsocketController controller) {
+        this.controller = controller;
         initComponents();
+
     }
 
     /**
@@ -32,13 +41,12 @@ public class LoginDisplayGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         loginPanel = new javax.swing.JPanel();
+        startButton = new javax.swing.JButton();
         titlePanel = new javax.swing.JPanel();
         title = new javax.swing.JLabel();
         InputName = new javax.swing.JTextField();
-        startButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(1280, 800));
         setMinimumSize(new java.awt.Dimension(1280, 800));
 
         loginPanel.setBackground(new java.awt.Color(0, 51, 51));
@@ -47,6 +55,18 @@ public class LoginDisplayGUI extends javax.swing.JFrame {
         loginPanel.setMinimumSize(new java.awt.Dimension(1280, 800));
         loginPanel.setPreferredSize(new java.awt.Dimension(1280, 800));
         loginPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        startButton.setBackground(new java.awt.Color(255, 204, 0));
+        startButton.setFont(new java.awt.Font("Book Antiqua", 1, 30)); // NOI18N
+        startButton.setText("Start");
+        startButton.setMaximumSize(new java.awt.Dimension(400, 60));
+        startButton.setMinimumSize(new java.awt.Dimension(400, 60));
+        startButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startButtonActionPerformed(evt);
+            }
+        });
+        loginPanel.add(startButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(454, 538, 400, 60));
 
         titlePanel.setBackground(new java.awt.Color(0, 0, 0));
 
@@ -57,18 +77,18 @@ public class LoginDisplayGUI extends javax.swing.JFrame {
         javax.swing.GroupLayout titlePanelLayout = new javax.swing.GroupLayout(titlePanel);
         titlePanel.setLayout(titlePanelLayout);
         titlePanelLayout.setHorizontalGroup(
-            titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, titlePanelLayout.createSequentialGroup()
-                .addContainerGap(34, Short.MAX_VALUE)
-                .addComponent(title)
-                .addGap(32, 32, 32))
+                titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, titlePanelLayout.createSequentialGroup()
+                                .addContainerGap(34, Short.MAX_VALUE)
+                                .addComponent(title)
+                                .addGap(32, 32, 32))
         );
         titlePanelLayout.setVerticalGroup(
-            titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(titlePanelLayout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(title)
-                .addContainerGap(21, Short.MAX_VALUE))
+                titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(titlePanelLayout.createSequentialGroup()
+                                .addGap(17, 17, 17)
+                                .addComponent(title)
+                                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         loginPanel.add(titlePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 180, 930, 160));
@@ -77,34 +97,39 @@ public class LoginDisplayGUI extends javax.swing.JFrame {
         InputName.setMinimumSize(new java.awt.Dimension(400, 60));
         loginPanel.add(InputName, new org.netbeans.lib.awtextra.AbsoluteConstraints(454, 441, 400, 60));
 
-        startButton.setBackground(new java.awt.Color(255, 204, 0));
-        startButton.setFont(new java.awt.Font("Book Antiqua", 1, 30)); // NOI18N
-        startButton.setText("Start");
-        startButton.setMaximumSize(new java.awt.Dimension(400, 60));
-        startButton.setMinimumSize(new java.awt.Dimension(400, 60));
-        loginPanel.add(startButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(454, 538, 400, 60));
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public void init(){
+    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
+        try {
+            this.username = InputName.getText();
+            controller.sendAuth(username);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }//GEN-LAST:event_startButtonActionPerformed
+
+    public void init() {
         initComponents();
-        this.setExtendedState(this.MAXIMIZED_BOTH);
+//        startButton.addActionListener(event -> {
+//            this.dispose();
+//        });
+//        this.setExtendedState(this.MAXIMIZED_BOTH);
         this.setVisible(true);
     }
 
@@ -150,6 +175,10 @@ public class LoginDisplayGUI extends javax.swing.JFrame {
 
     public void setTitlePanel(JPanel titlePanel) {
         this.titlePanel = titlePanel;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
 }

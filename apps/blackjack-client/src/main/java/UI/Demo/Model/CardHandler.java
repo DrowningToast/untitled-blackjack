@@ -1,11 +1,7 @@
 package UI.Demo.Model;
-
-
 import java.awt.Image;
 import java.util.HashMap;
 import javax.swing.ImageIcon;
-
-
 public class CardHandler {
     
     private HashMap<String, Card> cards = new HashMap<>();
