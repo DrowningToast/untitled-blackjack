@@ -36,7 +36,7 @@ export const connectionAuthorizedMessage = (
 ): WebsocketResponse<{ username: IUser["username"]; connectionId }> => {
   return {
     status: "OK",
-    handler: "CONNECTION_AUTHROIZED",
+    handler: "CONNECTION_AUTHORIZED",
     content: {
       username,
       connectionId,
