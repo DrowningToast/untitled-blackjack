@@ -1,4 +1,4 @@
-package ClientEndPoint.Controller;
+package ClientEndPoint.Controller.EventHandlers;
 
 import java.util.HashMap;
 

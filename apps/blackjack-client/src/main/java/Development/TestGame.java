@@ -2,7 +2,7 @@ package Development;
 
 import UI.Demo.Controller.GameController;
 import UI.Demo.Controller.GameSystem;
-import UI.Demo.Model.Player;
+import Player.PlayerModel;
 
 public class TestGame {
 
@@ -35,11 +35,11 @@ public class TestGame {
 //        System.out.println("main test");
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Player player1 = new Player();
-                Player player2 = new Player();
-                GameSystem.join(player1);
-                GameSystem.join(player2);
-                GameSystem.setCurrentPlayer(player2);
+                PlayerModel playerModel1 = new PlayerModel();
+                PlayerModel playerModel2 = new PlayerModel();
+                GameSystem.join(playerModel1);
+                GameSystem.join(playerModel2);
+                GameSystem.setCurrentPlayer(playerModel2);
                 GameController control = new GameController();
                 control.startGame();
 //                control.callGame();

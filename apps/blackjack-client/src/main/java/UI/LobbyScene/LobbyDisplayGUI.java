@@ -1,16 +1,42 @@
 
-package UI.Demo.Display;
+package UI.LobbyScene;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import UI.Demo.Controller.GameController;
+import javax.swing.*;
+
+import ClientEndPoint.Controller.WebsocketController;
+import Internal.HTTP.Base.HttpRequestEventHandler;
+import Internal.HTTP.Base.HttpResponse;
+import Internal.HTTP.HttpClient;
+import UI.Controller.UIController;
+import org.json.HTTP;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
 
 
 public class LobbyDisplayGUI extends javax.swing.JFrame {
 
-    public LobbyDisplayGUI() {
+    private LobbyController controller;
+
+    public LobbyDisplayGUI(LobbyController controller) {
+        this.controller = controller;
         initComponents();
+    }
+
+    private void changeToWaiting() {
+        // PLACEHOLER WAITING ROOM
+        JFrame waiting = new JFrame("WaitingDisplayGUI");
+        JButton startButton = new JButton("starto");
+        startButton.addActionListener(e -> {
+            // SEND READY MESSAGE IN WEBSOCKET
+
+        });
+        waiting.add(startButton);
+
+        // Switch to WaitingDisplayGUI
+        controller.changeToWaiting();
+
     }
 
 
@@ -58,33 +84,44 @@ public class LobbyDisplayGUI extends javax.swing.JFrame {
         b_joinLobby.setMaximumSize(new java.awt.Dimension(400, 50));
         b_joinLobby.setMinimumSize(new java.awt.Dimension(400, 50));
         b_joinLobby.setPreferredSize(new java.awt.Dimension(400, 50));
+        b_joinLobby.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_joinLobbyActionPerformed(evt);
+            }
+        });
         LobbyPanel.add(b_joinLobby, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 500, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(LobbyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1280, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(LobbyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(LobbyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(LobbyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void b_createLobbyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_createLobbyActionPerformed
-//        this.dispose();
-//        GameController ml = new GameController();
-//        ml.callGame();
+        // call handler
+        controller.hanldeRoomCreated("CHANGEME");
     }//GEN-LAST:event_b_createLobbyActionPerformed
 
-    public void init(){
+    private void b_joinLobbyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_joinLobbyActionPerformed
+        // JOIN LOBBY
+        controller.handleJoinRoom("CHANGEME");
+
+
+    }//GEN-LAST:event_b_joinLobbyActionPerformed
+
+    public void init() {
         initComponents();
         this.setExtendedState(this.MAXIMIZED_BOTH);
         this.setVisible(true);

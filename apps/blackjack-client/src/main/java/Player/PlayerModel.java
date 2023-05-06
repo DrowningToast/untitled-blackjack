@@ -1,11 +1,12 @@
-package UI.Demo.Model;
+package Player;
 
 
 import UI.Demo.Model.Card;
-import javax.swing.*;
+import UI.Demo.Model.TrumpChip;
+
 import java.util.ArrayList;
 
-public class Player {
+public class PlayerModel {
 
     private String name;
     private boolean status = true;

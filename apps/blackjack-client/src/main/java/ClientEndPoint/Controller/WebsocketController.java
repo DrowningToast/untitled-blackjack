@@ -2,8 +2,8 @@ package ClientEndPoint.Controller;
 
 import ClientEndPoint.Base.MessageBuilder;
 import ClientEndPoint.Base.WebsocketClientEndpoint;
+import ClientEndPoint.Controller.EventHandlers.WebsocketEventHandler;
 import Internal.JSON.JSON;
-import jakarta.jms.Message;
 import jakarta.websocket.DeploymentException;
 
 import java.io.IOException;
@@ -13,11 +13,21 @@ import java.util.HashMap;
 public class WebsocketController {
     private WebsocketClientEndpoint client;
     private HashMap eventHandlers;
+    private String connectionId;
+    private String gameId;
 
     public WebsocketController(HashMap<String, WebsocketEventHandler> eventHandlers) throws IOException, DeploymentException, URISyntaxException {
         this.client = new WebsocketClientEndpoint(this);
         client.connect();
         this.eventHandlers = eventHandlers;
+    }
+
+    public void setConnectionId(String conn) {
+        this.connectionId = conn;
+    }
+
+    public String getConnectionId() {
+        return connectionId;
     }
 
     public void sendAuth(String username) {
@@ -34,6 +44,23 @@ public class WebsocketController {
         }
     }
 
+    public void setReady(boolean ready) {
+        try {
+            MessageBuilder message = new MessageBuilder(client);
+            message.setHandler("ready");
+            HashMap content = new HashMap();
+            content.put("ready", true);
+
+
+            // SET GAME ID TO THE CONTENT
+
+            message.setContent(content).send();
+
+        } catch (Exception e) {
+
+        }
+    }
+
     public void handleMessage(String raw) {
         // Convert json string to hashmap
         HashMap<String, String> content = JSON.parseJSONtoHashMap(raw);
@@ -41,19 +68,10 @@ public class WebsocketController {
         // find out what handler it is
         String handler = content.get("handler");
 
-        System.out.println(handler);
-
         WebsocketEventHandler eventHandler = (WebsocketEventHandler) eventHandlers.get(handler);
         if (eventHandler == null) return;
 
-        System.out.println("yes " + handler);
-
-        System.out.println("SUPPORTED");
         eventHandler.handler(content);
-
-
-        // call the method according to the handler
-
     }
 
 }

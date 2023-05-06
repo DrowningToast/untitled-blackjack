@@ -11,7 +11,6 @@ import javax.swing.JTextField;
 
 
 import ClientEndPoint.Controller.WebsocketController;
-import UI.Demo.Model.Player;
 
 /**
  * @author Suchanan
@@ -19,7 +18,6 @@ import UI.Demo.Model.Player;
 public class LoginDisplayGUI extends javax.swing.JFrame {
 
     private String username;
-    public LobbyDisplayGUI lobbyGUI = new LobbyDisplayGUI();
     private WebsocketController controller;
 
     /**

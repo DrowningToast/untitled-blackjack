@@ -2,7 +2,7 @@ package UI.Demo.Controller;
 import UI.Demo.Model.Card;
 import UI.Demo.Model.CardHandler;
 import UI.Demo.Model.TrumpChip;
-import UI.Demo.Model.Player;
+import Player.PlayerModel;
 import UI.Demo.Display.*;
 import java.util.*;
 
@@ -11,13 +11,13 @@ public class GameSystem {
     private static HashMap<String, Card> deckCard = CARDS.getHashMap(); //deckCard have hashmap of handler
     private static ArrayList<TrumpChip> deckChip;
     // Players in the game
-    private static ArrayList<Player> players = new ArrayList<Player>();
-    private static Player currentTurnPlayer = new Player();
+    private static ArrayList<PlayerModel> playerModels = new ArrayList<PlayerModel>();
+    private static PlayerModel currentTurnPlayerModel = new PlayerModel();
     private static Random random = new Random();
     private static boolean isEndGame = false;
     private static GamePlayDisplayGUI gameGUI = new GamePlayDisplayGUI();
     
-    public static Card giveCard(Player p) {
+    public static Card giveCard(PlayerModel p) {
         Object[] values = deckCard.values().toArray();
         Card randomCard = (Card) values[random.nextInt(values.length)];
 
@@ -34,33 +34,33 @@ public class GameSystem {
     }
 
     // player join the game
-    public static void join(Player player) {
-        if (players.size() <= 2) {
-            players.add(player);
+    public static void join(PlayerModel playerModel) {
+        if (playerModels.size() <= 2) {
+            playerModels.add(playerModel);
         } else {
             System.out.println("Error");
         }
     }
 
-    public static void setCurrentPlayer(Player currentTurnPlayer) {
-        GameSystem.currentTurnPlayer = currentTurnPlayer;
+    public static void setCurrentPlayer(PlayerModel currentTurnPlayerModel) {
+        GameSystem.currentTurnPlayerModel = currentTurnPlayerModel;
     }
 
     // getter which turn th game current is
-    public static Player getPlayerTurn() {
-        return currentTurnPlayer;
+    public static PlayerModel getPlayerTurn() {
+        return currentTurnPlayerModel;
     }
     
     // Switch play turn
     public static void switchTurn() {
-        if (currentTurnPlayer.equals(players.get(0))) {
-            currentTurnPlayer = players.get(1);
+        if (currentTurnPlayerModel.equals(playerModels.get(0))) {
+            currentTurnPlayerModel = playerModels.get(1);
         } else {
-            currentTurnPlayer = players.get(0);
+            currentTurnPlayerModel = playerModels.get(0);
         }
     }
     public void currentTurnPlayer(){
-        if(currentTurnPlayer == players.get(0)){
+        if(currentTurnPlayerModel == playerModels.get(0)){
             gameGUI.getHitButtonPlayerOne().setEnabled(true);
             gameGUI.getStandButtonPlayerOne().setEnabled(true);
             System.out.println("1232131232");
@@ -76,16 +76,16 @@ public class GameSystem {
 //
 //    }
 //    return all Player
-    public static ArrayList<Player> getAllPlayers() {
-        return players;
+    public static ArrayList<PlayerModel> getAllPlayers() {
+        return playerModels;
     }
     
-    public void stand(Player playerOne, Player playerTwo){
-        if(((playerOne.isStatus() == false) & (playerTwo.isStatus() == true))|((playerOne.isStatus() == true) & (playerTwo.isStatus() == false))){
+    public void stand(PlayerModel playerModelOne, PlayerModel playerModelTwo){
+        if(((playerModelOne.isStatus() == false) & (playerModelTwo.isStatus() == true))|((playerModelOne.isStatus() == true) & (playerModelTwo.isStatus() == false))){
             switchTurn();
         }
         else{
-            CalculateScore(playerOne.getScore(), playerTwo.getScore());
+            CalculateScore(playerModelOne.getScore(), playerModelTwo.getScore());
         }
     }
     
