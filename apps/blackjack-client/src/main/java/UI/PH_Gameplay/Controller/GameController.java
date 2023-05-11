@@ -1,23 +1,23 @@
-package UI.Demo.Controller;
+package UI.PH_Gameplay.Controller;
 
-import UI.Demo.Model.ImageCard;
-import UI.Demo.Display.GamePlayDisplayGUI;
-import UI.Demo.Model.Card;
-import Player.PlayerModel;
+import UI.PH_Gameplay.Model.ImageCard;
+import UI.PH_Gameplay.Display.GamePlayDisplayGUI;
+import UI.PH_Gameplay.Model.Card;
+import Gameplay.Player.PlayerPOJO;
 
 public class GameController {
 
     public GamePlayDisplayGUI gameGUI;
-    public PlayerModel playerModelOne;
-    public PlayerModel playerModelTwo;
+    public PlayerPOJO playerPOJOOne;
+    public PlayerPOJO playerPOJOTwo;
     public ImageCard randomCard;
     public GameSystem gameSystem;
 //    private Session RealFinalClient.getSession();
 
     public GameController() {
         gameGUI = new GamePlayDisplayGUI();
-        playerModelOne = new PlayerModel();
-        playerModelTwo = new PlayerModel();
+        playerPOJOOne = new PlayerPOJO();
+        playerPOJOTwo = new PlayerPOJO();
         randomCard = new ImageCard();
         randomCard = new ImageCard();
     }
@@ -28,7 +28,7 @@ public class GameController {
     public void callGame() {
         gameGUI.init();
         gameGUI.getHitButtonPlayerOne().addActionListener(event -> {
-            PlayerModel currentTurn = (PlayerModel) GameSystem.getPlayerTurn();
+            PlayerPOJO currentTurn = (PlayerPOJO) GameSystem.getPlayerTurn();
             Card card = (Card) GameSystem.giveCard(currentTurn);
             showRandomCard(card, "PlayerOne's hit");
             gameSystem.switchTurn();
@@ -36,10 +36,10 @@ public class GameController {
         gameGUI.getStandButtonPlayerOne().addActionListener(event -> {
             gameGUI.getHitButtonPlayerOne().setVisible(false);
             gameGUI.getStandButtonPlayerOne().setVisible(false);
-            playerModelOne.setStatus(false);
+            playerPOJOOne.setStand(false);
         });
         gameGUI.getHitButtonPlayerTwo().addActionListener(event -> {
-            PlayerModel currentTurn = (PlayerModel) GameSystem.getPlayerTurn();
+            PlayerPOJO currentTurn = (PlayerPOJO) GameSystem.getPlayerTurn();
             Card card = (Card) GameSystem.giveCard(currentTurn);
             showRandomCard(card, "PlayerTwo's hit");
             gameSystem.switchTurn();
@@ -47,7 +47,7 @@ public class GameController {
         gameGUI.getStandButtonPlayerTwo().addActionListener(event -> {
             gameGUI.getHitButtonPlayerTwo().setVisible(false);
             gameGUI.getStandButtonPlayerTwo().setVisible(false);
-            playerModelOne.setStatus(false);
+            playerPOJOOne.setStand(false);
         });
     }
 
@@ -55,22 +55,22 @@ public class GameController {
         randomCard.setShowCard(randomCard.randomCard(card));
         if (hit.equals("PlayerOne's hit")) {
             gameGUI.getPlayerOneTable().add(randomCard.getShowCard());
-            playerModelOne.setScore(playerModelOne.getScore() + card.getValue());
-            if (playerModelOne.getScore() >= 21) {
+            playerPOJOOne.setScore(playerPOJOOne.getScore() + card.getValue());
+            if (playerPOJOOne.getScore() >= 21) {
                 gameGUI.getHitButtonPlayerOne().setVisible(false);
                 gameGUI.getStandButtonPlayerOne().setVisible(false);
-                playerModelOne.setStatus(false);
+                playerPOJOOne.setStand(false);
             }
-            gameGUI.getScoreCardOneLabel().setText("Score: " + playerModelOne.getScore());
+            gameGUI.getScoreCardOneLabel().setText("Score: " + playerPOJOOne.getScore());
         } else if (hit.equals("PlayerTwo's hit")) {
             gameGUI.getPlayerTwoTable().add(randomCard.getShowCard());
-            playerModelTwo.setScore(playerModelTwo.getScore() + card.getValue());
-            if (playerModelTwo.getScore() >= 21) {
+            playerPOJOTwo.setScore(playerPOJOTwo.getScore() + card.getValue());
+            if (playerPOJOTwo.getScore() >= 21) {
                 gameGUI.getHitButtonPlayerTwo().setVisible(false);
                 gameGUI.getStandButtonPlayerTwo().setVisible(false);
-                playerModelOne.setStatus(false);
+                playerPOJOOne.setStand(false);
             }
-            gameGUI.getScoreCardTwoLabel().setText("Score: " + playerModelTwo.getScore());
+            gameGUI.getScoreCardTwoLabel().setText("Score: " + playerPOJOTwo.getScore());
         }
     }
 }

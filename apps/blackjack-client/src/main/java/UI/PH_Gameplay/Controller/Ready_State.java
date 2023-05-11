@@ -1,5 +1,6 @@
-package UI.Demo.Controller;
-import UI.Demo.Display.*;
+package UI.PH_Gameplay.Controller;
+import UI.Login.LoginDisplayGUI;
+
 public class Ready_State{
     
     private static boolean ready;

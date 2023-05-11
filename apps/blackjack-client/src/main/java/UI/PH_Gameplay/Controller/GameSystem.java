@@ -1,9 +1,9 @@
-package UI.Demo.Controller;
-import UI.Demo.Model.Card;
-import UI.Demo.Model.CardHandler;
-import UI.Demo.Model.TrumpChip;
-import Player.PlayerModel;
-import UI.Demo.Display.*;
+package UI.PH_Gameplay.Controller;
+import UI.PH_Gameplay.Model.Card;
+import UI.PH_Gameplay.Model.CardHandler;
+import UI.PH_Gameplay.Model.TrumpChip;
+import Gameplay.Player.PlayerPOJO;
+import UI.PH_Gameplay.Display.*;
 import java.util.*;
 
 public class GameSystem {   
@@ -11,13 +11,13 @@ public class GameSystem {
     private static HashMap<String, Card> deckCard = CARDS.getHashMap(); //deckCard have hashmap of handler
     private static ArrayList<TrumpChip> deckChip;
     // Players in the game
-    private static ArrayList<PlayerModel> playerModels = new ArrayList<PlayerModel>();
-    private static PlayerModel currentTurnPlayerModel = new PlayerModel();
+    private static ArrayList<PlayerPOJO> playerPOJOS = new ArrayList<PlayerPOJO>();
+    private static PlayerPOJO currentTurnPlayerPOJO = new PlayerPOJO();
     private static Random random = new Random();
     private static boolean isEndGame = false;
     private static GamePlayDisplayGUI gameGUI = new GamePlayDisplayGUI();
     
-    public static Card giveCard(PlayerModel p) {
+    public static Card giveCard(PlayerPOJO p) {
         Object[] values = deckCard.values().toArray();
         Card randomCard = (Card) values[random.nextInt(values.length)];
 
@@ -34,33 +34,33 @@ public class GameSystem {
     }
 
     // player join the game
-    public static void join(PlayerModel playerModel) {
-        if (playerModels.size() <= 2) {
-            playerModels.add(playerModel);
+    public static void join(PlayerPOJO playerPOJO) {
+        if (playerPOJOS.size() <= 2) {
+            playerPOJOS.add(playerPOJO);
         } else {
             System.out.println("Error");
         }
     }
 
-    public static void setCurrentPlayer(PlayerModel currentTurnPlayerModel) {
-        GameSystem.currentTurnPlayerModel = currentTurnPlayerModel;
+    public static void setCurrentPlayer(PlayerPOJO currentTurnPlayerPOJO) {
+        GameSystem.currentTurnPlayerPOJO = currentTurnPlayerPOJO;
     }
 
     // getter which turn th game current is
-    public static PlayerModel getPlayerTurn() {
-        return currentTurnPlayerModel;
+    public static PlayerPOJO getPlayerTurn() {
+        return currentTurnPlayerPOJO;
     }
     
     // Switch play turn
     public static void switchTurn() {
-        if (currentTurnPlayerModel.equals(playerModels.get(0))) {
-            currentTurnPlayerModel = playerModels.get(1);
+        if (currentTurnPlayerPOJO.equals(playerPOJOS.get(0))) {
+            currentTurnPlayerPOJO = playerPOJOS.get(1);
         } else {
-            currentTurnPlayerModel = playerModels.get(0);
+            currentTurnPlayerPOJO = playerPOJOS.get(0);
         }
     }
     public void currentTurnPlayer(){
-        if(currentTurnPlayerModel == playerModels.get(0)){
+        if(currentTurnPlayerPOJO == playerPOJOS.get(0)){
             gameGUI.getHitButtonPlayerOne().setEnabled(true);
             gameGUI.getStandButtonPlayerOne().setEnabled(true);
             System.out.println("1232131232");
@@ -76,16 +76,16 @@ public class GameSystem {
 //
 //    }
 //    return all Player
-    public static ArrayList<PlayerModel> getAllPlayers() {
-        return playerModels;
+    public static ArrayList<PlayerPOJO> getAllPlayers() {
+        return playerPOJOS;
     }
     
-    public void stand(PlayerModel playerModelOne, PlayerModel playerModelTwo){
-        if(((playerModelOne.isStatus() == false) & (playerModelTwo.isStatus() == true))|((playerModelOne.isStatus() == true) & (playerModelTwo.isStatus() == false))){
+    public void stand(PlayerPOJO playerPOJOOne, PlayerPOJO playerPOJOTwo){
+        if(((playerPOJOOne.isStand() == false) & (playerPOJOTwo.isStand() == true))|((playerPOJOOne.isStand() == true) & (playerPOJOTwo.isStand() == false))){
             switchTurn();
         }
         else{
-            CalculateScore(playerModelOne.getScore(), playerModelTwo.getScore());
+            CalculateScore(playerPOJOOne.getScore(), playerPOJOTwo.getScore());
         }
     }
     
