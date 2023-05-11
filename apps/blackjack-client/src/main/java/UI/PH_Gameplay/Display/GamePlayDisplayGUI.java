@@ -1,7 +1,6 @@
 
-package UI.Demo.Display;
-
-import java.awt.Dimension;
+package UI.PH_Gameplay.Display;
+import UI.Controller.CustomFrame;
 import java.awt.Label;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -11,7 +10,7 @@ import javax.swing.JPanel;
  *
  * @author Suchanan
  */
-public class GamePlayDisplayGUI extends javax.swing.JFrame {
+public class GamePlayDisplayGUI extends CustomFrame {
 
     public Object getDeckCardPanel;
 
@@ -314,7 +313,8 @@ public class GamePlayDisplayGUI extends javax.swing.JFrame {
         standButtonPlayerOne.setIcon(new javax.swing.ImageIcon("resources/StandButton_1.PNG"));
         deckCardBackground.setIcon(new javax.swing.ImageIcon("resources/download.png"));
         background.setIcon(new javax.swing.ImageIcon("resources/GamePlayBackground.PNG"));
-        this.setExtendedState(this.MAXIMIZED_BOTH);
+        this.setLocationRelativeTo(null);
+        this.setSize(1280, 800);
         this.setVisible(true);
     }
     
