@@ -1,42 +1,18 @@
 
-package UI.LobbyScene;
+package UI.Lobby;
+
+import UI.Controller.CustomFrame;
 
 import javax.swing.*;
 
-import ClientEndPoint.Controller.WebsocketController;
-import Internal.HTTP.Base.HttpRequestEventHandler;
-import Internal.HTTP.Base.HttpResponse;
-import Internal.HTTP.HttpClient;
-import UI.Controller.UIController;
-import org.json.HTTP;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
-
-
-public class LobbyDisplayGUI extends javax.swing.JFrame {
+public class LobbyDisplayGUI extends CustomFrame {
 
     private LobbyController controller;
 
     public LobbyDisplayGUI(LobbyController controller) {
         this.controller = controller;
         initComponents();
-    }
-
-    private void changeToWaiting() {
-        // PLACEHOLER WAITING ROOM
-        JFrame waiting = new JFrame("WaitingDisplayGUI");
-        JButton startButton = new JButton("starto");
-        startButton.addActionListener(e -> {
-            // SEND READY MESSAGE IN WEBSOCKET
-
-        });
-        waiting.add(startButton);
-
-        // Switch to WaitingDisplayGUI
-        controller.changeToWaiting();
-
     }
 
 
@@ -48,6 +24,7 @@ public class LobbyDisplayGUI extends javax.swing.JFrame {
         gameTitle = new javax.swing.JLabel();
         b_createLobby = new javax.swing.JButton();
         b_joinLobby = new javax.swing.JButton();
+        passCode = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1280, 800));
@@ -75,7 +52,7 @@ public class LobbyDisplayGUI extends javax.swing.JFrame {
                 b_createLobbyActionPerformed(evt);
             }
         });
-        LobbyPanel.add(b_createLobby, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 410, -1, -1));
+        LobbyPanel.add(b_createLobby, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 430, -1, -1));
 
         b_joinLobby.setBackground(new java.awt.Color(153, 102, 0));
         b_joinLobby.setFont(new java.awt.Font("Book Antiqua", 1, 30)); // NOI18N
@@ -90,6 +67,15 @@ public class LobbyDisplayGUI extends javax.swing.JFrame {
             }
         });
         LobbyPanel.add(b_joinLobby, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 500, -1, -1));
+
+        passCode.setBackground(new java.awt.Color(51, 51, 51));
+        passCode.setFont(new java.awt.Font("Book Antiqua", 1, 18)); // NOI18N
+        passCode.setForeground(new java.awt.Color(204, 204, 204));
+        passCode.setText("Enter lobby passcode");
+        passCode.setMaximumSize(new java.awt.Dimension(400, 50));
+        passCode.setMinimumSize(new java.awt.Dimension(400, 50));
+        passCode.setPreferredSize(new java.awt.Dimension(400, 50));
+        LobbyPanel.add(passCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 360, 400, 50));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -111,19 +97,18 @@ public class LobbyDisplayGUI extends javax.swing.JFrame {
 
     private void b_createLobbyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_createLobbyActionPerformed
         // call handler
-        controller.hanldeRoomCreated("CHANGEME");
+        controller.handleRoomCreated(passCode.getText());
     }//GEN-LAST:event_b_createLobbyActionPerformed
 
     private void b_joinLobbyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_joinLobbyActionPerformed
         // JOIN LOBBY
-        controller.handleJoinRoom("CHANGEME");
-
-
+        controller.handleJoinRoom(passCode.getText());
     }//GEN-LAST:event_b_joinLobbyActionPerformed
 
     public void init() {
         initComponents();
-        this.setExtendedState(this.MAXIMIZED_BOTH);
+        this.setLocationRelativeTo(null);//to set everything in frame to the center of the frame
+        this.setSize(1280, 800);
         this.setVisible(true);
     }
 
@@ -132,6 +117,7 @@ public class LobbyDisplayGUI extends javax.swing.JFrame {
     private javax.swing.JButton b_createLobby;
     private javax.swing.JButton b_joinLobby;
     private javax.swing.JLabel gameTitle;
+    private javax.swing.JTextField passCode;
     // End of variables declaration//GEN-END:variables
 
     public JPanel getLobbyPanel() {
@@ -166,4 +152,16 @@ public class LobbyDisplayGUI extends javax.swing.JFrame {
         this.gameTitle = gameTitle;
     }
 
+    public JTextField getPassCode() {
+        return passCode;
+    }
+
+    public void setPassCode(JTextField passCode) {
+        this.passCode = passCode;
+    }
+
+    @Override
+    public void onSwitch() {
+
+    }
 }
