@@ -1,7 +1,6 @@
 
-package UI.Demo.Model;
+package UI.PH_Gameplay.Model;
 
-import UI.Demo.Model.Card;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;

@@ -1,5 +1,4 @@
-package UI.Demo.Model;
-import java.awt.Image;
+package UI.PH_Gameplay.Model;
 import javax.swing.ImageIcon;
 public class Card {
  

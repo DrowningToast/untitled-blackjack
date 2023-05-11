@@ -1,4 +1,4 @@
-package UI.Demo.Model;
+package UI.PH_Gameplay.Model;
 
 import javax.swing.ImageIcon;
 

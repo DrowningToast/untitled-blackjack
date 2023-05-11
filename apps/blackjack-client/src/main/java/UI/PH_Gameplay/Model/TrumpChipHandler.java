@@ -1,5 +1,4 @@
-package UI.Demo.Model;
-import UI.Demo.Model.TrumpChip;
+package UI.PH_Gameplay.Model;
 import java.util.HashMap;
 import javax.swing.ImageIcon;
 public class TrumpChipHandler {

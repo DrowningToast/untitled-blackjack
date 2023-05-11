@@ -1,8 +1,5 @@
 
-package ClientEndPoint.Base;
-
-import jakarta.websocket.Session;
-import org.json.JSONObject;
+package Internal.Websocket.Base;
 
 
 public class HandlerChecker  {
