@@ -18,6 +18,7 @@ export const checkEndGameEvent = AsyncExceptionHandler(
 
     // check if any player has won
     const targetPoints = GAME_WIN_SCORE_TARGET;
+
     if (
       game.players[0].gameScore >= targetPoints ||
       game.players[1].gameScore >= targetPoints

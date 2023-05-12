@@ -1,6 +1,10 @@
 import { Card, GlobalCardsContext } from "database/src/utils/Card";
 import { ConnectionId, WebsocketResponse } from "./type";
-import { IGame, IUser } from "database";
+import { IGame, IUser, _IUser } from "database";
+import {
+  TrumpCard,
+  TrumpCardDocument,
+} from "database/src/models/TrumpCardModel";
 
 export const healthCheckMessage = (): WebsocketResponse => {
   return {
@@ -32,7 +36,7 @@ export const connectionAuthorizedMessage = (
 ): WebsocketResponse<{ username: IUser["username"]; connectionId }> => {
   return {
     status: "OK",
-    handler: "CONNECTION_AUTHROIZED",
+    handler: "CONNECTION_AUTHORIZED",
     content: {
       username,
       connectionId,
@@ -72,11 +76,6 @@ export const initRoundMessage = (game: IGame): WebsocketResponse<IGame> => {
   };
 };
 
-interface CardState {
-  cards: Card[];
-  gameCards: GlobalCardsContext;
-}
-
 /**
  * @description Update the cards state of both players
  *@param
@@ -84,16 +83,12 @@ interface CardState {
  * @returns
  */
 export const cardStateMessage = (
-  cards: CardState["cards"],
-  gameCards: CardState["gameCards"]
-): WebsocketResponse<CardState> => {
+  cardsFromPov: GlobalCardsContext["pov"]
+): WebsocketResponse<GlobalCardsContext["pov"]> => {
   return {
     status: "OK",
     handler: "UPDATE_CARDS",
-    content: {
-      cards,
-      gameCards,
-    },
+    content: cardsFromPov,
   };
 };
 
@@ -160,7 +155,7 @@ export interface RoundWinner {
   winner: IUser | null;
   pointsEarned: number;
   game: IGame;
-  cards: GlobalCardsContext;
+  cards: GlobalCardsContext["pov"];
 }
 
 export const roundWinnerMessage = (
@@ -195,6 +190,68 @@ export const gameWinnerMessage = (
     status: "OK",
     handler: "GAME_WINNER",
     content: args,
+  };
+};
+
+export const useTrumpMessage = (
+  username: string,
+  trumpCard: TrumpCard
+): WebsocketResponse<{ username: string; trumpCard: TrumpCard }> => {
+  return {
+    status: "OK",
+    handler: "USE_TRUMP",
+    content: {
+      username,
+      trumpCard,
+    },
+  };
+};
+
+export const updateTrumpCardStateMessage = (
+  trumpCards: TrumpCardDocument[]
+): WebsocketResponse<TrumpCardDocument[]> => {
+  return {
+    handler: "UPDATE_TRUMP_CARDS_STATE",
+    status: "OK",
+    content: trumpCards,
+  };
+};
+
+export const updateTrumpStatusMessage = (
+  users: { username: string; trumpStatus: IUser["trumpStatus"] }[]
+): WebsocketResponse<
+  {
+    username: string;
+    statuses: IUser["trumpStatus"];
+  }[]
+> => {
+  return {
+    status: "OK",
+    handler: "UPDATE_TRUMP_STATUS",
+    content: users.map((user) => ({
+      username: user.username,
+      statuses: user.trumpStatus,
+    })),
+  };
+};
+
+export const updatePointTargetMessage = (
+  pointTarget: number
+): WebsocketResponse<number> => {
+  return {
+    status: "OK",
+    handler: "UPDATE_POINT_TARGET",
+    content: pointTarget,
+  };
+};
+
+export const nextHitCardTrumpEffect = (
+  card: Card[]
+): WebsocketResponse<Card[]> => {
+  return {
+    status: "OK",
+    handler: "NEXT_HIT_CARD_TRUMP_EFFECT",
+    content: card,
   };
 };
 

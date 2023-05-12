@@ -1,6 +1,7 @@
 import { FilterQuery, Types, UpdateQuery } from "mongoose";
 import { Game, IGame, ZodGameStrip } from "../models/GameModel";
 import {
+  GlobalCardsContext,
   aceCard,
   eightCard,
   fiveCard,
@@ -18,10 +19,13 @@ import {
 import { asyncTransaction } from "../utils/Transaction";
 import { UserController } from "./UserController";
 import {
+  ERR_EXISTED_GAME,
   ERR_INGAME_PLAYERS,
+  ERR_INTERNAL,
   ERR_INVALID_GAME,
   ERR_INVALID_USER,
-} from "../utils/Error";
+  insertErrorStack,
+} from "../utils/error";
 
 /**
  * There should be no function that updates the game instance data directly for security reasons
@@ -39,6 +43,12 @@ const createGame = asyncTransaction(
      */
     if (playersIDs.length !== 1)
       throw new Error("There should be at least one player");
+
+    /**
+     * Ensure no room with the same passcode already exists
+     */
+    const [game, err] = await getGame({ passcode });
+    if (game) throw insertErrorStack(ERR_EXISTED_GAME);
 
     const _ = new Game({
       players: playersIDs,
@@ -78,7 +88,7 @@ const getGame = asyncTransaction(async (arg: FilterQuery<IGame>) => {
       passcode: 0,
     });
 
-  if (!_) throw ERR_INVALID_GAME;
+  if (!_) throw insertErrorStack(ERR_INVALID_GAME);
 
   const game = ZodGameStrip.parse(_);
 
@@ -90,7 +100,7 @@ const updateGame = asyncTransaction(
     // Get the game instance and populate the players
     let _ = await Game.findOneAndUpdate(query, update);
 
-    if (!_) throw ERR_INVALID_GAME;
+    if (!_) throw insertErrorStack(ERR_INVALID_GAME);
 
     const [game, err] = await getGame({ gameId: _.gameId });
     if (err) throw ERR_INVALID_GAME;
@@ -108,7 +118,7 @@ const joinGame = asyncTransaction(
 
     const [updated, err] = await getGame({ _id });
 
-    if (err) throw ERR_INVALID_GAME;
+    if (err) throw insertErrorStack(ERR_INVALID_GAME);
 
     return ZodGameStrip.parse(updated);
   }
@@ -121,12 +131,12 @@ const leaveGame = asyncTransaction(
     });
 
     // Ensure the user is valid
-    if (!userMeta) throw ERR_INVALID_USER;
+    if (!userMeta) throw insertErrorStack(ERR_INVALID_USER);
 
     // Ensure the game instance is valid
     let [game] = await getGame({ gameId });
 
-    if (!game) throw ERR_INVALID_GAME;
+    if (!game) throw insertErrorStack(ERR_INVALID_GAME);
 
     /**
      * If the game players is empty, delete the game instance
@@ -150,7 +160,7 @@ const leaveGame = asyncTransaction(
 
       const [res, e] = await getGame({ gameId });
 
-      if (e) throw ERR_INVALID_GAME;
+      if (e) throw insertErrorStack(ERR_INVALID_GAME);
 
       return res;
     }
@@ -160,7 +170,7 @@ const leaveGame = asyncTransaction(
 const getPlayers = asyncTransaction(async (gameId: string) => {
   const [game] = await getGame({ gameId });
 
-  if (!game) throw ERR_INVALID_GAME;
+  if (!game) throw insertErrorStack(ERR_INVALID_GAME);
 
   return game?.players ?? [];
 });
@@ -168,7 +178,7 @@ const getPlayers = asyncTransaction(async (gameId: string) => {
 const startGame = asyncTransaction(async (gameId: string) => {
   const [game] = await getGame({ gameId });
 
-  if (!game) throw ERR_INVALID_GAME;
+  if (!game) throw insertErrorStack(ERR_INVALID_GAME);
 
   const _ = await Game.findOneAndUpdate(
     {
@@ -179,7 +189,7 @@ const startGame = asyncTransaction(async (gameId: string) => {
     }
   );
 
-  if (!_) throw ERR_INVALID_GAME;
+  if (!_) throw insertErrorStack(ERR_INVALID_GAME);
 
   const [res, e] = await getGame({ gameId });
 
@@ -189,19 +199,34 @@ const startGame = asyncTransaction(async (gameId: string) => {
 const getPlayerConnectionIds = asyncTransaction(async (gameId: string) => {
   const [game, err] = await getGame({ gameId });
 
-  if (err) throw ERR_INVALID_GAME;
+  if (err) throw insertErrorStack(ERR_INVALID_GAME);
 
-  if (game.players.length !== 2) throw ERR_INGAME_PLAYERS;
+  if (game.players.length !== 2) throw insertErrorStack(ERR_INGAME_PLAYERS);
 
   const [[connectionA, errA], [connectionB, errB]] = await Promise.all([
     UserController.getConnectionId({ username: game.players[0].username }),
     UserController.getConnectionId({ username: game.players[1].username }),
   ]);
 
-  if (errA || errB) throw ERR_INVALID_USER;
+  if (errA || errB) throw insertErrorStack(ERR_INVALID_USER);
 
   return [connectionA, connectionB] as [string, string];
 });
+
+const getOpponent = asyncTransaction(
+  async (gameId: string, username: string) => {
+    const [game, err] = await getGame({ gameId });
+    if (err) throw insertErrorStack(ERR_INVALID_GAME);
+
+    const opponent = game.players.filter((player) => {
+      return player.username !== username;
+    });
+
+    if (!opponent.length) throw insertErrorStack(ERR_INTERNAL);
+
+    return opponent[0];
+  }
+);
 
 const deleteGame = asyncTransaction(async (gameId: string) => {
   const _ = await Game.deleteOne({
@@ -210,6 +235,102 @@ const deleteGame = asyncTransaction(async (gameId: string) => {
 
   return;
 });
+
+const getCardsOnPerspectives = asyncTransaction(
+  async (gameId: string): Promise<GlobalCardsContext[]> => {
+    const [game, err] = await getGame({ gameId });
+    if (err) throw insertErrorStack(ERR_INVALID_GAME);
+
+    const [userA, errA] = await UserController.getUserMeta({
+      username: game.players[0].username,
+    });
+    if (errA) throw errA;
+
+    const isABlind = userA.trumpStatus.includes("BLIND");
+
+    const [userB, errB] = await UserController.getUserMeta({
+      username: game.players[1].username,
+    });
+    if (errB) throw errB;
+
+    const isBBlind = userB.trumpStatus.includes("BLIND");
+
+    // player A in eyes of A
+    const [cardsAofA, errAofA] = await UserController.getCards(
+      {
+        username: game.players[0].username,
+      },
+      true,
+      false,
+      isABlind
+    );
+    if (errAofA) throw errAofA;
+
+    // player B in eyes of A
+    const [cardsBofA, errBofA] = await UserController.getCards(
+      {
+        username: game.players[1].username,
+      },
+      false,
+      true,
+      isABlind
+    );
+    if (errBofA) throw errBofA;
+
+    // player A in eyes of B
+    const [cardsAofB, errAofB] = await UserController.getCards(
+      {
+        username: game.players[0].username,
+      },
+      false,
+      true,
+      isBBlind
+    );
+    if (errAofB) throw errAofB;
+
+    // player B in eyes of B
+    const [cardsBofB, errBofB] = await UserController.getCards(
+      {
+        username: game.players[1].username,
+      },
+      true,
+      false,
+      isBBlind
+    );
+    if (errBofB) throw errBofB;
+
+    const result: GlobalCardsContext[] = [
+      {
+        username: game.players[0].username,
+        pov: [
+          {
+            username: game.players[0].username,
+            cards: cardsAofA,
+          },
+          {
+            username: game.players[1].username,
+            cards: cardsBofA,
+          },
+        ],
+      },
+      {
+        username: game.players[1].username,
+        pov: [
+          {
+            username: game.players[0].username,
+            cards: cardsAofB,
+          },
+          {
+            username: game.players[1].username,
+            cards: cardsBofB,
+          },
+        ],
+      },
+    ];
+
+    return result;
+  }
+);
 
 export const GameController = {
   /**
@@ -273,4 +394,9 @@ export const GameController = {
    * Delete the game instance
    */
   deleteGame,
+  getOpponent,
+  /**
+   * Get all players card based on each player perspective
+   */
+  getCardsOnPerspectives,
 };

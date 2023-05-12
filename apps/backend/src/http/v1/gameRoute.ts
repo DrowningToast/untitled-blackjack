@@ -4,7 +4,7 @@ import {
   ERR_ILLEGAL_OPERATION,
   ERR_INVALID_CONNECTION_ID,
   ERR_INVALID_PASSCODE,
-} from "database/src/utils/Error";
+} from "database/src/utils/error";
 import { FastifyInstance } from "fastify";
 import {
   ERR_BAD_REQUEST,
@@ -37,8 +37,28 @@ const gameRouter = (app: FastifyInstance, prefix: string) => {
             players: [user.id],
           });
 
+          //
+
           if (existGame) {
-            return reply.status(400).send(ERR_EXISTED_GAME);
+            // if the game exists, find if the players document exists or not
+            const players = await Promise.all(
+              existGame.players.map(async (player) => {
+                const [user, err] = await UserController.getUserMeta({
+                  username: player.username,
+                });
+                if (err) return null;
+                return user;
+              })
+            );
+
+            // find if is there a valid user in the game
+            const validUser = players.find((player) => player !== null);
+
+            if (validUser) return reply.status(400).send(ERR_EXISTED_GAME);
+
+            // if there is no valid user, delete the game
+            const [_, err] = await GameController.deleteGame(existGame.gameId);
+            if (err) return reply.status(500).send(err);
           }
 
           // Create the game

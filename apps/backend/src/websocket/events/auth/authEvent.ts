@@ -1,4 +1,4 @@
-import { ERR_EXISTED_USER, UserController } from "database";
+import { ERR_EXISTED_USER, UserController, insertErrorStack } from "database";
 import { getAPIG } from "../../APIGateway";
 import { connectionAuthorizedMessage } from "../../utils/WebsocketResponses";
 import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
@@ -37,7 +37,7 @@ const authEvent = AsyncExceptionHandler(async (event, context, args) => {
    */
   if (user) {
     // The username is already taken
-    throw ERR_EXISTED_USER;
+    throw insertErrorStack(ERR_EXISTED_USER);
   } else {
     // Create new user
     const [user, error] = await UserController.createUser({

@@ -4,7 +4,7 @@ import { gameEndMessage } from "../utils/WebsocketResponses";
 
 export const endGameBroadcast = AsyncExceptionHandler(
   async (api: APIG, connectionIds: string[]) => {
-    const { broadcast, connectionId } = api;
+    const { broadcast } = api;
 
     return await broadcast(gameEndMessage(), connectionIds);
   }
