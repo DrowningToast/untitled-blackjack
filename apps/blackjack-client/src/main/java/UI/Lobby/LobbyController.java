@@ -29,9 +29,6 @@ public class LobbyController {
         this.uiController = uiController;
     }
 
-    public void setAsActiveWindow() {
-        uiController.switchActiveWindow(ui);
-    }
 
     // PLACEHOLDER
     public void changeToWaiting() {

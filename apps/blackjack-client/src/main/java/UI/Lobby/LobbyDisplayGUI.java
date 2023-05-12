@@ -1,6 +1,7 @@
 
 package UI.Lobby;
 
+import Main.MainRunner;
 import UI.Controller.CustomFrame;
 
 import javax.swing.*;
@@ -162,6 +163,6 @@ public class LobbyDisplayGUI extends CustomFrame {
 
     @Override
     public void onSwitch() {
-
+        this.setTitle(MainRunner.getGameContext().getPlayers()[0].getPlayer().getUsername());
     }
 }
