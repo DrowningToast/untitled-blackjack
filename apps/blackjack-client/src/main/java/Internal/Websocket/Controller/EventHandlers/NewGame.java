@@ -14,8 +14,8 @@ public class NewGame implements WebsocketEventHandler{
 
     @Override
     public void handler(GameContext ctx, JSONObject body) {
-        JSONObject content = (JSONObject) body.get("content");
-        String gameId = (String) content.get("gameId");
+        String content = (String) body.get("content");
+        ctx.getGame().getGame().setGameId(content);
         // GO TO LOBBY WINDOW
         // ready message is from the players[0]
         // check getPLayer[1] is ready

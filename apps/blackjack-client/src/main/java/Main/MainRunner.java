@@ -68,7 +68,7 @@ public class MainRunner {
 
                     eventHandlers.put("CONNECTION_AUTHORIZED", new ConnectionAuthorized(uiController));
                     eventHandlers.put("READY_STATE", new ReadyState(uiController));
-                    eventHandlers.put("GAME_STARTED", new NewGame(uiController));
+                    eventHandlers.put("NEW_GAME", new NewGame(uiController));
 
                 } catch (Exception e) {
                     System.out.println(e.toString());

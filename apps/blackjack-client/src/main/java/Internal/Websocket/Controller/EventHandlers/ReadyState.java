@@ -17,15 +17,14 @@ public class ReadyState implements WebsocketEventHandler {
     public void handler(GameContext ctx, JSONObject body) {
         JSONObject content = (JSONObject) body.get("content");
         String username = (String) content.get("username");
-        boolean ready = (boolean)content.get("ready");
-        boolean playerOneState = MainRunner.getGameContext().getPlayers()[0].getPlayer().getUsername().equals(username);
-        boolean playerTwoState = MainRunner.getGameContext().getPlayers()[1].getPlayer().getUsername().equals(username);
-        if (playerOneState) {
+        boolean ready = (boolean) content.get("ready");
+        boolean myMsg = MainRunner.getGameContext().getPlayers()[0].getPlayer().getUsername().equals(username);
+        if (myMsg) {
             //for guest
             ctx.getPlayers()[0].getPlayer().setReady(ready);
             uiController.update();
             return;
-        }else if(playerTwoState){
+        } else {
             //for host
             ctx.getPlayers()[1].getPlayer().setUsername(username);
             ctx.getPlayers()[1].getPlayer().setReady(ready);

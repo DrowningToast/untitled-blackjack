@@ -124,13 +124,7 @@ public class WaitingRoomGUI extends CustomFrame {
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         // TODO add your handling code here:
         // set Player 1 ready state
-        MainRunner.getGameContext().getPlayers()[0].getPlayer().setReady(true);
-        //
-        boolean statusA = MainRunner.getGameContext().getPlayers()[0].getPlayer().isReady();
-        boolean statusB = MainRunner.getGameContext().getPlayers()[1].getPlayer().isReady();
-        if (!statusA && statusB){
-            controller.hostSendStart();
-        }
+        controller.startGame();
     }//GEN-LAST:event_startButtonActionPerformed
 
     public void init() {
