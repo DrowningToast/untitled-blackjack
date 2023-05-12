@@ -1,4 +1,4 @@
-package ClientEndPoint.Base;
+package Internal.Websocket.Base;
 
 import Internal.JSON.JSON;
 import jakarta.websocket.Session;

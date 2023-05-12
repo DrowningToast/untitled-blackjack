@@ -4,8 +4,6 @@ import Gameplay.GameContext;
 import Internal.Websocket.Controller.EventHandlers.WebsocketEventHandler;
 import Internal.Websocket.Base.MessageBuilder;
 import Internal.Websocket.Base.WebsocketClientEndpoint;
-import Gameplay.Game.GamePOJO;
-import Internal.JSON.JSON;
 import Main.MainRunner;
 import jakarta.websocket.DeploymentException;
 import org.json.simple.JSONObject;

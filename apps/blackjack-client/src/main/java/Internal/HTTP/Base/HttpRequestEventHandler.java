@@ -11,7 +11,7 @@ public interface HttpRequestEventHandler {
     void onSuccess(HttpResponse response);
 
     /**
-     * Request error excetpion
+     * Request error exception
      * @param response
      * @param e
      */
