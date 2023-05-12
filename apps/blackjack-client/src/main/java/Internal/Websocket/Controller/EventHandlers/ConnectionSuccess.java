@@ -2,7 +2,7 @@ package Internal.Websocket.Controller.EventHandlers;
 
 import Gameplay.GameContext;
 import Internal.Websocket.Controller.WebsocketController;
-import org.json.simple.JSONObject;
+    import org.json.simple.JSONObject;
 
 import java.util.HashMap;
 
