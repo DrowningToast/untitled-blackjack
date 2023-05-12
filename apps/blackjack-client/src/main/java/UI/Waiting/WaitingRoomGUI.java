@@ -4,8 +4,10 @@
  */
 package UI.Waiting;
 
+import Gameplay.Game.GamePOJO;
 import Main.MainRunner;
 import UI.Controller.CustomFrame;
+import UI.Lobby.LobbyController;
 
 import java.awt.Font;
 
@@ -165,6 +167,7 @@ public class WaitingRoomGUI extends CustomFrame {
         System.out.println(MainRunner.getGameContext().getPlayers()[0].getPlayer().getUsername());
         System.out.println(MainRunner.getGameContext().getPlayers()[1].getPlayer().getUsername());
         playerOneLabel.setText("Player : " + MainRunner.getGameContext().getPlayers()[0].getPlayer().getUsername());
+        this.setTitle(MainRunner.getGameContext().getGame().getGame().getPasscode());
     }
 
     @Override
