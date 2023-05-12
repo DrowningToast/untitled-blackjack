@@ -6,7 +6,7 @@ import lombok.Getter;
 public class GamePlayController {
     private UIController uiController;
     @Getter
-    private GamePlayDisplayGUI ui;
+    private GamePlayDisplayGUI ui = new GamePlayDisplayGUI();
 
     public GamePlayController(UIController uiController){
         this.uiController = uiController;

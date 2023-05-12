@@ -110,6 +110,7 @@ public class LobbyController {
             @Override
             public void onFail(HttpResponse response, Exception e) {
                 System.out.println(e.toString());
+                System.out.println(response.getRawBody());
                 e.printStackTrace();
                 System.out.println("JOIN ROOM FAILED");
             }
