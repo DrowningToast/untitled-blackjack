@@ -12,6 +12,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.URL;
@@ -65,6 +66,7 @@ public class LobbyController {
             @Override
             public void onFail(HttpResponse response, Exception e) {
                 System.out.println("CREATE ROOM FAILED");
+                JOptionPane.showMessageDialog(null, "a room this the same passcode had already been created.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
@@ -112,6 +114,7 @@ public class LobbyController {
                 System.out.println(e.toString());
                 e.printStackTrace();
                 System.out.println("JOIN ROOM FAILED");
+                JOptionPane.showMessageDialog(null, "Room not found.","Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
