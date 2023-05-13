@@ -28,13 +28,13 @@ public class TrumpChipHandler {
     
     public void iconStatusImage(){
 //      Invincible
-        iconStatus.put("Invincible", new TrumpChip("Invincible", new ImageIcon("resources/Invincible.PNG")));
+        iconStatus.put("Invincible", new TrumpChip("Invincible", new ImageIcon("resources/Invincible_Status.PNG")));
 //      Blind
-        iconStatus.put("Blind", new TrumpChip("Make the opponent blind", new ImageIcon("resources/BlindPNG")));
+        iconStatus.put("Blind", new TrumpChip("Make the opponent blind", new ImageIcon("resources/Blind_Status.PNG")));
 //      Deny hit
-        iconStatus.put("Deny hit", new TrumpChip("The opponent can't hit card", new ImageIcon("resources/Deny_hit.PNG")));
+        iconStatus.put("Deny hit", new TrumpChip("The opponent can't hit card", new ImageIcon("resources/Deny_hit_Status.PNG")));
 //      Deny trump use
-        iconStatus.put("Deny trump use", new TrumpChip("The opponent can't use trump chip", new ImageIcon("resources/Deny_Trump_Use.PNG")));
+        iconStatus.put("Deny trump use", new TrumpChip("The opponent can't use trump chip", new ImageIcon("resources/Deny_Trump_Use_Status.PNG")));
 }
 
     public HashMap<String, TrumpChip> getHashMapChip() {
