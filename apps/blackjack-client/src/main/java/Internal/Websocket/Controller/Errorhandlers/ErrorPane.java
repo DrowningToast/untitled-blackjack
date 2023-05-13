@@ -6,10 +6,10 @@ import javax.swing.*;
 
 public class ErrorPane {
     private JOptionPane pane;;
-    public ErrorPane(String error,JSONObject description) {
+    public ErrorPane(String description,JSONObject error) {
         System.out.println("create pane");
-        System.out.println(error);
-        JOptionPane.showMessageDialog(null,error,"Error",JOptionPane.ERROR_MESSAGE);
+        System.out.println(description);
+        JOptionPane.showMessageDialog(null,description,"Error",JOptionPane.ERROR_MESSAGE);
 
     }
 }
