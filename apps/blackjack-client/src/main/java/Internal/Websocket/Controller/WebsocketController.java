@@ -1,6 +1,7 @@
 package Internal.Websocket.Controller;
 
 import Gameplay.GameContext;
+import Internal.Websocket.Controller.Errorhandlers.WebsocketErrorHandler;
 import Internal.Websocket.Controller.EventHandlers.WebsocketEventHandler;
 import Internal.Websocket.Base.MessageBuilder;
 import Internal.Websocket.Base.WebsocketClientEndpoint;
@@ -17,16 +18,19 @@ import java.util.HashMap;
 public class WebsocketController {
     private WebsocketClientEndpoint client;
     private HashMap eventHandlers;
+    private HashMap errorHandlers;
+
     private String connectionId;
     private String gameId;
     private GameContext ctx;
 
-    public WebsocketController(GameContext ctx, HashMap<String, WebsocketEventHandler> eventHandlers)
+    public WebsocketController(GameContext ctx, HashMap<String, WebsocketEventHandler> eventHandlers, HashMap<String, WebsocketErrorHandler> errorHandlers)
             throws IOException, DeploymentException, URISyntaxException {
         this.client = new WebsocketClientEndpoint(this);
         this.ctx = ctx;
         client.connect();
         this.eventHandlers = eventHandlers;
+        this.errorHandlers = errorHandlers;
     }
 
     public void sendAuth(String username) {
@@ -93,25 +97,29 @@ public class WebsocketController {
 
     }
 
-    public void handleError(String raw){
+    public void handleError(String raw) {
         JSONParser parser = new JSONParser();
 
         try {
             // Convert json string to hashmap
             JSONObject body = (JSONObject) parser.parse(raw);
             System.out.println("get msg");
-            // find out what handler it is
-            String err = (String) body.get("error");
+            // convert Error json to hashmaps
+            JSONObject errJson = (JSONObject) body.get("error");
+            JSONObject err_body = (JSONObject) parser.parse(String.valueOf(errJson));
+            // find out what error it is
+            String err = (String) err_body.get("error");
             System.out.println("get error msg(?)");
 
             System.out.println(err);
 
-            WebsocketEventHandler errHandler = (WebsocketEventHandler) eventHandlers.get(err);
-            if (errHandler == null)
-
+            WebsocketErrorHandler errHandler = (WebsocketErrorHandler) errorHandlers.get(err);
+            if (errHandler == null) {
+                System.out.println("Unhandled error has occurred");
                 return;
-
-            errHandler.handler(ctx, body);
+            } else {
+                errHandler.handler(body);
+            }
         } catch (ParseException e) {
             System.out.println(e.toString());
             e.printStackTrace();

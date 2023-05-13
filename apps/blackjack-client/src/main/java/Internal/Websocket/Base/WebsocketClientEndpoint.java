@@ -2,6 +2,8 @@ package Internal.Websocket.Base;
 
 import Internal.Websocket.Controller.WebsocketController;
 import jakarta.websocket.*;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.io.IOException;
 import java.net.URI;
@@ -22,7 +24,8 @@ public class WebsocketClientEndpoint {
     public void connect() throws DeploymentException, IOException, URISyntaxException {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         WebsocketClientEndpoint client = new WebsocketClientEndpoint(controller);
-        session = container.connectToServer(client, new URI("wss://mcwv0fzml9.execute-api.ap-southeast-1.amazonaws.com/dev"));
+        session = container.connectToServer(client,
+                new URI("wss://mcwv0fzml9.execute-api.ap-southeast-1.amazonaws.com/dev"));
     }
 
     public Session getSession() {
@@ -44,8 +47,13 @@ public class WebsocketClientEndpoint {
 
     @OnMessage
     public void onMessage(String message) throws Exception {
+        JSONObject jsonMsg = (JSONObject) new JSONParser().parse(message);
         System.out.println(message);
-        controller.handleMessage(message);
+        if (jsonMsg.containsKey("handler")) {
+            controller.handleMessage(message);
+        } else if (jsonMsg.containsKey("error")) {
+            controller.handleError(message);
+        }
     }
 
 }
