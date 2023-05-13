@@ -42,14 +42,14 @@ public class MessageBuilder {
         this.session = client.getSession();
     }
 
-    public void checkSendMessageHandler(Session session, String handler) throws Exception {
-
-        switch (handler) {
-            case "auth" -> {
-                session.getBasicRemote().sendText(message); // send message to server
-            }
-        }
-    }
+//    public void checkSendMessageHandler(Session session, String handler) throws Exception {
+//
+//        switch (handler) {
+//            case "auth" -> {
+//                session.getBasicRemote().sendText(message); // send message to server
+//            }
+//        }
+//    }
 
 //    public void sendMessage(String handler) throws Exception {
 //        session = rfc.getSession();
