@@ -38,17 +38,17 @@ public class GameController {
             gameGUI.getStandButtonPlayerOne().setVisible(false);
             playerPOJOOne.setStand(false);
         });
-        gameGUI.getHitButtonPlayerTwo().addActionListener(event -> {
-            PlayerPOJO currentTurn = (PlayerPOJO) GameSystem.getPlayerTurn();
-            Card card = (Card) GameSystem.giveCard(currentTurn);
-            showRandomCard(card, "PlayerTwo's hit");
-            gameSystem.switchTurn();
-        });
-        gameGUI.getStandButtonPlayerTwo().addActionListener(event -> {
-            gameGUI.getHitButtonPlayerTwo().setVisible(false);
-            gameGUI.getStandButtonPlayerTwo().setVisible(false);
-            playerPOJOOne.setStand(false);
-        });
+//        gameGUI.getHitButtonPlayerTwo().addActionListener(event -> {
+//            PlayerPOJO currentTurn = (PlayerPOJO) GameSystem.getPlayerTurn();
+//            Card card = (Card) GameSystem.giveCard(currentTurn);
+//            showRandomCard(card, "PlayerTwo's hit");
+//            gameSystem.switchTurn();
+//        });
+//        gameGUI.getStandButtonPlayerTwo().addActionListener(event -> {
+//            gameGUI.getHitButtonPlayerTwo().setVisible(false);
+//            gameGUI.getStandButtonPlayerTwo().setVisible(false);
+//            playerPOJOOne.setStand(false);
+//        });
     }
 
     public void showRandomCard(Card card, String hit) {
@@ -62,15 +62,15 @@ public class GameController {
                 playerPOJOOne.setStand(false);
             }
             gameGUI.getScoreCardOneLabel().setText("Score: " + playerPOJOOne.getScore());
-        } else if (hit.equals("PlayerTwo's hit")) {
-            gameGUI.getPlayerTwoTable().add(randomCard.getShowCard());
-            playerPOJOTwo.setScore(playerPOJOTwo.getScore() + card.getValue());
-            if (playerPOJOTwo.getScore() >= 21) {
-                gameGUI.getHitButtonPlayerTwo().setVisible(false);
-                gameGUI.getStandButtonPlayerTwo().setVisible(false);
-                playerPOJOOne.setStand(false);
-            }
-            gameGUI.getScoreCardTwoLabel().setText("Score: " + playerPOJOTwo.getScore());
-        }
+//        } else if (hit.equals("PlayerTwo's hit")) {
+//            gameGUI.getPlayerTwoTable().add(randomCard.getShowCard());
+//            playerPOJOTwo.setScore(playerPOJOTwo.getScore() + card.getValue());
+//            if (playerPOJOTwo.getScore() >= 21) {
+//                gameGUI.getHitButtonPlayerTwo().setVisible(false);
+//                gameGUI.getStandButtonPlayerTwo().setVisible(false);
+//                playerPOJOOne.setStand(false);
+//            }
+//            gameGUI.getScoreCardTwoLabel().setText("Score: " + playerPOJOTwo.getScore());
+//        }
     }
-}
+}}

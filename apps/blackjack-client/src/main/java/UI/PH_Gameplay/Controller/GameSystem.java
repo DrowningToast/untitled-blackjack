@@ -65,10 +65,10 @@ public class GameSystem {
             gameGUI.getStandButtonPlayerOne().setEnabled(true);
             System.out.println("1232131232");
             
-    }else{
-            gameGUI.getHitButtonPlayerTwo().setEnabled(false);
-            gameGUI.getStandButtonPlayerTwo().setEnabled(false);
-            System.out.println("asdasd");
+//    }else{
+//            gameGUI.getHitButtonPlayerTwo().setEnabled(false);
+//            gameGUI.getStandButtonPlayerTwo().setEnabled(false);
+//            System.out.println("asdasd");
         }
 }
 

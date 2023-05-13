@@ -24,7 +24,8 @@ public class WebsocketClientEndpoint {
     public void connect() throws DeploymentException, IOException, URISyntaxException {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         WebsocketClientEndpoint client = new WebsocketClientEndpoint(controller);
-        session = container.connectToServer(client, new URI("wss://mcwv0fzml9.execute-api.ap-southeast-1.amazonaws.com/dev"));
+        session = container.connectToServer(client,
+                new URI("wss://mcwv0fzml9.execute-api.ap-southeast-1.amazonaws.com/dev"));
     }
 
     public Session getSession() {
@@ -48,15 +49,13 @@ public class WebsocketClientEndpoint {
     public void onMessage(String message) throws Exception {
         JSONObject msg = (JSONObject) new JSONParser().parse(message);
         System.out.println(message);
-        if (msg.containsKey("handler")){
+        if (msg.containsKey("handler")) {
             System.out.println("has handler");
             controller.handleMessage(message);
-        }
-        else if (msg.containsKey("error")){
+        } else if (msg.containsKey("error")) {
             System.out.println("has error");
             controller.handleError(message);
         }
     }
-
 
 }
