@@ -83,10 +83,12 @@ public class LobbyDisplayGUI extends CustomFrame {
         });
         LobbyPanel.add(passCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 360, 400, 50));
 
+
         jLabel1.setFont(new java.awt.Font("Leelawadee UI", 1, 20)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Enter Passcode");
         LobbyPanel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 310, -1, -1));
+
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
