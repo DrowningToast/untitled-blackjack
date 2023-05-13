@@ -2,6 +2,7 @@
 package UI.PH_Gameplay.Display;
 import UI.Controller.CustomFrame;
 import java.awt.Label;
+import java.awt.TextArea;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,6 +17,10 @@ public class GamePlayDisplayGUI extends CustomFrame {
 
     public GamePlayDisplayGUI() {
         initComponents();
+        playerTwoTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
+        playerOneTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
+        deckCardBackground.setIcon(new javax.swing.ImageIcon("resources/back.png"));
+        background.setIcon(new javax.swing.ImageIcon("resources/GamePlayBackground.PNG"));
     }
 
     /**
@@ -45,16 +50,17 @@ public class GamePlayDisplayGUI extends CustomFrame {
         scoreGamePlayerTwoPanel = new javax.swing.JPanel();
         scoreGamePlayerTwoLabel = new javax.swing.JLabel();
         playerTwoNameScoreLabel = new java.awt.Label();
-        trumpHoldChipPlayerTwoPanel = new javax.swing.JPanel();
         vsPanel = new javax.swing.JPanel();
         vsLabel = new javax.swing.JLabel();
         buttonPanelPlayerTwo = new javax.swing.JPanel();
-        hitButtonPlayerTwo = new javax.swing.JButton();
-        standButtonPlayerTwo = new javax.swing.JButton();
         scoreCardTwoLabel = new javax.swing.JLabel();
         deckCardPanel = new javax.swing.JPanel();
         deckCardBackground = new javax.swing.JLabel();
         background = new javax.swing.JLabel();
+        chatPanel = new javax.swing.JPanel();
+        gameplayTextArea = new java.awt.TextArea();
+        thrumChipButton = new javax.swing.JButton();
+        iconAssetJPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -117,6 +123,7 @@ public class GamePlayDisplayGUI extends CustomFrame {
         gamePlayPanel.add(playerOneTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 520, 730, 240));
 
         playerTwoTable.setBackground(new java.awt.Color(102, 0, 0));
+        playerTwoTable.setBorder(new javax.swing.border.MatteBorder(null));
         playerTwoTable.setPreferredSize(new java.awt.Dimension(720, 330));
         gamePlayPanel.add(playerTwoTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 10, 730, 240));
 
@@ -124,7 +131,7 @@ public class GamePlayDisplayGUI extends CustomFrame {
         gamePlayPanel.add(trumpChipPlayerTwoPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 260, 600, 70));
 
         playerOneNamePanel.setBackground(new java.awt.Color(102, 102, 102));
-        gamePlayPanel.add(playerOneNamePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 640, 250, 90));
+        gamePlayPanel.add(playerOneNamePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 660, 250, 90));
 
         trumpHoldChipPlayerOnePanel.setBackground(new java.awt.Color(0, 0, 0));
 
@@ -139,7 +146,7 @@ public class GamePlayDisplayGUI extends CustomFrame {
             .addGap(0, 160, Short.MAX_VALUE)
         );
 
-        gamePlayPanel.add(trumpHoldChipPlayerOnePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 460, 250, 160));
+        gamePlayPanel.add(trumpHoldChipPlayerOnePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 440, 250, 160));
 
         trumpChipPlayerOnePanel.setBackground(new java.awt.Color(51, 51, 51));
         trumpChipPlayerOnePanel.setAutoscrolls(true);
@@ -147,7 +154,7 @@ public class GamePlayDisplayGUI extends CustomFrame {
         gamePlayPanel.add(trumpChipPlayerOnePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 440, 600, 70));
 
         playerTwoNamePanel.setBackground(new java.awt.Color(102, 102, 102));
-        gamePlayPanel.add(playerTwoNamePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 40, 250, 90));
+        gamePlayPanel.add(playerTwoNamePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 20, 250, 90));
 
         scoreGamePlayerOneLabel.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         scoreGamePlayerOneLabel.setText("0");
@@ -199,21 +206,6 @@ public class GamePlayDisplayGUI extends CustomFrame {
 
         gamePlayPanel.add(scoreGamePlayerTwoPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 340, 330, 80));
 
-        trumpHoldChipPlayerTwoPanel.setBackground(new java.awt.Color(0, 0, 0));
-
-        javax.swing.GroupLayout trumpHoldChipPlayerTwoPanelLayout = new javax.swing.GroupLayout(trumpHoldChipPlayerTwoPanel);
-        trumpHoldChipPlayerTwoPanel.setLayout(trumpHoldChipPlayerTwoPanelLayout);
-        trumpHoldChipPlayerTwoPanelLayout.setHorizontalGroup(
-            trumpHoldChipPlayerTwoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 250, Short.MAX_VALUE)
-        );
-        trumpHoldChipPlayerTwoPanelLayout.setVerticalGroup(
-            trumpHoldChipPlayerTwoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 160, Short.MAX_VALUE)
-        );
-
-        gamePlayPanel.add(trumpHoldChipPlayerTwoPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 140, 250, 160));
-
         vsPanel.setBackground(new java.awt.Color(0, 0, 0));
         vsPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -226,16 +218,6 @@ public class GamePlayDisplayGUI extends CustomFrame {
 
         buttonPanelPlayerTwo.setBackground(new java.awt.Color(153, 153, 153));
 
-        hitButtonPlayerTwo.setBackground(new java.awt.Color(0, 0, 0));
-        hitButtonPlayerTwo.setFont(new java.awt.Font("Book Antiqua", 1, 20)); // NOI18N
-        hitButtonPlayerTwo.setForeground(new java.awt.Color(255, 255, 255));
-        hitButtonPlayerTwo.setText("Hit");
-
-        standButtonPlayerTwo.setBackground(new java.awt.Color(255, 0, 0));
-        standButtonPlayerTwo.setFont(new java.awt.Font("Book Antiqua", 1, 20)); // NOI18N
-        standButtonPlayerTwo.setForeground(new java.awt.Color(255, 255, 0));
-        standButtonPlayerTwo.setText("Stand");
-
         scoreCardTwoLabel.setFont(new java.awt.Font("Segoe UI", 0, 30)); // NOI18N
         scoreCardTwoLabel.setForeground(new java.awt.Color(255, 255, 255));
         scoreCardTwoLabel.setText("Score : ");
@@ -245,29 +227,18 @@ public class GamePlayDisplayGUI extends CustomFrame {
         buttonPanelPlayerTwoLayout.setHorizontalGroup(
             buttonPanelPlayerTwoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(buttonPanelPlayerTwoLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(buttonPanelPlayerTwoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(standButtonPlayerTwo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(hitButtonPlayerTwo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(25, Short.MAX_VALUE))
-            .addGroup(buttonPanelPlayerTwoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(scoreCardTwoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(scoreCardTwoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
                 .addContainerGap())
         );
         buttonPanelPlayerTwoLayout.setVerticalGroup(
             buttonPanelPlayerTwoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(buttonPanelPlayerTwoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(hitButtonPlayerTwo, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(standButtonPlayerTwo, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addComponent(scoreCardTwoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23))
+                .addGap(0, 10, Short.MAX_VALUE))
         );
 
-        gamePlayPanel.add(buttonPanelPlayerTwo, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 10, 150, 210));
+        gamePlayPanel.add(buttonPanelPlayerTwo, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 10, 160, 60));
 
         deckCardPanel.setPreferredSize(new java.awt.Dimension(107, 157));
 
@@ -283,7 +254,46 @@ public class GamePlayDisplayGUI extends CustomFrame {
         );
 
         gamePlayPanel.add(deckCardPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1107, 247, 150, 210));
-        gamePlayPanel.add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1280, 800));
+        gamePlayPanel.add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 210, 810, 580));
+
+        chatPanel.setBackground(new java.awt.Color(51, 51, 51));
+
+        gameplayTextArea.setBackground(new java.awt.Color(51, 51, 51));
+        gameplayTextArea.setEditable(false);
+
+        javax.swing.GroupLayout chatPanelLayout = new javax.swing.GroupLayout(chatPanel);
+        chatPanel.setLayout(chatPanelLayout);
+        chatPanelLayout.setHorizontalGroup(
+            chatPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, chatPanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(gameplayTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        chatPanelLayout.setVerticalGroup(
+            chatPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(gameplayTextArea, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+        );
+
+        gamePlayPanel.add(chatPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, 250, 280));
+
+        thrumChipButton.setFont(new java.awt.Font("Book Antiqua", 1, 18)); // NOI18N
+        thrumChipButton.setText("Use");
+        gamePlayPanel.add(thrumChipButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 610, 100, 40));
+
+        iconAssetJPanel.setBackground(new java.awt.Color(204, 204, 204));
+
+        javax.swing.GroupLayout iconAssetJPanelLayout = new javax.swing.GroupLayout(iconAssetJPanel);
+        iconAssetJPanel.setLayout(iconAssetJPanelLayout);
+        iconAssetJPanelLayout.setHorizontalGroup(
+            iconAssetJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 160, Short.MAX_VALUE)
+        );
+        iconAssetJPanelLayout.setVerticalGroup(
+            iconAssetJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 150, Short.MAX_VALUE)
+        );
+
+        gamePlayPanel.add(iconAssetJPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 80, 160, 150));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -304,15 +314,19 @@ public class GamePlayDisplayGUI extends CustomFrame {
 
 
     public void init() {
+        System.out.println("eee");
         initComponents();
-        playerTwoTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
-        playerOneTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
-        hitButtonPlayerOne.setIcon(new javax.swing.ImageIcon("resources/HitButton.PNG"));
-        hitButtonPlayerTwo.setIcon(new javax.swing.ImageIcon("resources/HitButton.PNG"));
-        standButtonPlayerTwo.setIcon(new javax.swing.ImageIcon("resources/StandButton.PNG"));
-        standButtonPlayerOne.setIcon(new javax.swing.ImageIcon("resources/StandButton.PNG"));
-        deckCardBackground.setIcon(new javax.swing.ImageIcon("resources/download.png"));
-        background.setIcon(new javax.swing.ImageIcon("resources/GamePlayBackground.PNG"));
+
+//        playerTwoTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
+//        playerOneTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
+//        hitButtonPlayerOne.setIcon(new javax.swing.ImageIcon("resources/HitButton_1.PNG"));
+//        hitButtonPlayerTwo.setIcon(new javax.swing.ImageIcon("resources/HitButton_1.PNG"));
+//        standButtonPlayerTwo.setIcon(new javax.swing.ImageIcon("resources/StandButton_1.PNG"));
+//        standButtonPlayerOne.setIcon(new javax.swing.ImageIcon("resources/StandButton_1.PNG"));
+//        deckCardBackground.setIcon(new javax.swing.ImageIcon("resources/download.png"));
+//        background.setIcon(new javax.swing.ImageIcon("resources/GamePlayBackground.PNG"));
+
+
         this.setLocationRelativeTo(null);
         this.setSize(1280, 800);
         this.setVisible(true);
@@ -322,11 +336,13 @@ public class GamePlayDisplayGUI extends CustomFrame {
     private javax.swing.JLabel background;
     private javax.swing.JPanel buttonPanelPlayerOne;
     private javax.swing.JPanel buttonPanelPlayerTwo;
+    private javax.swing.JPanel chatPanel;
     private javax.swing.JLabel deckCardBackground;
     private javax.swing.JPanel deckCardPanel;
     private javax.swing.JPanel gamePlayPanel;
+    private java.awt.TextArea gameplayTextArea;
     private javax.swing.JButton hitButtonPlayerOne;
-    private javax.swing.JButton hitButtonPlayerTwo;
+    private javax.swing.JPanel iconAssetJPanel;
     private javax.swing.JPanel playerOneNamePanel;
     private java.awt.Label playerOneNameScoreLabel;
     private javax.swing.JPanel playerOneTable;
@@ -340,11 +356,10 @@ public class GamePlayDisplayGUI extends CustomFrame {
     private javax.swing.JLabel scoreGamePlayerTwoLabel;
     private javax.swing.JPanel scoreGamePlayerTwoPanel;
     private javax.swing.JButton standButtonPlayerOne;
-    private javax.swing.JButton standButtonPlayerTwo;
+    private javax.swing.JButton thrumChipButton;
     private javax.swing.JPanel trumpChipPlayerOnePanel;
     private javax.swing.JPanel trumpChipPlayerTwoPanel;
     private javax.swing.JPanel trumpHoldChipPlayerOnePanel;
-    private javax.swing.JPanel trumpHoldChipPlayerTwoPanel;
     private javax.swing.JLabel vsLabel;
     private javax.swing.JPanel vsPanel;
     // End of variables declaration//GEN-END:variables
@@ -397,13 +412,13 @@ public class GamePlayDisplayGUI extends CustomFrame {
         this.hitButtonPlayerOne = hitButtonPlayerOne;
     }
 
-    public JButton getHitButtonPlayerTwo() {
-        return hitButtonPlayerTwo;
-    }
-
-    public void setHitButtonPlayerTwo(JButton hitButtonPlayerTwo) {
-        this.hitButtonPlayerTwo = hitButtonPlayerTwo;
-    }
+//    public JButton getHitButtonPlayerTwo() {
+//        return hitButtonPlayerTwo;
+//    }
+//
+//    public void setHitButtonPlayerTwo(JButton hitButtonPlayerTwo) {
+//        this.hitButtonPlayerTwo = hitButtonPlayerTwo;
+//    }
 
     public JPanel getPlayerOneNamePanel() {
         return playerOneNamePanel;
@@ -509,14 +524,6 @@ public class GamePlayDisplayGUI extends CustomFrame {
         this.standButtonPlayerOne = standButtonPlayerOne;
     }
 
-    public JButton getStandButtonPlayerTwo() {
-        return standButtonPlayerTwo;
-    }
-
-    public void setStandButtonPlayerTwo(JButton standButtonPlayerTwo) {
-        this.standButtonPlayerTwo = standButtonPlayerTwo;
-    }
-
     public JPanel getTrumpChipPlayerOnePanel() {
         return trumpChipPlayerOnePanel;
     }
@@ -541,14 +548,6 @@ public class GamePlayDisplayGUI extends CustomFrame {
         this.trumpHoldChipPlayerOnePanel = trumpHoldChipPlayerOnePanel;
     }
 
-    public JPanel getTrumpHoldChipPlayerTwoPanel() {
-        return trumpHoldChipPlayerTwoPanel;
-    }
-
-    public void setTrumpHoldChipPlayerTwoPanel(JPanel trumpHoldChipPlayerTwoPanel) {
-        this.trumpHoldChipPlayerTwoPanel = trumpHoldChipPlayerTwoPanel;
-    }
-
     public JLabel getDeckCardBackground() {
         return deckCardBackground;
     }
@@ -556,5 +555,39 @@ public class GamePlayDisplayGUI extends CustomFrame {
     public void setDeckCardBackground(JLabel deckCardBackground) {
         this.deckCardBackground = deckCardBackground;
     }
+
+    public JPanel getChatPanel() {
+        return chatPanel;
+    }
+
+    public void setChatPanel(JPanel chatPanel) {
+        this.chatPanel = chatPanel;
+    }
+
+    public TextArea getGameplayTextArea() {
+        return gameplayTextArea;
+    }
+
+    public void setGameplayTextArea(TextArea gameplayTextArea) {
+        this.gameplayTextArea = gameplayTextArea;
+    }
+
+    public JPanel getIconAssetJPanel() {
+        return iconAssetJPanel;
+    }
+
+    public void setIconAssetJPanel(JPanel iconAssetJPanel) {
+        this.iconAssetJPanel = iconAssetJPanel;
+    }
+
+    public JButton getThrumChipButton() {
+        return thrumChipButton;
+    }
+
+    public void setThrumChipButton(JButton thrumChipButton) {
+        this.thrumChipButton = thrumChipButton;
+    }
+    
+    
     
 }

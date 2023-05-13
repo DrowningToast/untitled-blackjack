@@ -57,7 +57,11 @@ public class WaitingRoomGUI extends CustomFrame {
         waitingLabel.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         waitingLabel.setForeground(new java.awt.Color(255, 255, 255));
         waitingLabel.setText("Waiting");
-
+        waitingLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+//                waitTingGraphic(evt);
+            }
+        });
         waitingPanel.add(waitingLabel, new java.awt.GridBagConstraints());
 
         backgroundWaitingPanel.add(waitingPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 20, 430, 130));
@@ -83,28 +87,28 @@ public class WaitingRoomGUI extends CustomFrame {
         javax.swing.GroupLayout playerPanelLayout = new javax.swing.GroupLayout(playerPanel);
         playerPanel.setLayout(playerPanelLayout);
         playerPanelLayout.setHorizontalGroup(
-                playerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(playerPanelLayout.createSequentialGroup()
-                                .addGap(14, 14, 14)
-                                .addGroup(playerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(playerOneLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(playerTwoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addContainerGap())
+            playerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(playerPanelLayout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(playerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(playerOneLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(playerTwoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         playerPanelLayout.setVerticalGroup(
-                playerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(playerPanelLayout.createSequentialGroup()
-                                .addComponent(playerOneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                                .addComponent(playerTwoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(16, 16, 16))
+            playerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(playerPanelLayout.createSequentialGroup()
+                .addComponent(playerOneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addComponent(playerTwoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16))
         );
 
         backgroundWaitingPanel.add(playerPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 250, 430, 140));
 
         passcodeLabel.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         passcodeLabel.setForeground(new java.awt.Color(255, 255, 255));
-        passcodeLabel.setText("PASSCODE : ");
+        passcodeLabel.setText("PASSCODE : XXXXX");
         backgroundWaitingPanel.add(passcodeLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 640, 430, 50));
 
         startButton.setBackground(new java.awt.Color(255, 51, 51));
