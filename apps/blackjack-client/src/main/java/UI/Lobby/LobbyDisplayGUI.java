@@ -40,7 +40,7 @@ public class LobbyDisplayGUI extends CustomFrame {
         gameTitle.setFont(new java.awt.Font("Book Antiqua", 1, 100)); // NOI18N
         gameTitle.setForeground(new java.awt.Color(255, 204, 0));
         gameTitle.setText("Untitled-BlackJack");
-        LobbyPanel.add(gameTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(227, 229, 873, 114));
+        LobbyPanel.add(gameTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 180, 910, 114));
 
         b_createLobby.setBackground(new java.awt.Color(255, 204, 0));
         b_createLobby.setFont(new java.awt.Font("Book Antiqua", 1, 30)); // NOI18N
@@ -76,12 +76,19 @@ public class LobbyDisplayGUI extends CustomFrame {
         passCode.setMaximumSize(new java.awt.Dimension(400, 50));
         passCode.setMinimumSize(new java.awt.Dimension(400, 50));
         passCode.setPreferredSize(new java.awt.Dimension(400, 50));
+        passCode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                passCodeActionPerformed(evt);
+            }
+        });
         LobbyPanel.add(passCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 360, 400, 50));
 
-        jLabel1.setFont(new java.awt.Font("Book Antiqua", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel1.setText("Enter passcode");
-        LobbyPanel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 340, 240, -1));
+
+        jLabel1.setFont(new java.awt.Font("Leelawadee UI", 1, 20)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("Enter Passcode");
+        LobbyPanel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 310, -1, -1));
+
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -110,6 +117,10 @@ public class LobbyDisplayGUI extends CustomFrame {
         // JOIN LOBBY
         controller.handleJoinRoom(passCode.getText());
     }//GEN-LAST:event_b_joinLobbyActionPerformed
+
+    private void passCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passCodeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_passCodeActionPerformed
 
     public void init() {
         initComponents();

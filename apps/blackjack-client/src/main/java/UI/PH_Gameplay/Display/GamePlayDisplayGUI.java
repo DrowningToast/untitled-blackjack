@@ -314,6 +314,7 @@ public class GamePlayDisplayGUI extends CustomFrame {
     public void init() {
         System.out.println("eee");
         initComponents();
+
 //        playerTwoTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
 //        playerOneTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
 //        hitButtonPlayerOne.setIcon(new javax.swing.ImageIcon("resources/HitButton_1.PNG"));
@@ -322,6 +323,8 @@ public class GamePlayDisplayGUI extends CustomFrame {
 //        standButtonPlayerOne.setIcon(new javax.swing.ImageIcon("resources/StandButton_1.PNG"));
 //        deckCardBackground.setIcon(new javax.swing.ImageIcon("resources/download.png"));
 //        background.setIcon(new javax.swing.ImageIcon("resources/GamePlayBackground.PNG"));
+
+
         this.setLocationRelativeTo(null);
         this.setSize(1280, 800);
         this.setVisible(true);
