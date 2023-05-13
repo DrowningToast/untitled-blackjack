@@ -307,10 +307,10 @@ public class GamePlayDisplayGUI extends CustomFrame {
         initComponents();
         playerTwoTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
         playerOneTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
-        hitButtonPlayerOne.setIcon(new javax.swing.ImageIcon("resources/HitButton_1.PNG"));
-        hitButtonPlayerTwo.setIcon(new javax.swing.ImageIcon("resources/HitButton_1.PNG"));
-        standButtonPlayerTwo.setIcon(new javax.swing.ImageIcon("resources/StandButton_1.PNG"));
-        standButtonPlayerOne.setIcon(new javax.swing.ImageIcon("resources/StandButton_1.PNG"));
+        hitButtonPlayerOne.setIcon(new javax.swing.ImageIcon("resources/HitButton.PNG"));
+        hitButtonPlayerTwo.setIcon(new javax.swing.ImageIcon("resources/HitButton.PNG"));
+        standButtonPlayerTwo.setIcon(new javax.swing.ImageIcon("resources/StandButton.PNG"));
+        standButtonPlayerOne.setIcon(new javax.swing.ImageIcon("resources/StandButton.PNG"));
         deckCardBackground.setIcon(new javax.swing.ImageIcon("resources/download.png"));
         background.setIcon(new javax.swing.ImageIcon("resources/GamePlayBackground.PNG"));
         this.setLocationRelativeTo(null);
