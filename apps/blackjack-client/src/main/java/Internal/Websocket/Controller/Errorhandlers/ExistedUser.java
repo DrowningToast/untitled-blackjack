@@ -5,11 +5,10 @@ import org.json.simple.JSONObject;
 public class ExistedUser implements WebsocketErrorHandler {
 
     @Override
-    public void handler(JSONObject des) {
-        System.out.println("ex user");
-        JSONObject newObj = (JSONObject) des.get("error");
-        String error = (String) newObj.get("description");
-        System.out.println(error);
-        new ErrorPane(error,des);
+    public void handler(JSONObject error) {
+        JSONObject newObj = (JSONObject) error.get("error");
+        String description = (String) newObj.get("description");
+        System.out.println(description);
+        new ErrorPane(description,error);
     }
 }
