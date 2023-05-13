@@ -11,9 +11,5 @@ public class GamePOJO {
 
     @Getter
     @Setter
-    private int roundCounter, cardPointTarget;
-
-    @Getter
-    @Setter
-    private PlayerPOJO[] players = {null, null};
+    private long roundCounter, cardPointTarget;
 }

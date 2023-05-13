@@ -1,14 +1,14 @@
 package UI.PH_Gameplay.Controller;
-import UI.PH_Gameplay.Model.Card;
-import UI.PH_Gameplay.Model.CardHandler;
-import UI.PH_Gameplay.Model.TrumpChip;
+import Gameplay.Card.CardPOJO;
+import Gameplay.Card.CardController;
+import Gameplay.TrumpChip.TrumpChip;
 import Gameplay.Player.PlayerPOJO;
 import UI.PH_Gameplay.Display.*;
 import java.util.*;
 
 public class GameSystem {   
-    private static final CardHandler CARDS = new CardHandler();
-    private static HashMap<String, Card> deckCard = CARDS.getHashMap(); //deckCard have hashmap of handler
+    private static final CardController CARDS = new CardController();
+    private static HashMap<String, CardPOJO> deckCard = CARDS.getHashMap(); //deckCard have hashmap of handler
     private static ArrayList<TrumpChip> deckChip;
     // Players in the game
     private static ArrayList<PlayerPOJO> playerPOJOS = new ArrayList<PlayerPOJO>();
@@ -17,9 +17,9 @@ public class GameSystem {
     private static boolean isEndGame = false;
     private static GamePlayDisplayGUI gameGUI = new GamePlayDisplayGUI();
     
-    public static Card giveCard(PlayerPOJO p) {
+    public static CardPOJO giveCard(PlayerPOJO p) {
         Object[] values = deckCard.values().toArray();
-        Card randomCard = (Card) values[random.nextInt(values.length)];
+        CardPOJO randomCardPOJO = (CardPOJO) values[random.nextInt(values.length)];
 
         if (isEndGame == true) {
             deckCard = CARDS.getHashMap();
@@ -27,9 +27,9 @@ public class GameSystem {
         } else if (deckCard.isEmpty() == true) {
             return null;
         } else {
-            Card removeCard = deckCard.remove(randomCard.getDisplayName());
-            p.addMyCard(removeCard);
-            return removeCard;
+            CardPOJO removeCardPOJO = deckCard.remove(randomCardPOJO.getDisplayName());
+            p.addMyCard(removeCardPOJO);
+            return removeCardPOJO;
         }
     }
 

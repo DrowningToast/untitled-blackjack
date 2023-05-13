@@ -69,6 +69,9 @@ public class MainRunner {
                     eventHandlers.put("CONNECTION_AUTHORIZED", new ConnectionAuthorized(uiController));
                     eventHandlers.put("READY_STATE", new ReadyState(uiController));
                     eventHandlers.put("NEW_GAME", new NewGame(uiController));
+                    eventHandlers.put("INIT_ROUND", new InitRound(uiController));
+                    eventHandlers.put("UPDATE_CARDS", new UpdateCard(uiController));
+                    eventHandlers.put("UPDATE_TRUMP_CARDS_STATE", new UpdateTrumpCardsState(uiController));
 
                 } catch (Exception e) {
                     System.out.println(e.toString());

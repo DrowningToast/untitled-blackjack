@@ -71,10 +71,8 @@ public class WebsocketController {
         try {
             // Convert json string to hashmap
             JSONObject body = (JSONObject) parser.parse(raw);
-            System.out.println("get msg");
             // find out what handler it is
             String handler = (String) body.get("handler");
-            System.out.println("get handler()");
 
             System.out.println(handler);
 

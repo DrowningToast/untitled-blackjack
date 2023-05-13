@@ -1,8 +1,9 @@
 package Gameplay.Player;
 
 
-import UI.PH_Gameplay.Model.Card;
-import UI.PH_Gameplay.Model.TrumpChip;
+import Gameplay.Card.CardController;
+import Gameplay.Card.CardPOJO;
+import Gameplay.TrumpChip.TrumpChip;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,18 +19,21 @@ public class PlayerPOJO {
     @Getter
     @Setter
     private int score;
+    @Getter
+    @Setter
+    private CardController cardController = new CardController();
 
     //player's card
-    private ArrayList<Card> myCard = new ArrayList<Card>();
+    private ArrayList<CardPOJO> myCardPOJO = new ArrayList<CardPOJO>();
     //player's chip
     private ArrayList<TrumpChip> myTrumpChip = new ArrayList<TrumpChip>();
 
-    public void addMyCard(Card myCard) {
-        this.myCard.add(myCard);
+    public void addMyCard(CardPOJO myCardPOJO) {
+        this.myCardPOJO.add(myCardPOJO);
     }
 
-    public ArrayList<Card> getMyCard() {
-        return myCard;
+    public ArrayList<CardPOJO> getMyCardPOJO() {
+        return myCardPOJO;
     }
 
     public void addMyTrumpChip(TrumpChip myChip) {
@@ -41,7 +45,7 @@ public class PlayerPOJO {
     }
 
     public int getCardsCount() {
-        return myCard.size();
+        return myCardPOJO.size();
     }
 
     public int getTrumpCount() {

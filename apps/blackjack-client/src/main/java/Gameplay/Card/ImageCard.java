@@ -1,5 +1,5 @@
 
-package UI.PH_Gameplay.Model;
+package Gameplay.Card;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
@@ -8,8 +8,8 @@ import javax.swing.JLabel;
 public class ImageCard {
     private JLabel showCard;
     
-    public JLabel randomCard(Card randomCard){
-        Image image = randomCard.getImage().getImage();//It's ImageIcon icon = randomCard.getImage(); and Image = icon.getImage(); combine together :)
+    public JLabel randomCard(CardPOJO randomCardPOJO){
+        Image image = randomCardPOJO.getImage().getImage();//It's ImageIcon icon = randomCard.getImage(); and Image = icon.getImage(); combine together :)
         Image scaledImage = image.getScaledInstance(107, 157, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaledImage);
 

@@ -1,8 +1,8 @@
 package UI.PH_Gameplay.Controller;
 
-import UI.PH_Gameplay.Model.ImageCard;
+import Gameplay.Card.ImageCard;
 import UI.PH_Gameplay.Display.GamePlayDisplayGUI;
-import UI.PH_Gameplay.Model.Card;
+import Gameplay.Card.CardPOJO;
 import Gameplay.Player.PlayerPOJO;
 
 public class GameController {
@@ -29,8 +29,8 @@ public class GameController {
         gameGUI.init();
         gameGUI.getHitButtonPlayerOne().addActionListener(event -> {
             PlayerPOJO currentTurn = (PlayerPOJO) GameSystem.getPlayerTurn();
-            Card card = (Card) GameSystem.giveCard(currentTurn);
-            showRandomCard(card, "PlayerOne's hit");
+            CardPOJO cardPOJO = (CardPOJO) GameSystem.giveCard(currentTurn);
+            showRandomCard(cardPOJO, "PlayerOne's hit");
             gameSystem.switchTurn();
         });
         gameGUI.getStandButtonPlayerOne().addActionListener(event -> {
@@ -51,11 +51,11 @@ public class GameController {
 //        });
     }
 
-    public void showRandomCard(Card card, String hit) {
-        randomCard.setShowCard(randomCard.randomCard(card));
+    public void showRandomCard(CardPOJO cardPOJO, String hit) {
+        randomCard.setShowCard(randomCard.randomCard(cardPOJO));
         if (hit.equals("PlayerOne's hit")) {
             gameGUI.getPlayerOneTable().add(randomCard.getShowCard());
-            playerPOJOOne.setScore(playerPOJOOne.getScore() + card.getValue());
+            playerPOJOOne.setScore(playerPOJOOne.getScore() + cardPOJO.getValue());
             if (playerPOJOOne.getScore() >= 21) {
                 gameGUI.getHitButtonPlayerOne().setVisible(false);
                 gameGUI.getStandButtonPlayerOne().setVisible(false);
