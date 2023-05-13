@@ -67,24 +67,44 @@ public class WebsocketController {
 
     public void handleMessage(String raw) {
         JSONParser parser = new JSONParser();
-
+        String handler = null;
+        String err = null;
         try {
             // Convert json string to hashmap
             JSONObject body = (JSONObject) parser.parse(raw);
-
+            System.out.println("get msg");
             // find out what handler it is
-            String handler = (String) body.get("handler");
 
-            System.out.println(handler);
+
+
+            if (body.containsKey("handler")) {
+                handler = (String) body.get("handler");
+                System.out.println("get handler(?)");
+                System.out.println(handler);
+            }
+            else{
+                System.out.println("no handler");
+            }
+
+            if (body.containsKey("error")) {
+                err = (String) body.get("error");
+                System.out.println("get error(?)");
+                System.out.println(err);
+            }
+            else{
+                System.out.println("no err");
+            }
 
             WebsocketEventHandler eventHandler = (WebsocketEventHandler) eventHandlers.get(handler);
             if (eventHandler == null)
+
                 return;
 
             eventHandler.handler(ctx, body);
         } catch (ParseException e) {
             System.out.println(e.toString());
             e.printStackTrace();
+            System.out.println("No handler");
         }
 
 
