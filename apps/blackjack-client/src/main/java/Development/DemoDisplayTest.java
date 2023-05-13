@@ -1,7 +1,7 @@
 package Development;
 
-import UI.Demo.Controller.DemoDisplayController;
-import UI.Demo.Display.DemoDisplay;
+import UI.PH_Gameplay.Controller.DemoDisplayController;
+import UI.PH_Gameplay.Display.DemoDisplay;
 
 import java.util.Scanner;
 
