@@ -47,13 +47,11 @@ public class WebsocketClientEndpoint {
 
     @OnMessage
     public void onMessage(String message) throws Exception {
-        JSONObject msg = (JSONObject) new JSONParser().parse(message);
+        JSONObject jsonMsg = (JSONObject) new JSONParser().parse(message);
         System.out.println(message);
-        if (msg.containsKey("handler")) {
-            System.out.println("has handler");
+        if (jsonMsg.containsKey("handler")) {
             controller.handleMessage(message);
-        } else if (msg.containsKey("error")) {
-            System.out.println("has error");
+        } else if (jsonMsg.containsKey("error")) {
             controller.handleError(message);
         }
     }

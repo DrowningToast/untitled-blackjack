@@ -97,7 +97,7 @@ public class WebsocketController {
 
     }
 
-    public void handleError(String raw){
+    public void handleError(String raw) {
         JSONParser parser = new JSONParser();
 
         try {
@@ -105,8 +105,8 @@ public class WebsocketController {
             JSONObject body = (JSONObject) parser.parse(raw);
             System.out.println("get msg");
             // convert Error json to hashmaps
-            JSONObject test = (JSONObject) body.get("error");
-            JSONObject err_body = (JSONObject) parser.parse(String.valueOf(test));
+            JSONObject errJson = (JSONObject) body.get("error");
+            JSONObject err_body = (JSONObject) parser.parse(String.valueOf(errJson));
             // find out what error it is
             String err = (String) err_body.get("error");
             System.out.println("get error msg(?)");
@@ -115,11 +115,9 @@ public class WebsocketController {
 
             WebsocketErrorHandler errHandler = (WebsocketErrorHandler) errorHandlers.get(err);
             if (errHandler == null) {
-                System.out.println("nu le");
+                System.out.println("Unhandled error has occurred");
                 return;
-            }
-            else {
-                System.out.println("le");
+            } else {
                 errHandler.handler(body);
             }
         } catch (ParseException e) {

@@ -10,8 +10,8 @@ public class ErrorPane {
     public ErrorPane(String error,JSONObject description) {
         System.out.println("create pane");
         fr = new JFrame(error);
-
-        JOptionPane.showMessageDialog(fr,"Username Already Taken.");
+        System.out.println(error);
+        JOptionPane.showMessageDialog(fr,error);
 
     }
 }
