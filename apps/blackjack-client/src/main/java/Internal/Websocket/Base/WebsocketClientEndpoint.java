@@ -2,6 +2,8 @@ package Internal.Websocket.Base;
 
 import Internal.Websocket.Controller.WebsocketController;
 import jakarta.websocket.*;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.io.IOException;
 import java.net.URI;
@@ -44,13 +46,17 @@ public class WebsocketClientEndpoint {
 
     @OnMessage
     public void onMessage(String message) throws Exception {
+        JSONObject msg = (JSONObject) new JSONParser().parse(message);
         System.out.println(message);
-        controller.handleMessage(message);
+        if (msg.containsKey("handler")){
+            System.out.println("has handler");
+            controller.handleMessage(message);
+        }
+        else if (msg.containsKey("error")){
+            System.out.println("has error");
+            controller.handleError(message);
+        }
     }
 
-    @OnError
-    public  void onError(String message) throws Exception{
-        controller.handleError(message);
-    }
 
 }

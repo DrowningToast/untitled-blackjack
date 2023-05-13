@@ -3,6 +3,7 @@ package Main;
 import Gameplay.Game.GameModel;
 import Gameplay.GameContext;
 import Gameplay.Player.PlayerModel;
+import Internal.Websocket.Controller.Errorhandlers.*;
 import Internal.Websocket.Controller.EventHandlers.*;
 import Internal.Websocket.Controller.WebsocketController;
 import Gameplay.Game.GamePOJO;
@@ -46,11 +47,12 @@ public class MainRunner {
                     initGameContext();
                     System.out.println(gameContext.getPlayers()[0].getPlayer());
 
-                    // Init ws event handlers
+                    // Init ws event handlers and error handlers
                     HashMap<String, WebsocketEventHandler> eventHandlers = new HashMap();
+                    HashMap<String, WebsocketErrorHandler> errorHandlers = new HashMap();
 
                     // init ws controller
-                    wsController = new WebsocketController(gameContext, eventHandlers);
+                    wsController = new WebsocketController(gameContext, eventHandlers, errorHandlers);
                     eventHandlers.put("CONNECTION_SUCCESS", new ConnectionSuccess(wsController));
 
                     // INIT UI CONTROLLER
@@ -70,6 +72,10 @@ public class MainRunner {
                     eventHandlers.put("READY_STATE", new ReadyState(uiController));
                     eventHandlers.put("NEW_GAME", new NewGame(uiController));
 
+                    errorHandlers.put("existed-user", new ExistedUser());
+//                    errorHandlers.put("invalid-passcode", new InvalidPasscode());
+//                    errorHandlers.put("invalid-user", new InvalidUser());
+//                    errorHandlers.put("invalid-game", new InvalidGame());
                 } catch (Exception e) {
                     System.out.println(e.toString());
                 }
