@@ -22,6 +22,7 @@ public class CardHandler {
         cards.put("J", new Card("J", 10, new ImageIcon("resources/J.PNG")));// card J
         cards.put("Q", new Card("Q", 10, new ImageIcon("resources/Q.PNG")));// card Q
         cards.put("K", new Card("K", 10, new ImageIcon("resources/K.PNG")));// card K
+        cards.put("HIDDEN", new Card("HIDDEN", 0, new ImageIcon("resources/Back (2).PNG")));// back of cards
     }
    
     public HashMap<String, Card> getHashMap(){
