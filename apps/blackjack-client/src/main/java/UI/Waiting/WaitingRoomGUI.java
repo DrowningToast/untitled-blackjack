@@ -166,7 +166,7 @@ public class WaitingRoomGUI extends CustomFrame {
         System.out.println(MainRunner.getGameContext().getPlayers()[0].getPlayer().getUsername());
         System.out.println(MainRunner.getGameContext().getPlayers()[1].getPlayer().getUsername());
         playerOneLabel.setText("Player : " + MainRunner.getGameContext().getPlayers()[0].getPlayer().getUsername());
-        this.setTitle(MainRunner.getGameContext().getGame().getGame().getPasscode());
+        this.setTitle("Passcode : " + MainRunner.getGameContext().getGame().getGame().getPasscode());
     }
 
     @Override
