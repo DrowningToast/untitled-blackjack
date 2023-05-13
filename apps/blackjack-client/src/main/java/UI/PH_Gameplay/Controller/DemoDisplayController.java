@@ -1,6 +1,6 @@
-package UI.Demo.Controller;
+package UI.PH_Gameplay.Controller;
 
-import UI.Demo.Display.DemoDisplay;
+import UI.PH_Gameplay.Display.DemoDisplay;
 
 public class DemoDisplayController {
 

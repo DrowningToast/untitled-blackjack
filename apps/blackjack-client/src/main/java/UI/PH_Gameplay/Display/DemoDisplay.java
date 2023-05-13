@@ -1,10 +1,9 @@
-package UI.Demo.Display;
+package UI.PH_Gameplay.Display;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 
 public class DemoDisplay extends JFrame {
