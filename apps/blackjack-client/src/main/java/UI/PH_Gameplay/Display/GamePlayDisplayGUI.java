@@ -280,6 +280,8 @@ public class GamePlayDisplayGUI extends CustomFrame {
         thrumChipButton.setText("Use");
         gamePlayPanel.add(thrumChipButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 610, 100, 40));
 
+        iconAssetJPanel.setBackground(new java.awt.Color(204, 204, 204));
+
         javax.swing.GroupLayout iconAssetJPanelLayout = new javax.swing.GroupLayout(iconAssetJPanel);
         iconAssetJPanel.setLayout(iconAssetJPanelLayout);
         iconAssetJPanelLayout.setHorizontalGroup(
