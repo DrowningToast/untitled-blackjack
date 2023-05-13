@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import Internal.Websocket.Controller.WebsocketController;
+import Main.MainRunner;
 import UI.Controller.CustomFrame;
 
 /**
@@ -27,6 +28,7 @@ public class LoginDisplayGUI extends CustomFrame {
         System.out.println(controller);
         this.controller = controller;
         initComponents();
+        this.setTitle("Untitled-Blackjack");
     }
 
     /**
