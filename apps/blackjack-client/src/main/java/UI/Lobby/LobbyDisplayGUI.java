@@ -26,6 +26,7 @@ public class LobbyDisplayGUI extends CustomFrame {
         b_createLobby = new javax.swing.JButton();
         b_joinLobby = new javax.swing.JButton();
         passCode = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1280, 800));
@@ -72,25 +73,29 @@ public class LobbyDisplayGUI extends CustomFrame {
         passCode.setBackground(new java.awt.Color(51, 51, 51));
         passCode.setFont(new java.awt.Font("Book Antiqua", 1, 18)); // NOI18N
         passCode.setForeground(new java.awt.Color(204, 204, 204));
-        passCode.setText("Enter lobby passcode");
         passCode.setMaximumSize(new java.awt.Dimension(400, 50));
         passCode.setMinimumSize(new java.awt.Dimension(400, 50));
         passCode.setPreferredSize(new java.awt.Dimension(400, 50));
         LobbyPanel.add(passCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 360, 400, 50));
 
+        jLabel1.setFont(new java.awt.Font("Book Antiqua", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel1.setText("Enter passcode");
+        LobbyPanel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 340, 240, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(LobbyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1280, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(LobbyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(LobbyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(LobbyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -118,6 +123,7 @@ public class LobbyDisplayGUI extends CustomFrame {
     private javax.swing.JButton b_createLobby;
     private javax.swing.JButton b_joinLobby;
     private javax.swing.JLabel gameTitle;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JTextField passCode;
     // End of variables declaration//GEN-END:variables
 
