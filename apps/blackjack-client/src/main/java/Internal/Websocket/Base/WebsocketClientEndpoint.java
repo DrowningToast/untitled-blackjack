@@ -48,4 +48,9 @@ public class WebsocketClientEndpoint {
         controller.handleMessage(message);
     }
 
+    @OnError
+    public  void onError(String message) throws Exception{
+        controller.handleError(message);
+    }
+
 }
