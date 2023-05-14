@@ -3,6 +3,7 @@ package Gameplay.Player;
 
 import Gameplay.Card.CardController;
 import Gameplay.Card.CardPOJO;
+import Gameplay.TrumpCard.TrumpCardController;
 import Gameplay.TrumpCard.TrumpCardPOJO;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,9 @@ public class PlayerPOJO {
     @Getter
     @Setter
     private CardController cardController = new CardController();
+    @Getter
+    @Setter
+    private TrumpCardController trumpCardController = new TrumpCardController();
 
     //player's card
     private ArrayList<CardPOJO> myCardPOJO = new ArrayList<CardPOJO>();

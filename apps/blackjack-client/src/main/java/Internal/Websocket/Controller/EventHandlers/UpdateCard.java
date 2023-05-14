@@ -41,7 +41,6 @@ public class UpdateCard implements WebsocketEventHandler {
             ctx.getPlayer(guestUsername).getPlayer().getCardController().addCards(card);
         }
         uiController.update();
-        System.out.println(ctx.getPlayers()[0].getPlayer().getCardController().getCards());
     }
 
 }

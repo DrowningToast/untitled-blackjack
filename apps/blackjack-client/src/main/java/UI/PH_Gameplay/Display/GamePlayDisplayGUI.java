@@ -2,12 +2,17 @@
 package UI.PH_Gameplay.Display;
 import Gameplay.Card.CardController;
 import Gameplay.Card.CardPOJO;
+
+import Internal.Websocket.Controller.WebsocketController;
 import Gameplay.GameContext;
 import Main.MainRunner;
 import UI.Controller.CustomFrame;
+
 import java.awt.Label;
 import java.awt.TextArea;
 import java.util.ArrayList;
+
+import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,9 +24,11 @@ import javax.swing.JPanel;
 public class GamePlayDisplayGUI extends CustomFrame {
 
     public Object getDeckCardPanel;
-    private GamePlayController controller;
+    public GamePlayController controller;
+    public WebsocketController wsController;
 
-    public GamePlayDisplayGUI(GamePlayController controller) {
+    public GamePlayDisplayGUI(GamePlayController controller, WebsocketController wsController) {
+        this.wsController = wsController;
         this.controller = controller;
         initComponents();
         playerTwoTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
@@ -85,11 +92,29 @@ public class GamePlayDisplayGUI extends CustomFrame {
         hitButtonPlayerOne.setFont(new java.awt.Font("Book Antiqua", 1, 20)); // NOI18N
         hitButtonPlayerOne.setForeground(new java.awt.Color(255, 255, 255));
         hitButtonPlayerOne.setText("Hit");
+        hitButtonPlayerOne.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    hitButtonPlayerOneActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         standButtonPlayerOne.setBackground(new java.awt.Color(255, 0, 0));
         standButtonPlayerOne.setFont(new java.awt.Font("Book Antiqua", 1, 20)); // NOI18N
         standButtonPlayerOne.setForeground(new java.awt.Color(255, 255, 0));
         standButtonPlayerOne.setText("Stand");
+        standButtonPlayerOne.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    standButtonPlayerOneActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         scoreCardOneLabel.setFont(new java.awt.Font("Segoe UI", 0, 30)); // NOI18N
         scoreCardOneLabel.setForeground(new java.awt.Color(255, 255, 255));
@@ -320,6 +345,14 @@ public class GamePlayDisplayGUI extends CustomFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void hitButtonPlayerOneActionPerformed(java.awt.event.ActionEvent evt) throws IOException {//GEN-FIRST:event_hitButtonPlayerOneActionPerformed
+        wsController.sendHit();
+    }//GEN-LAST:event_hitButtonPlayerOneActionPerformed
+
+    private void standButtonPlayerOneActionPerformed(java.awt.event.ActionEvent evt) throws IOException {//GEN-FIRST:event_standButtonPlayerOneActionPerformed
+        wsController.sendStand();
+    }//GEN-LAST:event_standButtonPlayerOneActionPerformeds
 
 
     public void init() {
@@ -592,5 +625,13 @@ public class GamePlayDisplayGUI extends CustomFrame {
         this.thrumChipButton = thrumChipButton;
     }
 
-    
+    @Override
+    public void onSwitch() {
+
+    }
+
+    @Override
+    public void onUpdate() {
+        controller.updateStatusButton();
+    }
 }

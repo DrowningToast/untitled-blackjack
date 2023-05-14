@@ -47,6 +47,8 @@ public class WebsocketController {
         }
     }
 
+
+
     public void setReady(boolean ready) {
         try {
             System.out.println("send ready");
@@ -66,6 +68,18 @@ public class WebsocketController {
         } catch (Exception e) {
 
         }
+    }
+
+    public void sendHit() throws IOException {
+        MessageBuilder message = new MessageBuilder(client);
+        message.setHandler("hit").send();
+        System.out.println(message);
+    }
+
+    public void sendStand() throws IOException {
+        MessageBuilder message = new MessageBuilder(client);
+        message.setHandler("stand").send();
+        System.out.println(message);
     }
 
 
@@ -122,6 +136,10 @@ public class WebsocketController {
             e.printStackTrace();
             System.out.println("No err");
         }
+    }
+
+    public WebsocketClientEndpoint getClient(){
+        return client;
     }
 
 }

@@ -124,6 +124,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Hit"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hitButtonPlayerOneActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="standButtonPlayerOne">
               <Properties>
@@ -138,6 +141,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Stand"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="standButtonPlayerOneActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="scoreCardOneLabel">
               <Properties>

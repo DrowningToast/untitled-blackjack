@@ -13,7 +13,7 @@ public class MessageBuilder {
     private WebsocketClientEndpoint rfc;
 
     private String handler;
-    private HashMap content;
+    private HashMap content = new HashMap();
 
     // set handler method, returns this
     public MessageBuilder setHandler(String handler) {
