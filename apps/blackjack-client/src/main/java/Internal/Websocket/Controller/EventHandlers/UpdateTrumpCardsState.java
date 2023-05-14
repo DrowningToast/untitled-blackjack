@@ -19,13 +19,12 @@ public class UpdateTrumpCardsState implements WebsocketEventHandler {
     public void handler(GameContext ctx, JSONObject body) {
         JSONArray content = (JSONArray) body.get("content");
 
-        JSONObject firstTrump = (JSONObject) content.get(0);
-        JSONObject secondTrump = (JSONObject) content.get(1);
-        TrumpCardPOJO firstCard = TrumpCardController.getCARDS().get(firstTrump.get("handler"));
-        TrumpCardPOJO secondCard = TrumpCardController.getCARDS().get(secondTrump.get("handler"));
-        ctx.getPlayers()[0].getPlayer().getTrumpCardController().setInitCards(firstCard, secondCard);
+        for (Object c : content){
+            JSONObject cardObject = (JSONObject) c;
+            TrumpCardPOJO card = TrumpCardController.getCARDS().get(cardObject.get("handler"));
+            ctx.getPlayers()[0].getPlayer().getTrumpCardController().setCards(card);
+        }
 //        System.out.println(ctx.getPlayers()[0].getPlayer().getTrumpCardController().getCards());
-
         uiController.update();
     }
 }

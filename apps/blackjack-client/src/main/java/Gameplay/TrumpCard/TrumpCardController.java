@@ -39,9 +39,8 @@ public class TrumpCardController {
         iconStatus.put("denyUserTrumpCard", new TrumpCardPOJO("Opponent cannot use their trump cards", "Opponent cannot use their trump cards.", "denyUseTrumpCard", "ATTACK", new ImageIcon("resources/Deny_Trump_Use_Status.PNG")));
     }
 
-    public void setInitCards(TrumpCardPOJO firstCards, TrumpCardPOJO secondCards) {
-        this.cards.add(firstCards);
-        this.cards.add(secondCards);
+    public void setCards(TrumpCardPOJO cards) {
+        this.cards.add(cards);
     }
     public void addCards(TrumpCardPOJO cards) {
         this.cards.add(cards);
