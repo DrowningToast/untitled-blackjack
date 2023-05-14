@@ -19,15 +19,13 @@ public class GamePlayController {
     public PlayerPOJO playerPOJOOne;
     public PlayerPOJO playerPOJOTwo;
     public CardDisplay cardPlayerOne, cardPlayerTwo;
-    private GameContext ctx;
 
-    public GamePlayController(UIController uiController, GameContext ctx) {
+    public GamePlayController(UIController uiController) {
         playerPOJOOne = MainRunner.getGameContext().getPlayers()[0].getPlayer();
         playerPOJOTwo = MainRunner.getGameContext().getPlayers()[1].getPlayer();
         cardPlayerOne = new CardDisplay();
         cardPlayerTwo = new CardDisplay();
         this.uiController = uiController;
-        this.ctx = ctx;
 
     }
 
