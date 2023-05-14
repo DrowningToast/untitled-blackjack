@@ -16,5 +16,7 @@ public class NextRound implements WebsocketEventHandler {
     public void handler(GameContext ctx, JSONObject body) {
         long roundCounter = (long) body.get("content");
         ctx.getGame().getGame().setRoundCounter(roundCounter);
+
+        uiController.update();
     }
 }
