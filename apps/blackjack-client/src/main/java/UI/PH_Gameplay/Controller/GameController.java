@@ -1,6 +1,9 @@
 package UI.PH_Gameplay.Controller;
 
 import Gameplay.Card.ImageCard;
+import Gameplay.Game.GamePOJO;
+import Gameplay.GameContext;
+import Main.MainRunner;
 import UI.PH_Gameplay.Display.GamePlayDisplayGUI;
 import Gameplay.Card.CardPOJO;
 import Gameplay.Player.PlayerPOJO;
@@ -12,14 +15,18 @@ public class GameController {
     public PlayerPOJO playerPOJOTwo;
     public ImageCard randomCard;
     public GameSystem gameSystem;
+    private GameContext gameContext;
+
+
 //    private Session RealFinalClient.getSession();
 
-    public GameController() {
+    public GameController(GameContext gameContext) {
         gameGUI = new GamePlayDisplayGUI();
         playerPOJOOne = new PlayerPOJO();
         playerPOJOTwo = new PlayerPOJO();
         randomCard = new ImageCard();
         randomCard = new ImageCard();
+        this.gameContext = gameContext;
     }
 
     public void startGame() {
@@ -72,5 +79,13 @@ public class GameController {
 //            }
 //            gameGUI.getScoreCardTwoLabel().setText("Score: " + playerPOJOTwo.getScore());
 //        }
+        }
     }
-}}
+//    update status Button
+//    public void updateStatusButton(){
+//
+//        if (MainRunner.getGameContext().getPlayers()[1].getPlayer().getUsername().equals(gameContext.get)){
+//
+//        }
+//    }
+}

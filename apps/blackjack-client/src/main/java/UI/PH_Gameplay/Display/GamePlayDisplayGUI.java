@@ -1,5 +1,6 @@
 
 package UI.PH_Gameplay.Display;
+import Gameplay.GameContext;
 import UI.Controller.CustomFrame;
 import java.awt.Label;
 import java.awt.TextArea;
@@ -587,7 +588,6 @@ public class GamePlayDisplayGUI extends CustomFrame {
     public void setThrumChipButton(JButton thrumChipButton) {
         this.thrumChipButton = thrumChipButton;
     }
-    
-    
+
     
 }
