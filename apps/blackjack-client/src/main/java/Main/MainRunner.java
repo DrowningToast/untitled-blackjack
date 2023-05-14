@@ -74,6 +74,11 @@ public class MainRunner {
                     eventHandlers.put("INIT_ROUND", new InitRound(uiController));
                     eventHandlers.put("UPDATE_CARDS", new UpdateCard(uiController));
                     eventHandlers.put("UPDATE_TRUMP_CARDS_STATE", new UpdateTrumpCardsState(uiController));
+                    eventHandlers.put("HIT_EVENT", new HitEvent(uiController));
+                    eventHandlers.put("STAND_EVENT", new StandEvent(uiController));
+                    eventHandlers.put("SWITCH_TURN", new SwitchTurn(uiController));
+                    eventHandlers.put("ROUND_WINNER", new RoundWinner(uiController));
+                    eventHandlers.put("NEXT_ROUND", new NextRound(uiController));
 
                     errorHandlers.put("existed-user", new ExistedUser());
 //                    errorHandlers.put("invalid-passcode", new InvalidPasscode());

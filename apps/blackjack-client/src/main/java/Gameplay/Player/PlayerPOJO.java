@@ -19,7 +19,7 @@ public class PlayerPOJO {
     private boolean stand = true, ready;
     @Getter
     @Setter
-    private int score;
+    private long score;
     @Getter
     @Setter
     private CardController cardController = new CardController();
@@ -27,33 +27,7 @@ public class PlayerPOJO {
     @Setter
     private TrumpCardController trumpCardController = new TrumpCardController();
 
-    //player's card
-    private ArrayList<CardPOJO> myCardPOJO = new ArrayList<CardPOJO>();
-    //player's chip
-    private ArrayList<TrumpCardPOJO> myTrumpCardPOJO = new ArrayList<TrumpCardPOJO>();
-
-    public void addMyCard(CardPOJO myCardPOJO) {
-        this.myCardPOJO.add(myCardPOJO);
+    public void addScore(long score){
+        this.score += score;
     }
-
-    public ArrayList<CardPOJO> getMyCardPOJO() {
-        return myCardPOJO;
-    }
-
-    public void addMyTrumpChip(TrumpCardPOJO myChip) {
-        this.myTrumpCardPOJO.add(myChip);
-    }
-
-    public ArrayList<TrumpCardPOJO> getMyTrumpCardPOJO() {
-        return myTrumpCardPOJO;
-    }
-
-    public int getCardsCount() {
-        return myCardPOJO.size();
-    }
-
-    public int getTrumpCount() {
-        return myTrumpCardPOJO.size();
-    }
-
 }
