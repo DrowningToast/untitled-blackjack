@@ -1,7 +1,7 @@
 package UI.PH_Gameplay.Controller;
 import Gameplay.Card.CardPOJO;
 import Gameplay.Card.CardController;
-import Gameplay.TrumpChip.TrumpChip;
+import Gameplay.TrumpCard.TrumpCardPOJO;
 import Gameplay.Player.PlayerPOJO;
 import UI.PH_Gameplay.Display.*;
 import java.util.*;
@@ -9,7 +9,7 @@ import java.util.*;
 public class GameSystem {   
     private static final CardController CARDS = new CardController();
     private static HashMap<String, CardPOJO> deckCard = CARDS.getHashMap(); //deckCard have hashmap of handler
-    private static ArrayList<TrumpChip> deckChip;
+    private static ArrayList<TrumpCardPOJO> deckChip;
     // Players in the game
     private static ArrayList<PlayerPOJO> playerPOJOS = new ArrayList<PlayerPOJO>();
     private static PlayerPOJO currentTurnPlayerPOJO = new PlayerPOJO();

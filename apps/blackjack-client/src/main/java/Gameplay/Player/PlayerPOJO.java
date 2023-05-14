@@ -3,7 +3,7 @@ package Gameplay.Player;
 
 import Gameplay.Card.CardController;
 import Gameplay.Card.CardPOJO;
-import Gameplay.TrumpChip.TrumpChip;
+import Gameplay.TrumpCard.TrumpCardPOJO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +26,7 @@ public class PlayerPOJO {
     //player's card
     private ArrayList<CardPOJO> myCardPOJO = new ArrayList<CardPOJO>();
     //player's chip
-    private ArrayList<TrumpChip> myTrumpChip = new ArrayList<TrumpChip>();
+    private ArrayList<TrumpCardPOJO> myTrumpCardPOJO = new ArrayList<TrumpCardPOJO>();
 
     public void addMyCard(CardPOJO myCardPOJO) {
         this.myCardPOJO.add(myCardPOJO);
@@ -36,12 +36,12 @@ public class PlayerPOJO {
         return myCardPOJO;
     }
 
-    public void addMyTrumpChip(TrumpChip myChip) {
-        this.myTrumpChip.add(myChip);
+    public void addMyTrumpChip(TrumpCardPOJO myChip) {
+        this.myTrumpCardPOJO.add(myChip);
     }
 
-    public ArrayList<TrumpChip> getMyTrumpChip() {
-        return myTrumpChip;
+    public ArrayList<TrumpCardPOJO> getMyTrumpCardPOJO() {
+        return myTrumpCardPOJO;
     }
 
     public int getCardsCount() {
@@ -49,7 +49,7 @@ public class PlayerPOJO {
     }
 
     public int getTrumpCount() {
-        return myTrumpChip.size();
+        return myTrumpCardPOJO.size();
     }
 
 }
