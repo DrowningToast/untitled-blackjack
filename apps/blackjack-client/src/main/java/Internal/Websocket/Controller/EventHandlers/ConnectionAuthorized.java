@@ -18,13 +18,11 @@ public class ConnectionAuthorized implements WebsocketEventHandler {
 
     @Override
     public void handler(GameContext ctx, JSONObject body) {
-        System.out.println("yyy");
         JSONObject content = (JSONObject) body.get("content");
         String username = (String) content.get("username");
         // SET USERNAME
         ctx.getPlayers()[0].getPlayer().setUsername(username);
         // GO TO LOBBY WINDOW
-        System.out.println("run pls");
         uiController.switchActiveWindow("lobbyUI");
     }
 }

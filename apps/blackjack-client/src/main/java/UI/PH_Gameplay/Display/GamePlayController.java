@@ -2,7 +2,7 @@ package UI.PH_Gameplay.Display;
 
 import Gameplay.Card.CardController;
 import Gameplay.Card.CardPOJO;
-import Gameplay.Card.ImageCard;
+import Gameplay.Card.CardDisplay;
 import Gameplay.GameContext;
 import Gameplay.Player.PlayerPOJO;
 import Main.MainRunner;
@@ -18,14 +18,14 @@ public class GamePlayController {
     private GamePlayDisplayGUI ui = new GamePlayDisplayGUI(this);
     public PlayerPOJO playerPOJOOne;
     public PlayerPOJO playerPOJOTwo;
-    public ImageCard cardPlayerOne, cardPlayerTwo;
+    public CardDisplay cardPlayerOne, cardPlayerTwo;
     private GameContext ctx;
 
     public GamePlayController(UIController uiController, GameContext ctx) {
         playerPOJOOne = MainRunner.getGameContext().getPlayers()[0].getPlayer();
         playerPOJOTwo = MainRunner.getGameContext().getPlayers()[1].getPlayer();
-        cardPlayerOne = new ImageCard();
-        cardPlayerTwo = new ImageCard();
+        cardPlayerOne = new CardDisplay();
+        cardPlayerTwo = new CardDisplay();
         this.uiController = uiController;
         this.ctx = ctx;
 

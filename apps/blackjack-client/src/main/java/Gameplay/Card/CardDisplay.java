@@ -7,11 +7,11 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-public class ImageCard {
+public class CardDisplay {
     private JLabel card;
 //    private CardPOJO cards;
 
-    public ImageCard(){
+    public CardDisplay(){
     }
     
     public JLabel showCard(CardPOJO cards){
