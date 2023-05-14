@@ -1,13 +1,12 @@
 package Gameplay.Game;
 
-import Gameplay.Player.PlayerPOJO;
 import lombok.Getter;
 import lombok.Setter;
 
 public class GamePOJO {
     @Getter
     @Setter
-    private String gameId, gameState, passcode;
+    private String gameId, gameState, passcode, turnOwner;
 
     @Getter
     @Setter

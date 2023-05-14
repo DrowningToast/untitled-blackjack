@@ -17,10 +17,14 @@ public class InitRound implements WebsocketEventHandler{
         String gameState = (String) content.get("gameState");
         long roundCounter = (long)  content.get("roundCounter");
         long cardPointTarget = (long) content.get("cardPointTarget");
+        JSONObject turnOwner = (JSONObject) content.get("turnOwner");
+        String turnOwnerUser = (String) turnOwner.get("username");
 
         // set value to game model
         ctx.getGame().getGame().setGameState(gameState);
         ctx.getGame().getGame().setRoundCounter(roundCounter);
         ctx.getGame().getGame().setCardPointTarget(cardPointTarget);
+        ctx.getGame().getGame().setTurnOwner(turnOwnerUser);
+        uiController.update();
     }
 }
