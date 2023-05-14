@@ -1,6 +1,7 @@
 
 package UI.PH_Gameplay.Display;
 import Gameplay.GameContext;
+import Main.MainRunner;
 import UI.Controller.CustomFrame;
 import java.awt.Label;
 import java.awt.TextArea;
@@ -15,8 +16,10 @@ import javax.swing.JPanel;
 public class GamePlayDisplayGUI extends CustomFrame {
 
     public Object getDeckCardPanel;
+    private GamePlayController controller;
 
-    public GamePlayDisplayGUI() {
+    public GamePlayDisplayGUI(GamePlayController controller) {
+        this.controller = controller;
         initComponents();
         playerTwoTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
         playerOneTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
@@ -589,5 +592,13 @@ public class GamePlayDisplayGUI extends CustomFrame {
         this.thrumChipButton = thrumChipButton;
     }
 
-    
+    @Override
+    public void onSwitch() {
+
+    }
+
+    @Override
+    public void onUpdate() {
+        controller.updateStatusButton();
+    }
 }

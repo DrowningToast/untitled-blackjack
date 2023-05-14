@@ -25,5 +25,6 @@ public class InitRound implements WebsocketEventHandler{
         ctx.getGame().getGame().setRoundCounter(roundCounter);
         ctx.getGame().getGame().setCardPointTarget(cardPointTarget);
         ctx.getGame().getGame().setTurnOwner(turnOwnerUser);
+        uiController.update();
     }
 }
