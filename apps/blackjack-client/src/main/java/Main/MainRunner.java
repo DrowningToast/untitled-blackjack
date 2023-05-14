@@ -61,7 +61,7 @@ public class MainRunner {
                     // INIT LOBBY CONTROLLER
                     lobbyController = new LobbyController(wsController, uiController);
                     waitingRoomController = new WaitingRoomController(wsController, uiController);
-                    gamePlayController = new GamePlayController(uiController);
+                    gamePlayController = new GamePlayController(uiController, gameContext);
 
                     // ADD SCENES
                     uiController.add("lobbyUI", lobbyController.getUI());

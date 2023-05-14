@@ -1,5 +1,6 @@
 
 package UI.PH_Gameplay.Display;
+import Gameplay.Card.CardController;
 import Gameplay.GameContext;
 import UI.Controller.CustomFrame;
 import java.awt.Label;
@@ -15,8 +16,12 @@ import javax.swing.JPanel;
 public class GamePlayDisplayGUI extends CustomFrame {
 
     public Object getDeckCardPanel;
+    private GamePlayController controller;
+    private CardController card;
 
-    public GamePlayDisplayGUI() {
+    public GamePlayDisplayGUI(GamePlayController controller, CardController card) {
+        this.controller = controller;
+        this.card = card;
         initComponents();
         playerTwoTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
         playerOneTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
@@ -45,6 +50,8 @@ public class GamePlayDisplayGUI extends CustomFrame {
         trumpHoldChipPlayerOnePanel = new javax.swing.JPanel();
         trumpChipPlayerOnePanel = new javax.swing.JPanel();
         playerTwoNamePanel = new javax.swing.JPanel();
+        chatPanel = new javax.swing.JPanel();
+        gameplayTextArea = new java.awt.TextArea();
         scoreGamePlayerOnePanel = new javax.swing.JPanel();
         scoreGamePlayerOneLabel = new javax.swing.JLabel();
         playerOneNameScoreLabel = new java.awt.Label();
@@ -58,8 +65,6 @@ public class GamePlayDisplayGUI extends CustomFrame {
         deckCardPanel = new javax.swing.JPanel();
         deckCardBackground = new javax.swing.JLabel();
         background = new javax.swing.JLabel();
-        chatPanel = new javax.swing.JPanel();
-        gameplayTextArea = new java.awt.TextArea();
         thrumChipButton = new javax.swing.JButton();
         iconAssetJPanel = new javax.swing.JPanel();
 
@@ -156,6 +161,28 @@ public class GamePlayDisplayGUI extends CustomFrame {
 
         playerTwoNamePanel.setBackground(new java.awt.Color(102, 102, 102));
         gamePlayPanel.add(playerTwoNamePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 20, 250, 90));
+
+        chatPanel.setBackground(new java.awt.Color(51, 51, 51));
+
+        gameplayTextArea.setBackground(new java.awt.Color(51, 51, 51));
+        gameplayTextArea.setEditable(false);
+
+        javax.swing.GroupLayout chatPanelLayout = new javax.swing.GroupLayout(chatPanel);
+        chatPanel.setLayout(chatPanelLayout);
+        chatPanelLayout.setHorizontalGroup(
+            chatPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, chatPanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(gameplayTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        chatPanelLayout.setVerticalGroup(
+            chatPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(chatPanelLayout.createSequentialGroup()
+                .addComponent(gameplayTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        gamePlayPanel.add(chatPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, 250, 260));
 
         scoreGamePlayerOneLabel.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         scoreGamePlayerOneLabel.setText("0");
@@ -255,27 +282,7 @@ public class GamePlayDisplayGUI extends CustomFrame {
         );
 
         gamePlayPanel.add(deckCardPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1107, 247, 150, 210));
-        gamePlayPanel.add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 210, 810, 580));
-
-        chatPanel.setBackground(new java.awt.Color(51, 51, 51));
-
-        gameplayTextArea.setBackground(new java.awt.Color(51, 51, 51));
-        gameplayTextArea.setEditable(false);
-
-        javax.swing.GroupLayout chatPanelLayout = new javax.swing.GroupLayout(chatPanel);
-        chatPanel.setLayout(chatPanelLayout);
-        chatPanelLayout.setHorizontalGroup(
-            chatPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, chatPanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(gameplayTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        chatPanelLayout.setVerticalGroup(
-            chatPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(gameplayTextArea, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-        );
-
-        gamePlayPanel.add(chatPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, 250, 280));
+        gamePlayPanel.add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1280, 790));
 
         thrumChipButton.setFont(new java.awt.Font("Book Antiqua", 1, 18)); // NOI18N
         thrumChipButton.setText("Use");
@@ -317,22 +324,19 @@ public class GamePlayDisplayGUI extends CustomFrame {
     public void init() {
         System.out.println("eee");
         initComponents();
-
-//        playerTwoTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
-//        playerOneTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
-//        hitButtonPlayerOne.setIcon(new javax.swing.ImageIcon("resources/HitButton_1.PNG"));
-//        hitButtonPlayerTwo.setIcon(new javax.swing.ImageIcon("resources/HitButton_1.PNG"));
-//        standButtonPlayerTwo.setIcon(new javax.swing.ImageIcon("resources/StandButton_1.PNG"));
-//        standButtonPlayerOne.setIcon(new javax.swing.ImageIcon("resources/StandButton_1.PNG"));
-//        deckCardBackground.setIcon(new javax.swing.ImageIcon("resources/download.png"));
-//        background.setIcon(new javax.swing.ImageIcon("resources/GamePlayBackground.PNG"));
-
-
         this.setLocationRelativeTo(null);
         this.setSize(1280, 800);
         this.setVisible(true);
     }
-    
+    @Override
+    public void onSwitch(){
+        controller.showCard(card);
+    }
+    @Override
+    public void onUpdate(){
+        controller.showCard(card);
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel background;
     private javax.swing.JPanel buttonPanelPlayerOne;

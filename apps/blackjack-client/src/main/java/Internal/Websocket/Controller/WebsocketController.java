@@ -84,7 +84,7 @@ public class WebsocketController {
             if (eventHandler == null)
 
                 return;
-
+            System.out.println("mae");
             eventHandler.handler(ctx, body);
         } catch (ParseException e) {
             System.out.println(e.toString());

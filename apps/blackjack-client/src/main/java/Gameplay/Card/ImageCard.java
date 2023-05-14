@@ -1,27 +1,33 @@
 
 package Gameplay.Card;
 
+import Gameplay.Player.PlayerPOJO;
+
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 public class ImageCard {
-    private JLabel showCard;
+    private JLabel card;
+//    private CardPOJO cards;
+
+    public ImageCard(){
+    }
     
-    public JLabel randomCard(CardPOJO randomCardPOJO){
-        Image image = randomCardPOJO.getImage().getImage();//It's ImageIcon icon = randomCard.getImage(); and Image = icon.getImage(); combine together :)
+    public JLabel showCard(CardPOJO cards){
+        Image image = cards.getImage().getImage();//It's ImageIcon icon = randomCard.getImage(); and Image = icon.getImage(); combine together :)
         Image scaledImage = image.getScaledInstance(107, 157, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaledImage);
 
-        showCard = new JLabel(scaledIcon);
-        return showCard;
+        card = new JLabel(scaledIcon);
+        return card;
     }
 
-    public JLabel getShowCard() {
-        return showCard;
+    public JLabel getCard() {
+        return card;
     }
 
-    public void setShowCard(JLabel showCard) {
-        this.showCard = showCard;
+    public void setCard(JLabel card) {
+        this.card = card;
     }
 }
