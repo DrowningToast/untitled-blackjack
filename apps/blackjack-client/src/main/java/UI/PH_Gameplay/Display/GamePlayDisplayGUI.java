@@ -1,10 +1,13 @@
 
 package UI.PH_Gameplay.Display;
 import Gameplay.Card.CardController;
+import Gameplay.Card.CardPOJO;
 import Gameplay.GameContext;
+import Main.MainRunner;
 import UI.Controller.CustomFrame;
 import java.awt.Label;
 import java.awt.TextArea;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,11 +20,9 @@ public class GamePlayDisplayGUI extends CustomFrame {
 
     public Object getDeckCardPanel;
     private GamePlayController controller;
-    private CardController card;
 
-    public GamePlayDisplayGUI(GamePlayController controller, CardController card) {
+    public GamePlayDisplayGUI(GamePlayController controller) {
         this.controller = controller;
-        this.card = card;
         initComponents();
         playerTwoTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
         playerOneTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30, new javax.swing.ImageIcon("resources/Table.PNG")));
@@ -328,13 +329,11 @@ public class GamePlayDisplayGUI extends CustomFrame {
         this.setSize(1280, 800);
         this.setVisible(true);
     }
-    @Override
-    public void onSwitch(){
-        controller.showCard(card);
-    }
+
     @Override
     public void onUpdate(){
-        controller.showCard(card);
+        controller.showCardOne(MainRunner.getGameContext().getPlayers()[0].getPlayer().getCardController().getCards());
+        controller.showCardTwo(MainRunner.getGameContext().getPlayers()[1].getPlayer().getCardController().getCards());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
