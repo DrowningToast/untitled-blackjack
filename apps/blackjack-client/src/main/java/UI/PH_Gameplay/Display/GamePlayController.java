@@ -1,27 +1,31 @@
 package UI.PH_Gameplay.Display;
 
-
 import Internal.Websocket.Controller.WebsocketController;
+import Main.MainRunner;
 import UI.Controller.UIController;
-import jakarta.websocket.DeploymentException;
 import lombok.Getter;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.HashMap;
 
 
 public class GamePlayController {
     private WebsocketController wsController;
     private UIController uiController;
     @Getter
-    private GamePlayDisplayGUI ui;
+    private GamePlayDisplayGUI ui = new GamePlayDisplayGUI(this, wsController);
 
     public GamePlayController(UIController uiController, WebsocketController wsController) {
         this.wsController = wsController;
         this.uiController = uiController;
-        ui = new GamePlayDisplayGUI(this, wsController);
-//        this.client = wsController;
+    }
+    //    update status Button
+    public void updateStatusButton(){
+
+        if (MainRunner.getGameContext().getPlayers()[1].getPlayer().getUsername().equals(MainRunner.getGameContext().getGame().getGame().getTurnOwner())) {
+            ui.getHitButtonPlayerOne().setEnabled(false);
+            ui.getStandButtonPlayerOne().setEnabled(false);
+        } else if (MainRunner.getGameContext().getPlayers()[0].getPlayer().getUsername().equals(MainRunner.getGameContext().getGame().getGame().getTurnOwner())){
+            ui.getHitButtonPlayerOne().setEnabled(true);
+            ui.getStandButtonPlayerOne().setEnabled(true);
+        }
 
     }
 

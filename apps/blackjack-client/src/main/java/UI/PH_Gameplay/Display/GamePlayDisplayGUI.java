@@ -2,6 +2,7 @@
 package UI.PH_Gameplay.Display;
 import Internal.Websocket.Controller.WebsocketController;
 import Gameplay.GameContext;
+import Main.MainRunner;
 import UI.Controller.CustomFrame;
 
 import java.awt.Label;
@@ -622,5 +623,13 @@ public class GamePlayDisplayGUI extends CustomFrame {
         this.thrumChipButton = thrumChipButton;
     }
 
-    
+    @Override
+    public void onSwitch() {
+
+    }
+
+    @Override
+    public void onUpdate() {
+        controller.updateStatusButton();
+    }
 }
