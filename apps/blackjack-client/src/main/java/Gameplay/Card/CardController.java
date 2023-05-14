@@ -32,7 +32,6 @@ public class CardController {
 
     public void addCards(CardPOJO cards){
        this.cards.add(cards);
-        System.out.println("Add cards to player's hand");
     }
     public void addCards(ArrayList<CardPOJO> cards){
         this.cards.addAll(cards);
