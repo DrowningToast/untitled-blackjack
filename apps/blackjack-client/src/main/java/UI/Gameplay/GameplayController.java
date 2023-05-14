@@ -1,43 +1,43 @@
-package UI.PH_Gameplay.Display;
+package UI.Gameplay;
 
-import Gameplay.Card.CardController;
-import Gameplay.Card.CardPOJO;
-import Gameplay.Card.CardDisplay;
-import Gameplay.GameContext;
-import Gameplay.Player.PlayerPOJO;
+import GameContext.Card.CardController;
+import GameContext.Card.CardPOJO;
+import GameContext.Card.CardDisplay;
+import GameContext.Player.PlayerPOJO;
 import Internal.Websocket.Controller.WebsocketController;
 import Main.MainRunner;
-import UI.Controller.UIController;
+import Internal.UserInterface.UIController;
 import lombok.Getter;
 
 import java.util.ArrayList;
 
-public class GamePlayController {
+public class GameplayController {
     private WebsocketController wsController;
     private UIController uiController;
     private CardController card;
     @Getter
-    private GamePlayDisplayGUI ui;
+    private GameplayDisplayGUI ui;
     public PlayerPOJO playerPOJOOne;
     public PlayerPOJO playerPOJOTwo;
     public CardDisplay cardPlayerOne, cardPlayerTwo;
 
-    public GamePlayController(UIController uiController, WebsocketController wsController) {
-        playerPOJOOne = MainRunner.getGameContext().getPlayers()[0].getPlayer();
-        playerPOJOTwo = MainRunner.getGameContext().getPlayers()[1].getPlayer();
+    public GameplayController(UIController uiController, WebsocketController wsController) {
+        playerPOJOOne = MainRunner.getGameContext().getPlayers()[0].getPOJO();
+        playerPOJOTwo = MainRunner.getGameContext().getPlayers()[1].getPOJO();
         cardPlayerOne = new CardDisplay();
         cardPlayerTwo = new CardDisplay();
         this.wsController = wsController;
         this.uiController = uiController;
-        ui = new GamePlayDisplayGUI(this, wsController);
+        ui = new GameplayDisplayGUI(this, wsController);
     }
-    //    update status Button
-    public void updateStatusButton(){
 
-        if (MainRunner.getGameContext().getPlayers()[1].getPlayer().getUsername().equals(MainRunner.getGameContext().getGame().getGame().getTurnOwner())) {
+    //    update status Button
+    public void updateStatusButton() {
+
+        if (MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername().equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
             ui.getHitButtonPlayerOne().setEnabled(false);
             ui.getStandButtonPlayerOne().setEnabled(false);
-        } else if (MainRunner.getGameContext().getPlayers()[0].getPlayer().getUsername().equals(MainRunner.getGameContext().getGame().getGame().getTurnOwner())){
+        } else if (MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername().equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
             ui.getHitButtonPlayerOne().setEnabled(true);
             ui.getStandButtonPlayerOne().setEnabled(true);
         }

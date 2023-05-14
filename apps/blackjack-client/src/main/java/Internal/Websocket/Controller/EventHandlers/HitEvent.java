@@ -1,9 +1,9 @@
 package Internal.Websocket.Controller.EventHandlers;
 
-import Gameplay.Card.CardController;
-import Gameplay.Card.CardPOJO;
-import Gameplay.GameContext;
-import UI.Controller.UIController;
+import GameContext.Card.CardController;
+import GameContext.Card.CardPOJO;
+import GameContext.GameContext;
+import Internal.UserInterface.UIController;
 import org.json.simple.JSONObject;
 
 public class HitEvent implements WebsocketEventHandler {
@@ -24,7 +24,7 @@ public class HitEvent implements WebsocketEventHandler {
             return ;
         }
         CardPOJO card = CardController.getCARDS().get(c.get("display"));
-        ctx.getPlayer(username).getPlayer().getCardController().addCards(card);
+        ctx.getPlayer(username).getPOJO().getCardController().addCards(card);
         uiController.update();
     }
 }

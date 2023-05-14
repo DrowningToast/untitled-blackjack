@@ -1,11 +1,9 @@
 package Internal.Websocket.Controller.EventHandlers;
 
-import Gameplay.Card.CardController;
-import Gameplay.Card.CardPOJO;
-import Gameplay.Game.GamePOJO;
-import Gameplay.GameContext;
-import Gameplay.Player.PlayerPOJO;
-import UI.Controller.UIController;
+import GameContext.Card.CardController;
+import GameContext.Card.CardPOJO;
+import GameContext.GameContext;
+import Internal.UserInterface.UIController;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -25,7 +23,7 @@ public class RoundWinner implements WebsocketEventHandler {
         JSONObject winner = (JSONObject) content.get("winner");
         String username = (String) winner.get("username");
         long pointsEarned = (long) content.get("pointsEarned");
-        ctx.getPlayer(username).getPlayer().addScore(pointsEarned);
+        ctx.getPlayer(username).getPOJO().addScore(pointsEarned);
 
         // IGame set value section
         JSONObject game = (JSONObject) content.get("game");
@@ -34,10 +32,10 @@ public class RoundWinner implements WebsocketEventHandler {
         String turnOwner = (String) turnOwnerObj.get("username");
         long roundCounter = (long) game.get("roundCounter");
         long cardPointTarget = (long) game.get("cardPointTarget");
-        ctx.getGame().getGame().setGameState(gameState);
-        ctx.getGame().getGame().setRoundCounter(roundCounter);
-        ctx.getGame().getGame().setTurnOwner(turnOwner);
-        ctx.getGame().getGame().setCardPointTarget(cardPointTarget);
+        ctx.getGame().getPOJO().setGameState(gameState);
+        ctx.getGame().getPOJO().setRoundCounter(roundCounter);
+        ctx.getGame().getPOJO().setTurnOwner(turnOwner);
+        ctx.getGame().getPOJO().setCardPointTarget(cardPointTarget);
 
         // Card section
         JSONArray globalCards = (JSONArray) content.get("cards");
@@ -51,12 +49,12 @@ public class RoundWinner implements WebsocketEventHandler {
         for (Object c : hostCards){
             JSONObject cardObject = (JSONObject) c;
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
-            ctx.getPlayer(hostUsername).getPlayer().getCardController().addCards(card);
+            ctx.getPlayer(hostUsername).getPOJO().getCardController().addCards(card);
         }
         for (Object c : guestCards){
             JSONObject cardObject = (JSONObject) c;
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
-            ctx.getPlayer(guestUsername).getPlayer().getCardController().addCards(card);
+            ctx.getPlayer(guestUsername).getPOJO().getCardController().addCards(card);
         }
         uiController.update();
     }

@@ -1,8 +1,8 @@
 package Internal.Websocket.Controller.EventHandlers;
 
-import Gameplay.GameContext;
+import GameContext.GameContext;
 import Main.MainRunner;
-import UI.Controller.UIController;
+import Internal.UserInterface.UIController;
 import org.json.simple.JSONObject;
 
 public class ReadyState implements WebsocketEventHandler {
@@ -18,16 +18,16 @@ public class ReadyState implements WebsocketEventHandler {
         JSONObject content = (JSONObject) body.get("content");
         String username = (String) content.get("username");
         boolean ready = (boolean) content.get("ready");
-        boolean myMsg = MainRunner.getGameContext().getPlayers()[0].getPlayer().getUsername().equals(username);
+        boolean myMsg = MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername().equals(username);
         if (myMsg) {
             //for guest
-            ctx.getPlayers()[0].getPlayer().setReady(ready);
+            ctx.getPlayers()[0].getPOJO().setReady(ready);
             uiController.update();
             return;
         } else {
             //for host
-            ctx.getPlayers()[1].getPlayer().setUsername(username);
-            ctx.getPlayers()[1].getPlayer().setReady(ready);
+            ctx.getPlayers()[1].getPOJO().setUsername(username);
+            ctx.getPlayers()[1].getPOJO().setReady(ready);
             uiController.update();
         }
 

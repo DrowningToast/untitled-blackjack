@@ -1,6 +1,4 @@
-package Gameplay.Card;
-import lombok.Getter;
-import lombok.Setter;
+package GameContext.Card;
 
 import java.awt.Image;
 import java.util.ArrayList;
@@ -11,7 +9,7 @@ public class CardController {
 
     private static HashMap<String, CardPOJO> CARDS = new HashMap<>();
 
-    private ArrayList<CardPOJO> cards = new ArrayList<>();
+    private ArrayList<CardPOJO> POJOS = new ArrayList<>();
 
     public CardController() {
         CARDS.put("A", new CardPOJO("A", 1, new ImageIcon("resources/A.PNG")));// card A
@@ -31,13 +29,13 @@ public class CardController {
     }
 
     public void addCards(CardPOJO cards){
-       this.cards.add(cards);
+       this.POJOS.add(cards);
     }
     public void addCards(ArrayList<CardPOJO> cards){
-        this.cards.addAll(cards);
+        this.POJOS.addAll(cards);
     }
     public void resetCards(){
-        this.cards.clear();
+        this.POJOS.clear();
         System.out.println("Clear Player's cards in hand");
     }
     // deprecated
@@ -53,7 +51,7 @@ public class CardController {
     public static HashMap<String, CardPOJO> getCARDS(){
         return CARDS;
     }
-    public ArrayList<CardPOJO> getCards(){
-        return this.cards;
+    public ArrayList<CardPOJO> getPOJOS(){
+        return this.POJOS;
     }
 }

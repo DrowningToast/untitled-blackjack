@@ -1,7 +1,7 @@
 package Internal.Websocket.Controller.EventHandlers;
 
-import Gameplay.GameContext;
-import UI.Controller.UIController;
+import GameContext.GameContext;
+import Internal.UserInterface.UIController;
 import org.json.simple.JSONObject;
 
 public class StandEvent implements WebsocketEventHandler {

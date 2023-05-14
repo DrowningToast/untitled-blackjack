@@ -1,7 +1,5 @@
 
-package Gameplay.Card;
-
-import Gameplay.Player.PlayerPOJO;
+package GameContext.Card;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;

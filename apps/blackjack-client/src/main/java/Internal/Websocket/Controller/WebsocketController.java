@@ -1,6 +1,6 @@
 package Internal.Websocket.Controller;
 
-import Gameplay.GameContext;
+import GameContext.GameContext;
 import Internal.Websocket.Controller.Errorhandlers.WebsocketErrorHandler;
 import Internal.Websocket.Controller.EventHandlers.WebsocketEventHandler;
 import Internal.Websocket.Base.MessageBuilder;
@@ -57,7 +57,7 @@ public class WebsocketController {
             HashMap content = new HashMap();
             content.put("ready", true);
             // SET GAME ID TO THE CONTENT
-            String gameId = MainRunner.getGameContext().getGame().getGame().getGameId();
+            String gameId = MainRunner.getGameContext().getGame().getPOJO().getGameId();
             System.out.println(gameId);
 
             content.put("gameId", gameId);

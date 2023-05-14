@@ -1,4 +1,4 @@
-package UI.Controller;
+package Internal.UserInterface;
 
 import javax.swing.*;
 

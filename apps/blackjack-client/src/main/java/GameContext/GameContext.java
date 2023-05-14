@@ -1,8 +1,7 @@
-package Gameplay;
+package GameContext;
 
-import Gameplay.Game.GameModel;
-import Gameplay.Player.PlayerModel;
-import Gameplay.Player.PlayerPOJO;
+import GameContext.Game.GameModel;
+import GameContext.Player.PlayerModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,9 +19,9 @@ public class GameContext {
         this.players = players;
     }
     public PlayerModel getPlayer(String username){
-        if (username.equals(players[0].getPlayer().getUsername())){
+        if (username.equals(players[0].getPOJO().getUsername())){
             return players[0];
-        }else if(username.equals(players[1].getPlayer().getUsername())){
+        }else if(username.equals(players[1].getPOJO().getUsername())){
             return players[1];
         }else{
             return null;

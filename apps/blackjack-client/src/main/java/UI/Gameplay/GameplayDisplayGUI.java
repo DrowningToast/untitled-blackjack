@@ -1,16 +1,12 @@
 
-package UI.PH_Gameplay.Display;
-import Gameplay.Card.CardController;
-import Gameplay.Card.CardPOJO;
+package UI.Gameplay;
 
 import Internal.Websocket.Controller.WebsocketController;
-import Gameplay.GameContext;
 import Main.MainRunner;
-import UI.Controller.CustomFrame;
+import Internal.UserInterface.CustomFrame;
 
 import java.awt.Label;
 import java.awt.TextArea;
-import java.util.ArrayList;
 
 import java.io.IOException;
 import javax.swing.JButton;
@@ -18,16 +14,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- *
  * @author Suchanan
  */
-public class GamePlayDisplayGUI extends CustomFrame {
+public class GameplayDisplayGUI extends CustomFrame {
 
     public Object getDeckCardPanel;
-    public GamePlayController controller;
+    public GameplayController controller;
     public WebsocketController wsController;
 
-    public GamePlayDisplayGUI(GamePlayController controller, WebsocketController wsController) {
+    public GameplayDisplayGUI(GameplayController controller, WebsocketController wsController) {
         this.wsController = wsController;
         this.controller = controller;
         initComponents();
@@ -124,29 +119,29 @@ public class GamePlayDisplayGUI extends CustomFrame {
         javax.swing.GroupLayout buttonPanelPlayerOneLayout = new javax.swing.GroupLayout(buttonPanelPlayerOne);
         buttonPanelPlayerOne.setLayout(buttonPanelPlayerOneLayout);
         buttonPanelPlayerOneLayout.setHorizontalGroup(
-            buttonPanelPlayerOneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(buttonPanelPlayerOneLayout.createSequentialGroup()
-                .addGroup(buttonPanelPlayerOneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(buttonPanelPlayerOneLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(scoreCardOneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(buttonPanelPlayerOneLayout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addGroup(buttonPanelPlayerOneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(hitButtonPlayerOne, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(standButtonPlayerOne, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                buttonPanelPlayerOneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(buttonPanelPlayerOneLayout.createSequentialGroup()
+                                .addGroup(buttonPanelPlayerOneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(buttonPanelPlayerOneLayout.createSequentialGroup()
+                                                .addContainerGap()
+                                                .addComponent(scoreCardOneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(buttonPanelPlayerOneLayout.createSequentialGroup()
+                                                .addGap(28, 28, 28)
+                                                .addGroup(buttonPanelPlayerOneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                        .addComponent(hitButtonPlayerOne, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(standButtonPlayerOne, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         buttonPanelPlayerOneLayout.setVerticalGroup(
-            buttonPanelPlayerOneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(buttonPanelPlayerOneLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(hitButtonPlayerOne, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(standButtonPlayerOne, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(scoreCardOneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                buttonPanelPlayerOneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(buttonPanelPlayerOneLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(hitButtonPlayerOne, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(standButtonPlayerOne, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(scoreCardOneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         gamePlayPanel.add(buttonPanelPlayerOne, new org.netbeans.lib.awtextra.AbsoluteConstraints(1118, 520, 156, 212));
@@ -170,12 +165,12 @@ public class GamePlayDisplayGUI extends CustomFrame {
         javax.swing.GroupLayout trumpHoldChipPlayerOnePanelLayout = new javax.swing.GroupLayout(trumpHoldChipPlayerOnePanel);
         trumpHoldChipPlayerOnePanel.setLayout(trumpHoldChipPlayerOnePanelLayout);
         trumpHoldChipPlayerOnePanelLayout.setHorizontalGroup(
-            trumpHoldChipPlayerOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 250, Short.MAX_VALUE)
+                trumpHoldChipPlayerOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 250, Short.MAX_VALUE)
         );
         trumpHoldChipPlayerOnePanelLayout.setVerticalGroup(
-            trumpHoldChipPlayerOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 160, Short.MAX_VALUE)
+                trumpHoldChipPlayerOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 160, Short.MAX_VALUE)
         );
 
         gamePlayPanel.add(trumpHoldChipPlayerOnePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 440, 250, 160));
@@ -196,16 +191,16 @@ public class GamePlayDisplayGUI extends CustomFrame {
         javax.swing.GroupLayout chatPanelLayout = new javax.swing.GroupLayout(chatPanel);
         chatPanel.setLayout(chatPanelLayout);
         chatPanelLayout.setHorizontalGroup(
-            chatPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, chatPanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(gameplayTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                chatPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, chatPanelLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(gameplayTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         chatPanelLayout.setVerticalGroup(
-            chatPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(chatPanelLayout.createSequentialGroup()
-                .addComponent(gameplayTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                chatPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(chatPanelLayout.createSequentialGroup()
+                                .addComponent(gameplayTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         gamePlayPanel.add(chatPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, 250, 260));
@@ -219,19 +214,19 @@ public class GamePlayDisplayGUI extends CustomFrame {
         javax.swing.GroupLayout scoreGamePlayerOnePanelLayout = new javax.swing.GroupLayout(scoreGamePlayerOnePanel);
         scoreGamePlayerOnePanel.setLayout(scoreGamePlayerOnePanelLayout);
         scoreGamePlayerOnePanelLayout.setHorizontalGroup(
-            scoreGamePlayerOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, scoreGamePlayerOnePanelLayout.createSequentialGroup()
-                .addComponent(playerOneNameScoreLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(scoreGamePlayerOneLabel)
-                .addContainerGap())
+                scoreGamePlayerOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, scoreGamePlayerOnePanelLayout.createSequentialGroup()
+                                .addComponent(playerOneNameScoreLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(scoreGamePlayerOneLabel)
+                                .addContainerGap())
         );
         scoreGamePlayerOnePanelLayout.setVerticalGroup(
-            scoreGamePlayerOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scoreGamePlayerOneLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(scoreGamePlayerOnePanelLayout.createSequentialGroup()
-                .addComponent(playerOneNameScoreLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                scoreGamePlayerOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(scoreGamePlayerOneLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(scoreGamePlayerOnePanelLayout.createSequentialGroup()
+                                .addComponent(playerOneNameScoreLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         gamePlayPanel.add(scoreGamePlayerOnePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 340, 340, 80));
@@ -245,17 +240,17 @@ public class GamePlayDisplayGUI extends CustomFrame {
         javax.swing.GroupLayout scoreGamePlayerTwoPanelLayout = new javax.swing.GroupLayout(scoreGamePlayerTwoPanel);
         scoreGamePlayerTwoPanel.setLayout(scoreGamePlayerTwoPanelLayout);
         scoreGamePlayerTwoPanelLayout.setHorizontalGroup(
-            scoreGamePlayerTwoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(scoreGamePlayerTwoPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(scoreGamePlayerTwoLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(playerTwoNameScoreLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
+                scoreGamePlayerTwoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(scoreGamePlayerTwoPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(scoreGamePlayerTwoLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(playerTwoNameScoreLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
         );
         scoreGamePlayerTwoPanelLayout.setVerticalGroup(
-            scoreGamePlayerTwoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scoreGamePlayerTwoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
-            .addComponent(playerTwoNameScoreLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                scoreGamePlayerTwoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(scoreGamePlayerTwoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
+                        .addComponent(playerTwoNameScoreLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         gamePlayPanel.add(scoreGamePlayerTwoPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 340, 330, 80));
@@ -279,17 +274,17 @@ public class GamePlayDisplayGUI extends CustomFrame {
         javax.swing.GroupLayout buttonPanelPlayerTwoLayout = new javax.swing.GroupLayout(buttonPanelPlayerTwo);
         buttonPanelPlayerTwo.setLayout(buttonPanelPlayerTwoLayout);
         buttonPanelPlayerTwoLayout.setHorizontalGroup(
-            buttonPanelPlayerTwoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(buttonPanelPlayerTwoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(scoreCardTwoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
-                .addContainerGap())
+                buttonPanelPlayerTwoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(buttonPanelPlayerTwoLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(scoreCardTwoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                                .addContainerGap())
         );
         buttonPanelPlayerTwoLayout.setVerticalGroup(
-            buttonPanelPlayerTwoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(buttonPanelPlayerTwoLayout.createSequentialGroup()
-                .addComponent(scoreCardTwoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 10, Short.MAX_VALUE))
+                buttonPanelPlayerTwoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(buttonPanelPlayerTwoLayout.createSequentialGroup()
+                                .addComponent(scoreCardTwoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 10, Short.MAX_VALUE))
         );
 
         gamePlayPanel.add(buttonPanelPlayerTwo, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 10, 160, 60));
@@ -299,12 +294,12 @@ public class GamePlayDisplayGUI extends CustomFrame {
         javax.swing.GroupLayout deckCardPanelLayout = new javax.swing.GroupLayout(deckCardPanel);
         deckCardPanel.setLayout(deckCardPanelLayout);
         deckCardPanelLayout.setHorizontalGroup(
-            deckCardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(deckCardBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                deckCardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(deckCardBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         deckCardPanelLayout.setVerticalGroup(
-            deckCardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(deckCardBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                deckCardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(deckCardBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         gamePlayPanel.add(deckCardPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1107, 247, 150, 210));
@@ -319,12 +314,12 @@ public class GamePlayDisplayGUI extends CustomFrame {
         javax.swing.GroupLayout iconAssetJPanelLayout = new javax.swing.GroupLayout(iconAssetJPanel);
         iconAssetJPanel.setLayout(iconAssetJPanelLayout);
         iconAssetJPanelLayout.setHorizontalGroup(
-            iconAssetJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 160, Short.MAX_VALUE)
+                iconAssetJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 160, Short.MAX_VALUE)
         );
         iconAssetJPanelLayout.setVerticalGroup(
-            iconAssetJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 150, Short.MAX_VALUE)
+                iconAssetJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 150, Short.MAX_VALUE)
         );
 
         gamePlayPanel.add(iconAssetJPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 80, 160, 150));
@@ -332,17 +327,17 @@ public class GamePlayDisplayGUI extends CustomFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(gamePlayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(gamePlayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(gamePlayPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(gamePlayPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -363,11 +358,6 @@ public class GamePlayDisplayGUI extends CustomFrame {
         this.setVisible(true);
     }
 
-    @Override
-    public void onUpdate(){
-        controller.showCardOne(MainRunner.getGameContext().getPlayers()[0].getPlayer().getCardController().getCards());
-        controller.showCardTwo(MainRunner.getGameContext().getPlayers()[1].getPlayer().getCardController().getCards());
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel background;
@@ -633,5 +623,7 @@ public class GamePlayDisplayGUI extends CustomFrame {
     @Override
     public void onUpdate() {
         controller.updateStatusButton();
+        controller.showCardOne(MainRunner.getGameContext().getPlayers()[0].getPOJO().getCardController().getPOJOS());
+        controller.showCardTwo(MainRunner.getGameContext().getPlayers()[1].getPOJO().getCardController().getPOJOS());
     }
 }

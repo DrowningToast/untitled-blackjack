@@ -1,7 +1,7 @@
 package UI.Waiting;
 
 import Internal.Websocket.Controller.WebsocketController;
-import UI.Controller.UIController;
+import Internal.UserInterface.UIController;
 import lombok.Getter;
 
 public class WaitingRoomController {

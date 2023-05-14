@@ -1,12 +1,11 @@
 package UI.Lobby;
 
-import Internal.JSON.JSON;
 import Internal.Websocket.Controller.WebsocketController;
 import Internal.HTTP.Base.HttpRequestEventHandler;
 import Internal.HTTP.Base.HttpResponse;
 import Internal.HTTP.HttpClient;
 import Main.MainRunner;
-import UI.Controller.UIController;
+import Internal.UserInterface.UIController;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -14,7 +13,6 @@ import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.HashMap;
 
@@ -48,7 +46,7 @@ public class LobbyController {
             @Override
             public HttpResponse executeRequest(URL baseURL) throws IOException {
                 HashMap<String, String> body = new HashMap();
-                body.put("connectionId", MainRunner.getGameContext().getPlayers()[0].getPlayer().getConnectionId());
+                body.put("connectionId", MainRunner.getGameContext().getPlayers()[0].getPOJO().getConnectionId());
                 body.put("passcode", passcode);
                 return client.post("/game/create", body);
             }
@@ -57,8 +55,8 @@ public class LobbyController {
             public void onSuccess(HttpResponse response) {
                 System.out.println(response.getRawBody());
                 System.out.println("CREATED ROOM!!!");
-                MainRunner.getGameContext().getGame().getGame().setPasscode(passcode);
-                MainRunner.getGameContext().getGame().getGame().setGameId((String) response.getMap().get("gameId"));
+                MainRunner.getGameContext().getGame().getPOJO().setPasscode(passcode);
+                MainRunner.getGameContext().getGame().getPOJO().setGameId((String) response.getMap().get("gameId"));
                 System.out.println((String) response.getMap().get("gameId"));
                 changeToWaiting();
             }
@@ -77,7 +75,7 @@ public class LobbyController {
             @Override
             public HttpResponse executeRequest(URL baseURL) throws IOException {
                 HashMap<String, String> body = new HashMap<>();
-                body.put("connectionId", MainRunner.getGameContext().getPlayers()[0].getPlayer().getConnectionId());
+                body.put("connectionId", MainRunner.getGameContext().getPlayers()[0].getPOJO().getConnectionId());
                 body.put("passcode", passcode);
                 System.out.println("Handle Join run");
                 return client.post("/game/join", body);
@@ -95,10 +93,10 @@ public class LobbyController {
                     JSONObject host = (JSONObject) rawPlayers.get(0);
                     String hostUsername = (String) host.get("username");
                     System.out.println(hostUsername);
-                    MainRunner.getGameContext().getPlayers()[1].getPlayer().setUsername(hostUsername);
+                    MainRunner.getGameContext().getPlayers()[1].getPOJO().setUsername(hostUsername);
                     // SEND READY MESSAGE
-                    MainRunner.getGameContext().getGame().getGame().setPasscode(passcode);
-                    MainRunner.getGameContext().getGame().getGame().setGameId((String) response.getMap().get("gameId"));
+                    MainRunner.getGameContext().getGame().getPOJO().setPasscode(passcode);
+                    MainRunner.getGameContext().getGame().getPOJO().setGameId((String) response.getMap().get("gameId"));
                     wsController.setReady(true);
                     changeToWaiting();
                     uiController.update();

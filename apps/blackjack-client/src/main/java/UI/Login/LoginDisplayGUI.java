@@ -10,8 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import Internal.Websocket.Controller.WebsocketController;
-import Main.MainRunner;
-import UI.Controller.CustomFrame;
+import Internal.UserInterface.CustomFrame;
 
 /**
  * @author Suchanan

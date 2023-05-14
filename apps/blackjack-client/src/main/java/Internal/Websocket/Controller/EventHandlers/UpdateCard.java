@@ -1,15 +1,11 @@
 package Internal.Websocket.Controller.EventHandlers;
 
-import Gameplay.Card.CardController;
-import Gameplay.Card.CardPOJO;
-import Gameplay.GameContext;
-import UI.Controller.UIController;
+import GameContext.Card.CardController;
+import GameContext.Card.CardPOJO;
+import GameContext.GameContext;
+import Internal.UserInterface.UIController;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class UpdateCard implements WebsocketEventHandler {
     private UIController uiController;
@@ -33,12 +29,12 @@ public class UpdateCard implements WebsocketEventHandler {
         for (Object c : hostCards){
             JSONObject cardObject = (JSONObject) c;
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
-            ctx.getPlayer(hostUsername).getPlayer().getCardController().addCards(card);
+            ctx.getPlayer(hostUsername).getPOJO().getCardController().addCards(card);
         }
         for (Object c : guestCards){
             JSONObject cardObject = (JSONObject) c;
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
-            ctx.getPlayer(guestUsername).getPlayer().getCardController().addCards(card);
+            ctx.getPlayer(guestUsername).getPOJO().getCardController().addCards(card);
         }
         uiController.update();
     }

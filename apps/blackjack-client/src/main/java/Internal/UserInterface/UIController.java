@@ -1,4 +1,4 @@
-package UI.Controller;
+package Internal.UserInterface;
 
 import Internal.Websocket.Controller.WebsocketController;
 import UI.Login.LoginDisplayGUI;

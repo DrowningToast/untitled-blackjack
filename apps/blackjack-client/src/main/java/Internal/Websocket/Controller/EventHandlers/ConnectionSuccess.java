@@ -1,10 +1,8 @@
 package Internal.Websocket.Controller.EventHandlers;
 
-import Gameplay.GameContext;
+import GameContext.GameContext;
 import Internal.Websocket.Controller.WebsocketController;
     import org.json.simple.JSONObject;
-
-import java.util.HashMap;
 
 public class ConnectionSuccess implements WebsocketEventHandler {
 
@@ -17,7 +15,7 @@ public class ConnectionSuccess implements WebsocketEventHandler {
     @Override
     public void handler(GameContext ctx, JSONObject body) {
         System.out.println("Login success");
-        ctx.getPlayers()[0].getPlayer().setConnectionId((String) body.get("content"));
+        ctx.getPlayers()[0].getPOJO().setConnectionId((String) body.get("content"));
     }
 
 }

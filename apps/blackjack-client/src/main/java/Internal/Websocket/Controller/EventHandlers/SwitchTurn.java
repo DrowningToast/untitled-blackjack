@@ -1,7 +1,7 @@
 package Internal.Websocket.Controller.EventHandlers;
 
-import Gameplay.GameContext;
-import UI.Controller.UIController;
+import GameContext.GameContext;
+import Internal.UserInterface.UIController;
 import org.json.simple.JSONObject;
 
 public class SwitchTurn implements WebsocketEventHandler {
@@ -15,7 +15,7 @@ public class SwitchTurn implements WebsocketEventHandler {
     @Override
     public void handler(GameContext ctx, JSONObject body) {
         String username = (String) body.get("content");
-        ctx.getGame().getGame().setTurnOwner(username);
+        ctx.getGame().getPOJO().setTurnOwner(username);
 
         uiController.update();
     }

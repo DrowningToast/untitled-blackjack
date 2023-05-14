@@ -1,7 +1,7 @@
 package Internal.Websocket.Controller.EventHandlers;
 
-import Gameplay.GameContext;
-import UI.Controller.UIController;
+import GameContext.GameContext;
+import Internal.UserInterface.UIController;
 import org.json.simple.JSONObject;
 
 public class InitRound implements WebsocketEventHandler{
@@ -21,10 +21,10 @@ public class InitRound implements WebsocketEventHandler{
         String turnOwnerUser = (String) turnOwner.get("username");
 
         // set value to game model
-        ctx.getGame().getGame().setGameState(gameState);
-        ctx.getGame().getGame().setRoundCounter(roundCounter);
-        ctx.getGame().getGame().setCardPointTarget(cardPointTarget);
-        ctx.getGame().getGame().setTurnOwner(turnOwnerUser);
+        ctx.getGame().getPOJO().setGameState(gameState);
+        ctx.getGame().getPOJO().setRoundCounter(roundCounter);
+        ctx.getGame().getPOJO().setCardPointTarget(cardPointTarget);
+        ctx.getGame().getPOJO().setTurnOwner(turnOwnerUser);
         uiController.update();
     }
 }

@@ -1,20 +1,18 @@
 package Main;
 
-import Gameplay.Game.GameModel;
-import Gameplay.GameContext;
-import Gameplay.Player.PlayerModel;
+import GameContext.Game.GameModel;
+import GameContext.GameContext;
+import GameContext.Player.PlayerModel;
 import Internal.Websocket.Controller.Errorhandlers.*;
 import Internal.Websocket.Controller.EventHandlers.*;
 import Internal.Websocket.Controller.WebsocketController;
-import Gameplay.Game.GamePOJO;
-import UI.Controller.UIController;
+import GameContext.Game.GamePOJO;
+import Internal.UserInterface.UIController;
 import UI.Lobby.LobbyController;
 import UI.Login.LoginDisplayGUI;
-import Gameplay.Player.PlayerPOJO;
-import UI.PH_Gameplay.Display.GamePlayController;
+import GameContext.Player.PlayerPOJO;
+import UI.Gameplay.GameplayController;
 import UI.Waiting.WaitingRoomController;
-import UI.Waiting.WaitingRoomGUI;
-import jakarta.enterprise.inject.New;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -25,7 +23,7 @@ public class MainRunner {
     static LoginDisplayGUI loginUI;
     static LobbyController lobbyController;
     static WaitingRoomController waitingRoomController;
-    static GamePlayController gamePlayController;
+    static GameplayController gamePlayController;
     static PlayerPOJO playerPOJO;
     static GamePOJO gameModel;
 
@@ -45,7 +43,7 @@ public class MainRunner {
                 try {
                     // init game context
                     initGameContext();
-                    System.out.println(gameContext.getPlayers()[0].getPlayer());
+                    System.out.println(gameContext.getPlayers()[0].getPOJO());
 
                     // Init ws event handlers and error handlers
                     HashMap<String, WebsocketEventHandler> eventHandlers = new HashMap();
@@ -61,7 +59,7 @@ public class MainRunner {
                     // INIT LOBBY CONTROLLER
                     lobbyController = new LobbyController(wsController, uiController);
                     waitingRoomController = new WaitingRoomController(wsController, uiController);
-                    gamePlayController = new GamePlayController(uiController, wsController);
+                    gamePlayController = new GameplayController(uiController, wsController);
 
                     // ADD SCENES
                     uiController.add("lobbyUI", lobbyController.getUI());

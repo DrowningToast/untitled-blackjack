@@ -1,14 +1,10 @@
-package Gameplay.Player;
+package GameContext.Player;
 
 
-import Gameplay.Card.CardController;
-import Gameplay.Card.CardPOJO;
-import Gameplay.TrumpCard.TrumpCardController;
-import Gameplay.TrumpCard.TrumpCardPOJO;
+import GameContext.Card.CardController;
+import GameContext.TrumpCard.TrumpCardController;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
 
 public class PlayerPOJO {
     @Getter

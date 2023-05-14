@@ -1,14 +1,14 @@
-package Gameplay.TrumpCard;
-import Gameplay.Card.CardPOJO;
+package GameContext.TrumpCard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.ImageIcon;
+
 public class TrumpCardController {
 
     private static HashMap<String, TrumpCardPOJO> CARDS = new HashMap<>(), iconStatus;
 
-    private ArrayList<TrumpCardPOJO> cards = new ArrayList<>();
+    private ArrayList<TrumpCardPOJO> POJOS = new ArrayList<>();
 
     public TrumpCardController() {
 //        The chip that Hit a card
@@ -41,16 +41,16 @@ public class TrumpCardController {
         iconStatus.put("denyUserTrumpCard", new TrumpCardPOJO("Opponent cannot use their trump cards", "Opponent cannot use their trump cards.", "denyUseTrumpCard", "ATTACK", new ImageIcon("resources/Deny_Trump_Use_Status.PNG")));
     }
 
-    public void setCards(ArrayList<TrumpCardPOJO> cards) {
-        this.cards = cards;
+    public void setPOJOS(ArrayList<TrumpCardPOJO> POJOS) {
+        this.POJOS = POJOS;
     }
 
     public static HashMap<String, TrumpCardPOJO> getCARDS() {
         return CARDS;
     }
 
-    public ArrayList<TrumpCardPOJO> getCards() {
-        return this.cards;
+    public ArrayList<TrumpCardPOJO> getPOJOS() {
+        return this.POJOS;
     }
 
     public HashMap<String, TrumpCardPOJO> getIconStatus() {

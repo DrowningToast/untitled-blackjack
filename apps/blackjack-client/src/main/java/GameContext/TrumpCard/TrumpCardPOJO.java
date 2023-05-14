@@ -1,4 +1,4 @@
-package Gameplay.TrumpCard;
+package GameContext.TrumpCard;
 
 import lombok.Getter;
 import lombok.Setter;

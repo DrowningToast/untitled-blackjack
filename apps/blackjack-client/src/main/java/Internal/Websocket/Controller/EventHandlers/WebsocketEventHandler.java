@@ -1,9 +1,7 @@
 package Internal.Websocket.Controller.EventHandlers;
 
-import Gameplay.GameContext;
+import GameContext.GameContext;
 import org.json.simple.JSONObject;
-
-import java.util.HashMap;
 
 @FunctionalInterface
 public interface WebsocketEventHandler {

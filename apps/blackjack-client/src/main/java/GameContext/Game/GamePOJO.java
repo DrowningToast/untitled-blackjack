@@ -1,4 +1,4 @@
-package Gameplay.Game;
+package GameContext.Game;
 
 import lombok.Getter;
 import lombok.Setter;

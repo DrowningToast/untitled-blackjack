@@ -4,12 +4,9 @@
  */
 package UI.Waiting;
 
-import Gameplay.Game.GamePOJO;
 import Main.MainRunner;
-import UI.Controller.CustomFrame;
-import UI.Lobby.LobbyController;
+import Internal.UserInterface.CustomFrame;
 
-import javax.swing.*;
 import java.awt.Font;
 
 /**
@@ -161,22 +158,22 @@ public class WaitingRoomGUI extends CustomFrame {
 
     @Override
     public void onSwitch() {
-        String pass = MainRunner.getGameContext().getGame().getGame().getPasscode();
+        String pass = MainRunner.getGameContext().getGame().getPOJO().getPasscode();
         passcodeLabel.setText("Passcode : " + pass);
-        System.out.println(MainRunner.getGameContext().getPlayers()[0].getPlayer().getUsername());
-        System.out.println(MainRunner.getGameContext().getPlayers()[1].getPlayer().getUsername());
-        playerOneLabel.setText("Player : " + MainRunner.getGameContext().getPlayers()[0].getPlayer().getUsername());
-        this.setTitle("Passcode : " + MainRunner.getGameContext().getGame().getGame().getPasscode());
+        System.out.println(MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername());
+        System.out.println(MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername());
+        playerOneLabel.setText("Player : " + MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername());
+        this.setTitle("Passcode : " + MainRunner.getGameContext().getGame().getPOJO().getPasscode());
     }
 
     @Override
     public void onUpdate() {
         String labelTextA = "Player1 : waiting...";
         String labelTextB = "Player2 : waiting...";
-        boolean statusA = MainRunner.getGameContext().getPlayers()[0].getPlayer().isReady();
-        boolean statusB = MainRunner.getGameContext().getPlayers()[1].getPlayer().isReady();
-        String usernameA = MainRunner.getGameContext().getPlayers()[0].getPlayer().getUsername();
-        String usernameB = MainRunner.getGameContext().getPlayers()[1].getPlayer().getUsername();
+        boolean statusA = MainRunner.getGameContext().getPlayers()[0].getPOJO().isReady();
+        boolean statusB = MainRunner.getGameContext().getPlayers()[1].getPOJO().isReady();
+        String usernameA = MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername();
+        String usernameB = MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername();
         if (usernameA != null) {
             labelTextA = "Player1 : " + usernameA;
         }
