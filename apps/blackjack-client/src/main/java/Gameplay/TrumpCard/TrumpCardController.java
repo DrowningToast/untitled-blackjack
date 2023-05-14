@@ -1,4 +1,6 @@
 package Gameplay.TrumpCard;
+import Gameplay.Card.CardPOJO;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.ImageIcon;
@@ -39,11 +41,8 @@ public class TrumpCardController {
         iconStatus.put("denyUserTrumpCard", new TrumpCardPOJO("Opponent cannot use their trump cards", "Opponent cannot use their trump cards.", "denyUseTrumpCard", "ATTACK", new ImageIcon("resources/Deny_Trump_Use_Status.PNG")));
     }
 
-    public void setCards(TrumpCardPOJO cards) {
-        this.cards.add(cards);
-    }
-    public void addCards(TrumpCardPOJO cards) {
-        this.cards.add(cards);
+    public void setCards(ArrayList<TrumpCardPOJO> cards) {
+        this.cards = cards;
     }
 
     public static HashMap<String, TrumpCardPOJO> getCARDS() {
