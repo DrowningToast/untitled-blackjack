@@ -5,16 +5,16 @@ import Main.MainRunner;
 import UI.Controller.UIController;
 import lombok.Getter;
 
-
 public class GamePlayController {
     private WebsocketController wsController;
     private UIController uiController;
     @Getter
-    private GamePlayDisplayGUI ui = new GamePlayDisplayGUI(this, wsController);
+    private GamePlayDisplayGUI ui;
 
     public GamePlayController(UIController uiController, WebsocketController wsController) {
         this.wsController = wsController;
         this.uiController = uiController;
+        ui = new GamePlayDisplayGUI(this, wsController);
     }
     //    update status Button
     public void updateStatusButton(){
@@ -26,22 +26,5 @@ public class GamePlayController {
             ui.getHitButtonPlayerOne().setEnabled(true);
             ui.getStandButtonPlayerOne().setEnabled(true);
         }
-
     }
-
-//    public void actionHit() throws IOException {
-//        MessageBuilder message = new MessageBuilder(client);
-//        HashMap content = new HashMap();
-//        content.put("handler", "hit");
-//        message.setContent(content).send();
-//        System.out.println(content);
-//    }
-//
-//    public void actionStand() throws IOException {
-//        MessageBuilder message = new MessageBuilder(client);
-//        HashMap content = new HashMap();
-//        content.put("handler", "stand");
-//        message.setContent(content).send();
-//        System.out.println(content);
-//    }
 }

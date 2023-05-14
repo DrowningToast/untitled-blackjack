@@ -340,11 +340,11 @@ public class GamePlayDisplayGUI extends CustomFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void hitButtonPlayerOneActionPerformed(java.awt.event.ActionEvent evt) throws IOException {//GEN-FIRST:event_hitButtonPlayerOneActionPerformed
-        wsController.actionHit();
+        wsController.sendHit();
     }//GEN-LAST:event_hitButtonPlayerOneActionPerformed
 
     private void standButtonPlayerOneActionPerformed(java.awt.event.ActionEvent evt) throws IOException {//GEN-FIRST:event_standButtonPlayerOneActionPerformed
-        wsController.actionStand();
+        wsController.sendStand();
     }//GEN-LAST:event_standButtonPlayerOneActionPerformeds
 
 
