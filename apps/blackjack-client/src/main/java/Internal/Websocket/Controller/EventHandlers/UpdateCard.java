@@ -40,7 +40,8 @@ public class UpdateCard implements WebsocketEventHandler {
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
             ctx.getPlayer(guestUsername).getPlayer().getCardController().addCards(card);
         }
-        System.out.println(ctx.getPlayers()[0].getPlayer().getCardController().getCards());
+//        System.out.println(ctx.getPlayers()[0].getPlayer().getCardController().getCards());
+        uiController.update();
     }
 
 }
