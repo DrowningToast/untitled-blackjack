@@ -2,6 +2,7 @@ package Main;
 
 import GameContext.Game.GameModel;
 import GameContext.GameContext;
+import GameContext.Log.LogController;
 import GameContext.Player.PlayerModel;
 import Internal.Websocket.Controller.Errorhandlers.*;
 import Internal.Websocket.Controller.EventHandlers.*;
@@ -93,7 +94,8 @@ public class MainRunner {
     public static void initGameContext() {
         PlayerModel[] players = {new PlayerModel(), new PlayerModel()};
         GameModel game = new GameModel();
+        LogController log = new LogController();
 
-        gameContext = new GameContext(game, players);
+        gameContext = new GameContext(game, players, log);
     }
 }
