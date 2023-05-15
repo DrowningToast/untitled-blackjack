@@ -63,6 +63,10 @@ public class GameplayController {
         ui.getScoreGamePlayerOneLabel().setText(ctx.getPlayers()[0].getPOJO().getGameScore() + "");
         ui.getScoreGamePlayerTwoLabel().setText(ctx.getPlayers()[1].getPOJO().getGameScore() + "");
     }
+
+    public void updateTitleGamePlay(){
+        ui.setTitle("Untitled-BlackJack [" + ctx.getPlayers()[0].getPOJO().getUsername() + "] " + ctx.getPlayers()[0].getPOJO().getGameScore() + " VS " + ctx.getPlayers()[1].getPOJO().getGameScore() + " [" + ctx.getPlayers()[1].getPOJO().getUsername() + "]");
+    }
 }
 
 

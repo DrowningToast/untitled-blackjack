@@ -640,6 +640,7 @@ public class GameplayDisplayGUI extends CustomFrame {
     @Override
     public void onUpdate() {
         controller.updateStatusButton();
+        controller.updateTitleGamePlay();
         controller.showCard(playerOneTable , scoreCardOneLabel,MainRunner.getGameContext().getPlayers()[0].getPOJO());
         controller.showCard(playerTwoTable ,scoreCardTwoLabel,MainRunner.getGameContext().getPlayers()[1].getPOJO());
         controller.updatePlayerScore();
