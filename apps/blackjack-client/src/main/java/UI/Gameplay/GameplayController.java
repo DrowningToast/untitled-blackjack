@@ -27,6 +27,7 @@ public class GameplayController {
         this.uiController = uiController;
         this.ctx = MainRunner.getGameContext();
         ui = new GameplayDisplayGUI(this, wsController);
+
     }
 
     //    update status Button
@@ -65,7 +66,11 @@ public class GameplayController {
     }
 
     public void updateTitleGamePlay(){
-        ui.setTitle("Untitled-BlackJack [" + ctx.getPlayers()[0].getPOJO().getUsername() + "] " + ctx.getPlayers()[0].getPOJO().getGameScore() + " VS " + ctx.getPlayers()[1].getPOJO().getGameScore() + " [" + ctx.getPlayers()[1].getPOJO().getUsername() + "]");
+        String playerNameOne = ctx.getPlayers()[0].getPOJO().getUsername();
+        String playerNameTwo = ctx.getPlayers()[1].getPOJO().getUsername();
+        Long playerScoreGameOne = ctx.getPlayers()[0].getPOJO().getGameScore();
+        Long playerScoreGameTwo = ctx.getPlayers()[1].getPOJO().getGameScore();
+        ui.setTitle("Untitled-BlackJack [" + playerNameOne + "] " + playerScoreGameOne + " VS " + playerScoreGameTwo + " [" + playerNameTwo + "]");
     }
 }
 
