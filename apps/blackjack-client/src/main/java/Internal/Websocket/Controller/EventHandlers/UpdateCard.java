@@ -34,14 +34,14 @@ public class UpdateCard implements WebsocketEventHandler {
             ctx.getPlayer(hostUsername).getPOJO().getCardController().addCards(card);
 
         }
-        ctx.getLogController().addLog(hostUsername + " hand is now " + ctx.getPlayer(hostUsername).getPOJO().getCardDisplayName());
+        ctx.getLogController().addLog(hostUsername + " hand is now " + ctx.getPlayer(hostUsername).getPOJO().getCardsFormattedString());
         for (Object c : guestCards) {
             JSONObject cardObject = (JSONObject) c;
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
             ctx.getPlayer(guestUsername).getPOJO().getCardController().addCards(card);
 
         }
-        ctx.getLogController().addLog(guestUsername + " hand is now " + ctx.getPlayer(guestUsername).getPOJO().getCardDisplayName());
+        ctx.getLogController().addLog(guestUsername + " hand is now " + ctx.getPlayer(guestUsername).getPOJO().getCardsFormattedString());
         uiController.update();
 
     }
