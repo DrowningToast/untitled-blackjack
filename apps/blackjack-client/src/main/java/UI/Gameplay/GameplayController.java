@@ -1,5 +1,6 @@
 package UI.Gameplay;
 
+import GameContext.Card.CardController;
 import GameContext.Card.CardPOJO;
 import GameContext.TrumpCard.TrumpCardPOJO;
 import GameContext.TrumpCard.TrumpCardDisplay;
@@ -9,13 +10,12 @@ import GameContext.Player.PlayerPOJO;
 
 import GameContext.TrumpCard.TrumpCardPOJO;
 import Internal.Websocket.Controller.WebsocketController;
-import Internal.UserInterface.UIController;
-
 import Main.MainRunner;
-
+import Internal.UserInterface.UIController;
 import lombok.Getter;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class GameplayController {
 
@@ -36,13 +36,15 @@ public class GameplayController {
         ui = new GameplayDisplayGUI(this, wsController);
     }
 
-    //    update status Button
+    // update status Button
     public void updateStatusButton() {
 
-        if (MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername().equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
+        if (MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername()
+                .equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
             ui.getHitButtonPlayerOne().setEnabled(false);
             ui.getStandButtonPlayerOne().setEnabled(false);
-        } else if (MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername().equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
+        } else if (MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername()
+                .equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
             ui.getHitButtonPlayerOne().setEnabled(true);
             ui.getStandButtonPlayerOne().setEnabled(true);
         }
@@ -79,5 +81,10 @@ public class GameplayController {
         }
         playerTrumpHold.revalidate();
         playerTrumpHold.repaint();
+    }
+
+    public void updatePlayerScore() {
+        ui.getScoreGamePlayerOneLabel().setText(ctx.getPlayers()[0].getPOJO().getGameScore() + "");
+        ui.getScoreGamePlayerTwoLabel().setText(ctx.getPlayers()[1].getPOJO().getGameScore() + "");
     }
 }
