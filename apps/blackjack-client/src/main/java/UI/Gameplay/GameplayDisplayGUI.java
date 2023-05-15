@@ -42,6 +42,7 @@ public class GameplayDisplayGUI extends CustomFrame {
     private void initComponents() {
 
         gamePlayPanel = new javax.swing.JPanel();
+        trumpHoldChipPlayerOnePanel = new javax.swing.JPanel();
         buttonPanelPlayerOne = new javax.swing.JPanel();
         hitButtonPlayerOne = new javax.swing.JButton();
         standButtonPlayerOne = new javax.swing.JButton();
@@ -51,7 +52,6 @@ public class GameplayDisplayGUI extends CustomFrame {
         trumpChipPlayerTwoPanel = new javax.swing.JPanel();
         playerOneNamePanel = new javax.swing.JPanel();
         playerOneNameLabel = new javax.swing.JLabel();
-        trumpHoldChipPlayerOnePanel = new javax.swing.JPanel();
         trumpChipPlayerOnePanel = new javax.swing.JPanel();
         playerTwoNamePanel = new javax.swing.JPanel();
         playerTwoNameLabel = new javax.swing.JLabel();
@@ -80,6 +80,9 @@ public class GameplayDisplayGUI extends CustomFrame {
         gamePlayPanel.setBackground(new java.awt.Color(204, 255, 153));
         gamePlayPanel.setPreferredSize(new java.awt.Dimension(1280, 800));
         gamePlayPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        trumpHoldChipPlayerOnePanel.setBackground(new java.awt.Color(0, 0, 0));
+        gamePlayPanel.add(trumpHoldChipPlayerOnePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 440, 250, 160));
 
         buttonPanelPlayerOne.setBackground(new java.awt.Color(153, 153, 153));
         buttonPanelPlayerOne.setForeground(new java.awt.Color(255, 255, 255));
@@ -167,21 +170,6 @@ public class GameplayDisplayGUI extends CustomFrame {
         playerOneNamePanel.add(playerOneNameLabel);
 
         gamePlayPanel.add(playerOneNamePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 660, 250, 90));
-
-        trumpHoldChipPlayerOnePanel.setBackground(new java.awt.Color(0, 0, 0));
-
-        javax.swing.GroupLayout trumpHoldChipPlayerOnePanelLayout = new javax.swing.GroupLayout(trumpHoldChipPlayerOnePanel);
-        trumpHoldChipPlayerOnePanel.setLayout(trumpHoldChipPlayerOnePanelLayout);
-        trumpHoldChipPlayerOnePanelLayout.setHorizontalGroup(
-            trumpHoldChipPlayerOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 250, Short.MAX_VALUE)
-        );
-        trumpHoldChipPlayerOnePanelLayout.setVerticalGroup(
-            trumpHoldChipPlayerOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 160, Short.MAX_VALUE)
-        );
-
-        gamePlayPanel.add(trumpHoldChipPlayerOnePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 440, 250, 160));
 
         trumpChipPlayerOnePanel.setBackground(new java.awt.Color(51, 51, 51));
         trumpChipPlayerOnePanel.setAutoscrolls(true);
@@ -642,5 +630,6 @@ public class GameplayDisplayGUI extends CustomFrame {
         controller.updateStatusButton();
         controller.showCard(playerOneTable , scoreCardOneLabel,MainRunner.getGameContext().getPlayers()[0].getPOJO());
         controller.showCard(playerTwoTable ,scoreCardTwoLabel,MainRunner.getGameContext().getPlayers()[1].getPOJO());
+        controller.showTrumpCard(trumpHoldChipPlayerOnePanel, MainRunner.getGameContext().getPlayers()[0].getPOJO());
     }
 }
