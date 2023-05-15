@@ -1,16 +1,20 @@
 package UI.Gameplay;
 
-import GameContext.Card.CardController;
 import GameContext.Card.CardPOJO;
 import GameContext.Card.CardDisplay;
+import GameContext.GameContext;
 import GameContext.Player.PlayerPOJO;
+
 import Internal.Websocket.Controller.WebsocketController;
-import Main.MainRunner;
 import Internal.UserInterface.UIController;
+
+import Main.MainRunner;
+
 import lombok.Getter;
 
+
+
 import javax.swing.*;
-import java.util.ArrayList;
 
 public class GameplayController {
     private WebsocketController wsController;
@@ -18,11 +22,13 @@ public class GameplayController {
     @Getter
     private GameplayDisplayGUI ui;
     public CardDisplay cardPlayer;
+    private GameContext ctx;
 
     public GameplayController(UIController uiController, WebsocketController wsController) {
         cardPlayer = new CardDisplay();
         this.wsController = wsController;
         this.uiController = uiController;
+        this.ctx = MainRunner.getGameContext();
         ui = new GameplayDisplayGUI(this, wsController);
     }
 
@@ -47,6 +53,11 @@ public class GameplayController {
             playerTable.add(cardPlayer.getCard());
             playerCardScore.setText("Score : " + player.getCardScore());
         }
+    }
+
+    public void updateChatLog() {
+        ui.getGameplayTextArea().setText( ui.getGameplayTextArea().getText()+"\n"+ctx.getLogController().getLog().get(ctx.getLogController().getLog().size()-1));
+        System.out.println(ctx.getLogController().getLog().size()-1);
     }
 }
 

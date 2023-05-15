@@ -24,6 +24,7 @@ public class MainRunner {
     static LoginDisplayGUI loginUI;
     static LobbyController lobbyController;
     static WaitingRoomController waitingRoomController;
+    @Getter
     static GameplayController gamePlayController;
     static PlayerPOJO playerPOJO;
     static GamePOJO gameModel;
