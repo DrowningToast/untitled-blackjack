@@ -28,7 +28,7 @@ public class PlayerPOJO {
     public long getCardScore() {
         long total = 0;
         for (CardPOJO card : cardController.getPOJOS()) {
-            total += card.getValue()[card.getValue().length-1];
+            total += card.getValue()[card.getValue().length - 1];
         }
         if (total > 21) {
             total = 0;
@@ -40,12 +40,17 @@ public class PlayerPOJO {
         return total;
     }
 
-    public String getCardDisplayName(){
+    public String getCardDisplayName() {
         String displayName = "";
         for (CardPOJO card : cardController.getPOJOS()) {
-            displayName = displayName + card.getDisplayName() + ", ";
+                displayName += card.getDisplayName();
+            try {
+                displayName += ", ";
+            } catch (IndexOutOfBoundsException e) {
+                displayName += ".";
+            }
         }
-        return  displayName;
+        return displayName;
     }
 
     public void addGameScore(long score) {
