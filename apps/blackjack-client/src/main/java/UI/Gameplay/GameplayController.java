@@ -9,6 +9,7 @@ import Main.MainRunner;
 import Internal.UserInterface.UIController;
 import lombok.Getter;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class GameplayController {
@@ -43,28 +44,25 @@ public class GameplayController {
         }
     }
 
-    public void showCardTwo(ArrayList<CardPOJO> cards) {
-        ui.getPlayerTwoTable().removeAll();
-        playerPOJOTwo.setScore(0);
-        for (CardPOJO i : cards) {
-            playerPOJOTwo.addScore(i.getValue());
-            cardPlayerTwo.showCard(i);
-            ui.getPlayerTwoTable().add(cardPlayerTwo.getCard());
-            System.out.println(playerPOJOTwo.getScore());
-            ui.getScoreCardTwoLabel().setText("Score : "+ playerPOJOTwo.getScore());
-        }
-
-    }
-
-    public void showCardOne(ArrayList<CardPOJO> cards) {
-        ui.getPlayerOneTable().removeAll();
-        playerPOJOOne.setScore(0);
-        for (CardPOJO i : cards) {
-            playerPOJOOne.addScore(i.getValue());
-            cardPlayerOne.showCard(i);
-            ui.getPlayerOneTable().add(cardPlayerOne.getCard());
-            System.out.println(playerPOJOOne.getScore());
-            ui.getScoreCardOneLabel().setText("Score : "+ playerPOJOOne.getScore());
+    public void showCard(JPanel playerTable, PlayerPOJO player) {
+        if (player.getUsername() == playerPOJOOne.getUsername()) {
+            playerTable.removeAll();
+            playerTable.revalidate();
+            playerTable.repaint();
+            for (CardPOJO i : playerPOJOOne.getCardController().getPOJOS()) {
+                cardPlayerOne.showCard(i);
+                playerTable.add(cardPlayerOne.getCard());
+                ui.getScoreCardOneLabel().setText("Score : " + player.getCardScore());
+            }
+        } else if (player.getUsername() == playerPOJOTwo.getUsername()) {
+            playerTable.removeAll();
+            playerTable.revalidate();
+            playerTable.repaint();
+            for (CardPOJO i : playerPOJOTwo.getCardController().getPOJOS()) {
+                cardPlayerTwo.showCard(i);
+                playerTable.add(cardPlayerTwo.getCard());
+                ui.getScoreCardTwoLabel().setText("Score : " + player.getCardScore());
+            }
         }
     }
 }

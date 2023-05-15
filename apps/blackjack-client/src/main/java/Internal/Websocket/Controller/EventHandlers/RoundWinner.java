@@ -23,7 +23,7 @@ public class RoundWinner implements WebsocketEventHandler {
         JSONObject winner = (JSONObject) content.get("winner");
         String username = (String) winner.get("username");
         long pointsEarned = (long) content.get("pointsEarned");
-        ctx.getPlayer(username).getPOJO().addScore(pointsEarned);
+        ctx.getPlayer(username).getPOJO().addGameScore(pointsEarned);
 
         // IGame set value section
         JSONObject game = (JSONObject) content.get("game");
@@ -56,6 +56,8 @@ public class RoundWinner implements WebsocketEventHandler {
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
             ctx.getPlayer(guestUsername).getPOJO().getCardController().addCards(card);
         }
+        System.out.println("total score of Player 1 : "+ctx.getPlayers()[0].getPOJO().getCardScore());
+        System.out.println("total score of Player 2 : "+ctx.getPlayers()[1].getPOJO().getCardScore());
         uiController.update();
     }
 }

@@ -2,6 +2,7 @@ package GameContext.Player;
 
 
 import GameContext.Card.CardController;
+import GameContext.Card.CardPOJO;
 import GameContext.TrumpCard.TrumpCardController;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +16,8 @@ public class PlayerPOJO {
     private boolean stand = true, ready;
     @Getter
     @Setter
-    private long score;
+    private long gameScore;
+    private long cardScore;
     @Getter
     @Setter
     private CardController cardController = new CardController();
@@ -23,7 +25,26 @@ public class PlayerPOJO {
     @Setter
     private TrumpCardController trumpCardController = new TrumpCardController();
 
-    public void addScore(long score){
-        this.score += score;
+    public long getCardScore() {
+        long total = 0;
+        for (CardPOJO card : cardController.getPOJOS()) {
+            total += card.getValue()[card.getValue().length-1];
+        }
+        if (total > 21) {
+            total = 0;
+            for (CardPOJO card : cardController.getPOJOS()) {
+                total += card.getValue()[0];
+            }
+            return total;
+        }
+        return total;
+    }
+
+    public void addGameScore(long score) {
+        this.gameScore += score;
+    }
+
+    public void addCardScore(long cardScore) {
+        this.cardScore += cardScore;
     }
 }

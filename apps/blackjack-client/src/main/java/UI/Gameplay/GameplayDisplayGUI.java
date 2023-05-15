@@ -91,7 +91,11 @@ public class GameplayDisplayGUI extends CustomFrame {
         hitButtonPlayerOne.setText("Hit");
         hitButtonPlayerOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                hitButtonPlayerOneActionPerformed(evt);
+                try {
+                    hitButtonPlayerOneActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -101,7 +105,11 @@ public class GameplayDisplayGUI extends CustomFrame {
         standButtonPlayerOne.setText("Stand");
         standButtonPlayerOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                standButtonPlayerOneActionPerformed(evt);
+                try {
+                    standButtonPlayerOneActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -624,14 +632,13 @@ public class GameplayDisplayGUI extends CustomFrame {
 
     @Override
     public void onSwitch() {
-        playerOneNameLabel.setText(MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername());
-        playerTwoNameLabel.setText(MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername());
+
     }
 
     @Override
     public void onUpdate() {
         controller.updateStatusButton();
-        controller.showCardOne(MainRunner.getGameContext().getPlayers()[0].getPOJO().getCardController().getPOJOS());
-        controller.showCardTwo(MainRunner.getGameContext().getPlayers()[1].getPOJO().getCardController().getPOJOS());
+        controller.showCard(playerOneTable ,MainRunner.getGameContext().getPlayers()[0].getPOJO());
+        controller.showCard(playerTwoTable ,MainRunner.getGameContext().getPlayers()[1].getPOJO());
     }
 }
