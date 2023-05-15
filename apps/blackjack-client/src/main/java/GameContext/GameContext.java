@@ -32,4 +32,14 @@ public class GameContext {
         }
 
     }
+    public PlayerModel getAnotherPlayer(String username){
+        if (username.equals(players[0].getPOJO().getUsername())){
+            return players[1];
+        }else if(username.equals(players[1].getPOJO().getUsername())){
+            return players[0];
+        }else{
+            return null;
+        }
+
+    }
 }
