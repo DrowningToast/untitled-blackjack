@@ -16,7 +16,7 @@ public class UpdateCard implements WebsocketEventHandler {
 
 
     @Override
-    public void handler(GameContext ctx, JSONObject body){
+    public void handler(GameContext ctx, JSONObject body) {
 //        JSONObject content = (JSONObject) body.get("content");
         JSONArray cards = (JSONArray) body.get("content");
         JSONObject host = (JSONObject) cards.get(0);
@@ -25,21 +25,22 @@ public class UpdateCard implements WebsocketEventHandler {
         String guestUsername = (String) guest.get("username");
         JSONArray hostCards = (JSONArray) host.get("cards");
         JSONArray guestCards = (JSONArray) guest.get("cards");
-
-        for (Object c : hostCards){
+        ctx.getPlayer(hostUsername).getPOJO().getCardController().resetCards();
+        ctx.getPlayer(guestUsername).getPOJO().getCardController().resetCards();
+        for (Object c : hostCards) {
             JSONObject cardObject = (JSONObject) c;
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
             ctx.getPlayer(hostUsername).getPOJO().getCardController().addCards(card);
             ctx.getLogController().addLog("Card added to" + hostUsername);
         }
-        for (Object c : guestCards){
+        for (Object c : guestCards) {
             JSONObject cardObject = (JSONObject) c;
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
             ctx.getPlayer(guestUsername).getPOJO().getCardController().addCards(card);
             ctx.getLogController().addLog("Card added to" + guestUsername + ".");
         }
-
         uiController.update();
+
     }
 
 }

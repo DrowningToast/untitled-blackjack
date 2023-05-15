@@ -9,23 +9,18 @@ import Main.MainRunner;
 import Internal.UserInterface.UIController;
 import lombok.Getter;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class GameplayController {
     private WebsocketController wsController;
     private UIController uiController;
-    private CardController card;
     @Getter
     private GameplayDisplayGUI ui;
-    public PlayerPOJO playerPOJOOne;
-    public PlayerPOJO playerPOJOTwo;
-    public CardDisplay cardPlayerOne, cardPlayerTwo;
+    public CardDisplay cardPlayer;
 
     public GameplayController(UIController uiController, WebsocketController wsController) {
-        playerPOJOOne = MainRunner.getGameContext().getPlayers()[0].getPOJO();
-        playerPOJOTwo = MainRunner.getGameContext().getPlayers()[1].getPOJO();
-        cardPlayerOne = new CardDisplay();
-        cardPlayerTwo = new CardDisplay();
+        cardPlayer = new CardDisplay();
         this.wsController = wsController;
         this.uiController = uiController;
         ui = new GameplayDisplayGUI(this, wsController);
@@ -43,21 +38,17 @@ public class GameplayController {
         }
     }
 
-    public void showCardTwo(ArrayList<CardPOJO> cards) {
-        ui.getPlayerTwoTable().removeAll();
-        for (CardPOJO i : cards) {
-            cardPlayerTwo.showCard(i);
-            ui.getPlayerTwoTable().add(cardPlayerTwo.getCard());
-        }
-    }
-
-    public void showCardOne(ArrayList<CardPOJO> cards) {
-        ui.getPlayerOneTable().removeAll();
-        for (CardPOJO i : cards) {
-            cardPlayerOne.showCard(i);
-            ui.getPlayerOneTable().add(cardPlayerOne.getCard());
+    public void showCard(JPanel playerTable, JLabel playerCardScore, PlayerPOJO player) {
+        playerTable.removeAll();
+        playerTable.revalidate();
+        playerTable.repaint();
+        for (CardPOJO i : player.getCardController().getPOJOS()) {
+            cardPlayer.showCard(i);
+            playerTable.add(cardPlayer.getCard());
+            playerCardScore.setText("Score : " + player.getCardScore());
         }
     }
 }
+
 
 

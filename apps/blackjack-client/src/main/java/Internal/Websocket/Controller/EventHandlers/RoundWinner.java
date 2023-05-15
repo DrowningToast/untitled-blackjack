@@ -23,7 +23,7 @@ public class RoundWinner implements WebsocketEventHandler {
         JSONObject winner = (JSONObject) content.get("winner");
         String username = (String) winner.get("username");
         long pointsEarned = (long) content.get("pointsEarned");
-        ctx.getPlayer(username).getPOJO().addScore(pointsEarned);
+        ctx.getPlayer(username).getPOJO().addGameScore(pointsEarned);
 
         // IGame set value section
         JSONObject game = (JSONObject) content.get("game");

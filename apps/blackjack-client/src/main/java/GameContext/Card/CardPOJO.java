@@ -13,19 +13,19 @@ public class CardPOJO {
     private String displayName; // name card
     @Getter
     @Setter
-    private int value;
+    private int[] value;
     @Getter
     @Setter
     private ImageIcon image; // image
 
-    public CardPOJO(String displayName, int value, ImageIcon image) {
+    public CardPOJO(String displayName, int[] value, ImageIcon image) {
         this.displayName = displayName;
         this.value = value;
         this.image = image;
     }
 
     public CardPOJO() {
-        this("", 0, null);
+        this("", new int[]{0}, null);
     }
 }
 

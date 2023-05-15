@@ -6,26 +6,26 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 public class CardDisplay {
-    private JLabel card;
+    private JLabel cardLabel;
 //    private CardPOJO cards;
 
     public CardDisplay(){
     }
     
-    public JLabel showCard(CardPOJO cards){
-        Image image = cards.getImage().getImage();//It's ImageIcon icon = randomCard.getImage(); and Image = icon.getImage(); combine together :)
+    public JLabel showCard(CardPOJO card){
+        Image image = card.getImage().getImage();//It's ImageIcon icon = randomCard.getImage(); and Image = icon.getImage(); combine together :)
         Image scaledImage = image.getScaledInstance(107, 157, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaledImage);
 
-        card = new JLabel(scaledIcon);
-        return card;
+        cardLabel = new JLabel(scaledIcon);
+        return cardLabel;
     }
 
     public JLabel getCard() {
-        return card;
+        return cardLabel;
     }
 
-    public void setCard(JLabel card) {
-        this.card = card;
+    public void setCard(JLabel cardLabel) {
+        this.cardLabel = cardLabel;
     }
 }
