@@ -40,6 +40,14 @@ public class PlayerPOJO {
         return total;
     }
 
+    public String getCardDisplayName(){
+        String displayName = "";
+        for (CardPOJO card : cardController.getPOJOS()) {
+            displayName = displayName + card.getDisplayName() + ", ";
+        }
+        return  displayName;
+    }
+
     public void addGameScore(long score) {
         this.gameScore += score;
     }

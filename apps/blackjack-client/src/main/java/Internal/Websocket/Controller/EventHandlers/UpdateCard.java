@@ -27,18 +27,21 @@ public class UpdateCard implements WebsocketEventHandler {
         JSONArray guestCards = (JSONArray) guest.get("cards");
         ctx.getPlayer(hostUsername).getPOJO().getCardController().resetCards();
         ctx.getPlayer(guestUsername).getPOJO().getCardController().resetCards();
+
         for (Object c : hostCards) {
             JSONObject cardObject = (JSONObject) c;
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
             ctx.getPlayer(hostUsername).getPOJO().getCardController().addCards(card);
-            ctx.getLogController().addLog("Card added to" + hostUsername);
+
         }
+        ctx.getLogController().addLog(hostUsername + " hand is now " + ctx.getPlayer(hostUsername).getPOJO().getCardDisplayName());
         for (Object c : guestCards) {
             JSONObject cardObject = (JSONObject) c;
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
             ctx.getPlayer(guestUsername).getPOJO().getCardController().addCards(card);
-            ctx.getLogController().addLog("Card added to" + guestUsername + ".");
+
         }
+        ctx.getLogController().addLog(guestUsername + " hand is now " + ctx.getPlayer(guestUsername).getPOJO().getCardDisplayName());
         uiController.update();
 
     }
