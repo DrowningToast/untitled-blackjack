@@ -5,6 +5,7 @@ import jakarta.websocket.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,10 +54,13 @@ public class WebsocketClientEndpoint {
             controller.handleMessage(message);
         } else if (jsonMsg.containsKey("error")) {
             controller.handleError(message);
-        } else if (jsonMsg.containsKey("disconnect")){
-            controller.handleDisconnect();
         }
     }
 
+    @OnClose
+    public void onClose(){
+        int input = JOptionPane.showOptionDialog(null, "You're being idle for too long.", "Timed out", JOptionPane.PLAIN_MESSAGE, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+        if (input == JOptionPane.OK_OPTION) {System.out.println("yes");System.exit(0);}
+    }
 
 }
