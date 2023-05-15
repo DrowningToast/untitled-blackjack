@@ -4,8 +4,10 @@ import GameContext.Card.CardController;
 import GameContext.Card.CardPOJO;
 import GameContext.GameContext;
 import Internal.UserInterface.UIController;
+import Main.MainRunner;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import javax.swing.JOptionPane;
 
 public class RoundWinner implements WebsocketEventHandler {
     private UIController uiController;
@@ -60,5 +62,6 @@ public class RoundWinner implements WebsocketEventHandler {
         ctx.getLogController().addLog(username + " won in round " + roundCounter);
         System.out.println("THIS IS LOG : " + ctx.getLogController().getLog());
         uiController.update();
+        JOptionPane.showMessageDialog(null, username + " won in round " + roundCounter + " with " + MainRunner.getGameContext().getPlayer(username).getPOJO().getCardScore() + " point over " +MainRunner.getGameContext().getAnotherPlayer(username).getPOJO().getCardScore()+ " , Earning 1 point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
     }
 }
