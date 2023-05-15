@@ -56,8 +56,9 @@ public class RoundWinner implements WebsocketEventHandler {
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
             ctx.getPlayer(guestUsername).getPOJO().getCardController().addCards(card);
         }
-        System.out.println("total score of Player 1 : "+ctx.getPlayers()[0].getPOJO().getCardScore());
-        System.out.println("total score of Player 2 : "+ctx.getPlayers()[1].getPOJO().getCardScore());
+        // wait for namkhing player's
+        ctx.getLogController().addLog(username + " won in round " + roundCounter);
+        System.out.println("THIS IS LOG : " + ctx.getLogController().getLog());
         uiController.update();
     }
 }

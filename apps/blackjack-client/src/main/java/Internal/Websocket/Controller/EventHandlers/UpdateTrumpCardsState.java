@@ -1,6 +1,8 @@
 package Internal.Websocket.Controller.EventHandlers;
 
+import GameContext.Card.CardController;
 import GameContext.GameContext;
+import GameContext.Log.LogController;
 import GameContext.TrumpCard.TrumpCardController;
 import GameContext.TrumpCard.TrumpCardPOJO;
 import Internal.UserInterface.UIController;
@@ -27,7 +29,8 @@ public class UpdateTrumpCardsState implements WebsocketEventHandler {
             trumpCards.add(card);
         }
         ctx.getPlayers()[0].getPOJO().getTrumpCardController().setPOJOS(trumpCards);
-//        System.out.println(ctx.getPlayers()[0].getPlayer().getTrumpCardController().getCards());
+        ctx.getLogController().addLog(ctx.getPlayers()[0]+"/'s trumpCards has been updated.");
+        //        System.out.println(ctx.getPlayers()[0].getPlayer().getTrumpCardController().getCards());
         uiController.update();
     }
 }
