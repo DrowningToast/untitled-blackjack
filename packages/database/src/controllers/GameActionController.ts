@@ -760,6 +760,8 @@ const showdownRound = asyncTransaction(
       );
       if (err) throw err;
       if (err2) throw err2;
+    } else {
+      console.log("CANNOT DETERMINE WINNER");
     }
 
     // get cards for the reveal
