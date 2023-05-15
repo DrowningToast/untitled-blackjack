@@ -138,6 +138,11 @@ public class WebsocketController {
         }
     }
 
+    public void handleDisconnect() {
+        int input = JOptionPane.showOptionDialog(null, "You're being idle for too long.", "Timed out", JOptionPane.PLAIN_MESSAGE, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+        if (input == JOptionPane.OK_OPTION) {System.out.println("yes");System.exit(0);}
+    }
+
     public WebsocketClientEndpoint getClient() {
         return client;
     }

@@ -59,8 +59,7 @@ public class WebsocketClientEndpoint {
 
     @OnClose
     public void onClose(){
-        int input = JOptionPane.showOptionDialog(null, "You're being idle for too long.", "Timed out", JOptionPane.PLAIN_MESSAGE, JOptionPane.INFORMATION_MESSAGE, null, null, null);
-        if (input == JOptionPane.OK_OPTION) {System.out.println("yes");System.exit(0);}
+        controller.handleDisconnect();
     }
 
 }
