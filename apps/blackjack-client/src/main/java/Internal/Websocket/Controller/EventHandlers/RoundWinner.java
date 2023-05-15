@@ -20,11 +20,6 @@ public class RoundWinner implements WebsocketEventHandler {
     public void handler(GameContext ctx, JSONObject body) {
         JSONObject content = (JSONObject) body.get("content");
         System.out.println(content.get("cards"));
-        // set score section
-        JSONObject winner = (JSONObject) content.get("winner");
-        String username = (String) winner.get("username");
-        long pointsEarned = (long) content.get("pointsEarned");
-        ctx.getPlayer(username).getPOJO().addGameScore(pointsEarned);
 
         // IGame set value section
         JSONObject game = (JSONObject) content.get("game");
@@ -57,13 +52,25 @@ public class RoundWinner implements WebsocketEventHandler {
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
             ctx.getPlayer(guestUsername).getPOJO().getCardController().addCards(card);
         }
-        // wait for namkhing player's
-        ctx.getLogController().addLog(username + " won in round " + roundCounter);
-        System.out.println("THIS IS LOG : " + ctx.getLogController().getLog());
+        // Player and Score section
+        JSONObject winner = (JSONObject) content.get("winner");
+        long pointsEarned = (long) content.get("pointsEarned");
+        if (winner != null){
+            String username = (String) winner.get("username");
+            ctx.getPlayer(username).getPOJO().addGameScore(pointsEarned);
+            ctx.getLogController().addLog(username + " won in round " + roundCounter);
+            long winnerCardPoint = ctx.getPlayer(username).getPOJO().getCardScore();
+            long loserCardPoint = ctx.getAnotherPlayer(username).getPOJO().getCardScore();
+            JOptionPane.showMessageDialog(null, username + " won in round " + roundCounter + " with " + winnerCardPoint + " point over " + loserCardPoint + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
+        }else{
+            //both win
+            ctx.getPlayers()[0].getPOJO().addGameScore(pointsEarned);
+            ctx.getPlayers()[1].getPOJO().addGameScore(pointsEarned);
+            long cardPoint = ctx.getPlayers()[0].getPOJO().getCardScore();
+            JOptionPane.showMessageDialog(null, "Both player won in round" + roundCounter + " with " + cardPoint + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+        // set attribute point card
         uiController.update();
-//        set adttribute point card
-        long winnerCardPoint = MainRunner.getGameContext().getPlayer(username).getPOJO().getCardScore();
-        long loserCardPoint = MainRunner.getGameContext().getAnotherPlayer(username).getPOJO().getCardScore();
-        JOptionPane.showMessageDialog(null, username + " won in round " + roundCounter + " with " + winnerCardPoint + " point over " + loserCardPoint + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
     }
 }
