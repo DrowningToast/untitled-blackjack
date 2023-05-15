@@ -72,8 +72,6 @@ public class GameplayController {
         System.out.println(player.getTrumpCardController().getPOJOS().get(0));
         System.out.println("trump add");
         playerTrumpHold.removeAll();
-        playerTrumpHold.revalidate();
-        playerTrumpHold.repaint();
         for (TrumpCardPOJO i : player.getTrumpCardController().getPOJOS()) {
             System.out.println("add trump");
             trumpCard.showTrumpCard(i);
