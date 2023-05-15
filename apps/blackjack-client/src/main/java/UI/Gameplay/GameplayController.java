@@ -13,7 +13,6 @@ import Main.MainRunner;
 import lombok.Getter;
 
 
-
 import javax.swing.*;
 
 public class GameplayController {
@@ -56,8 +55,10 @@ public class GameplayController {
     }
 
     public void updateChatLog() {
-        ui.getGameplayTextArea().setText( ui.getGameplayTextArea().getText()+"\n"+ctx.getLogController().getLog().get(ctx.getLogController().getLog().size()-1));
-        System.out.println(ctx.getLogController().getLog().size()-1);
+        String oldText = ui.getGameplayTextArea().getText() + "\n";
+        String newText = ctx.getLogController().getLog().get(ctx.getLogController().getLog().size() - 1);
+        ui.getGameplayTextArea().setText(oldText + newText);
+        System.out.println(newText);
     }
 }
 
