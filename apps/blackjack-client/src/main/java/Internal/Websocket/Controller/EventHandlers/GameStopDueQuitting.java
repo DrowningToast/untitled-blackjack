@@ -14,7 +14,7 @@ public class GameStopDueQuitting implements WebsocketEventHandler{
     @Override
     public void handler(GameContext ctx, JSONObject body) {
         String username = (String) body.get("content");
-        ctx.getLogController().addLog("Player " + username + " has left the game.");
+        ctx.getLogController().addLog("Player " + username + " has left the game, The game is now safe to leave.");
         uiController.update();
     }
 }
