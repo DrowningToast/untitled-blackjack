@@ -38,9 +38,9 @@ public class GameplayController {
 
     // update status Button
     public void updateStatusButton() {
-
-        if (MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername()
-                .equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
+        String username =  MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername();
+        String checker = MainRunner.getGameContext().getGame().getPOJO().getTurnOwner();
+        if (username.equals(checker)){
             ui.getHitButtonPlayerOne().setEnabled(false);
             ui.getStandButtonPlayerOne().setEnabled(false);
         } else if (MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername()
