@@ -42,28 +42,4 @@ public class MessageBuilder {
         this.session = client.getSession();
     }
 
-//    public void checkSendMessageHandler(Session session, String handler) throws Exception {
-//
-//        switch (handler) {
-//            case "auth" -> {
-//                session.getBasicRemote().sendText(message); // send message to server
-//            }
-//        }
-//    }
-
-//    public void sendMessage(String handler) throws Exception {
-//        session = rfc.getSession();
-//        switch (handler) {
-//            case "auth" -> {
-//
-//                this.message = "{\"handler\":\"auth\",\"username\":\"" + ldg.getUsername() + "\"}";
-//                session.getBasicRemote().sendText(message); // send message to server
-//                System.out.println("Yay song pai leaw");
-//            }
-//            default -> {
-//                System.out.println("Mai kaw a rai laewo");
-//            }
-//        }
-//    }
-
 }
