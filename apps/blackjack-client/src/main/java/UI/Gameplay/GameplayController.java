@@ -45,17 +45,26 @@ public class GameplayController {
 
     public void showCardTwo(ArrayList<CardPOJO> cards) {
         ui.getPlayerTwoTable().removeAll();
+        playerPOJOTwo.setScore(0);
         for (CardPOJO i : cards) {
+            playerPOJOTwo.addScore(i.getValue());
             cardPlayerTwo.showCard(i);
             ui.getPlayerTwoTable().add(cardPlayerTwo.getCard());
+            System.out.println(playerPOJOTwo.getScore());
+            ui.getScoreCardTwoLabel().setText("Score : "+ playerPOJOTwo.getScore());
         }
+
     }
 
     public void showCardOne(ArrayList<CardPOJO> cards) {
         ui.getPlayerOneTable().removeAll();
+        playerPOJOOne.setScore(0);
         for (CardPOJO i : cards) {
+            playerPOJOOne.addScore(i.getValue());
             cardPlayerOne.showCard(i);
             ui.getPlayerOneTable().add(cardPlayerOne.getCard());
+            System.out.println(playerPOJOOne.getScore());
+            ui.getScoreCardOneLabel().setText("Score : "+ playerPOJOOne.getScore());
         }
     }
 }
