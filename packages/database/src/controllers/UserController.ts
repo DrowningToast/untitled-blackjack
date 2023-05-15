@@ -39,11 +39,16 @@ const createUser = asyncTransaction(async (args: FilterQuery<IUser>) => {
  */
 const updateUser = asyncTransaction(
   async (target: FilterQuery<IUser>, value: UpdateQuery<IUser>) => {
-    const _ = await User.findOneAndUpdate(target, value);
-    if (!_?.id) {
+    console.log(value);
+    const _ = await User.updateOne(target, value);
+    if (!_) {
       return new Error("User not found");
     }
-    return ZodUserStrip.parse(_);
+
+    const [user, err] = await UserController.getUserMeta(target);
+    if (err) throw err;
+
+    return user;
   }
 );
 
