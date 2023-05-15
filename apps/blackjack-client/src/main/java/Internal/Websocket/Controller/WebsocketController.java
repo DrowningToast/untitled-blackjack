@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -46,7 +47,6 @@ public class WebsocketController {
             System.out.println(e.toString());
         }
     }
-
 
 
     public void setReady(boolean ready) {
@@ -138,7 +138,12 @@ public class WebsocketController {
         }
     }
 
-    public WebsocketClientEndpoint getClient(){
+    public void handleDisconnect() {
+        int input = JOptionPane.showOptionDialog(null, "You're being idle for too long.", "Timed out", JOptionPane.PLAIN_MESSAGE, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+        if (input == JOptionPane.OK_OPTION) {System.out.println("yes");System.exit(0);}
+    }
+
+    public WebsocketClientEndpoint getClient() {
         return client;
     }
 

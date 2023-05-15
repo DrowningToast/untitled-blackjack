@@ -53,6 +53,8 @@ public class WebsocketClientEndpoint {
             controller.handleMessage(message);
         } else if (jsonMsg.containsKey("error")) {
             controller.handleError(message);
+        } else if (jsonMsg.containsKey("disconnect")){
+            controller.handleDisconnect();
         }
     }
 
