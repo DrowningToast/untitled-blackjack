@@ -1,7 +1,8 @@
 package GameContext.Log;
 
+import Main.MainRunner;
 import lombok.Getter;
-import lombok.Setter;
+
 
 import java.util.ArrayList;
 
@@ -11,6 +12,7 @@ public class LogController {
 
     public void addLog(String message){
         log.add(message);
+        MainRunner.getGamePlayController().updateChatLog();
     }
 
     public void clearLog(){

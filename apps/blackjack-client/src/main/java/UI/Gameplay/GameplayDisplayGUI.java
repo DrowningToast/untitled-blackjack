@@ -201,6 +201,7 @@ public class GameplayDisplayGUI extends CustomFrame {
 
         gameplayTextArea.setBackground(new java.awt.Color(51, 51, 51));
         gameplayTextArea.setEditable(false);
+        gameplayTextArea.setForeground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout chatPanelLayout = new javax.swing.GroupLayout(chatPanel);
         chatPanel.setLayout(chatPanelLayout);
