@@ -53,7 +53,6 @@ public class MainRunner {
 
                     // init ws controller
                     wsController = new WebsocketController(gameContext, eventHandlers, errorHandlers);
-                    eventHandlers.put("CONNECTION_SUCCESS", new ConnectionSuccess(wsController));
 
                     // INIT UI CONTROLLER
                     uiController = new UIController(wsController);
@@ -68,17 +67,27 @@ public class MainRunner {
                     uiController.add("waitingUI", waitingRoomController.getUi());
                     uiController.add("gameplayUI", gamePlayController.getUi());
 
+                    // ADD ALL WEBSOCKET RESPONSES
+                    eventHandlers.put("CONNECTION_SUCCESS", new ConnectionSuccess(wsController));
                     eventHandlers.put("CONNECTION_AUTHORIZED", new ConnectionAuthorized(uiController));
                     eventHandlers.put("READY_STATE", new ReadyState(uiController));
                     eventHandlers.put("NEW_GAME", new NewGame(uiController));
                     eventHandlers.put("INIT_ROUND", new InitRound(uiController));
                     eventHandlers.put("UPDATE_CARDS", new UpdateCard(uiController));
                     eventHandlers.put("UPDATE_TRUMP_CARDS_STATE", new UpdateTrumpCardsState(uiController));
+                    eventHandlers.put("UPDATE_TRUMP_STATUS", new UpdateTrumpStatus(uiController));
                     eventHandlers.put("HIT_EVENT", new HitEvent(uiController));
                     eventHandlers.put("STAND_EVENT", new StandEvent(uiController));
+                    eventHandlers.put("USE_TRUMP", new UseTrump(uiController));
                     eventHandlers.put("SWITCH_TURN", new SwitchTurn(uiController));
                     eventHandlers.put("ROUND_WINNER", new RoundWinner(uiController));
                     eventHandlers.put("NEXT_ROUND", new NextRound(uiController));
+                    eventHandlers.put("GAME_WINNER", new GameWinner(uiController));
+                    eventHandlers.put("GAME_END", new GameEnd(uiController));
+                    eventHandlers.put("UPDATE_POINT_TARGET", new UpdatePointTarget(uiController));
+                    eventHandlers.put("NEXT_HIT_CARD_TRUMP_EFFECT", new NextHitTrumpCardEffect(uiController));
+                    eventHandlers.put("GAME_STOP_DUE_QUITTING", new GameStopDueQuitting(uiController));
+
 
                     errorHandlers.put("existed-user", new ExistedUser());
 //                    errorHandlers.put("invalid-passcode", new InvalidPasscode());

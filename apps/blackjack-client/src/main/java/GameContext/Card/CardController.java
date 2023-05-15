@@ -43,11 +43,6 @@ public class CardController {
         return CARDS;
     }
 
-    private Image setIconImage(Image createImage) {
-
-        return null;
-
-    }
     public static HashMap<String, CardPOJO> getCARDS(){
         return CARDS;
     }

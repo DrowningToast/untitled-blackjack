@@ -6,9 +6,11 @@ import javax.swing.ImageIcon;
 
 public class TrumpCardController {
 
-    private static HashMap<String, TrumpCardPOJO> CARDS = new HashMap<>(), iconStatus;
+    private static HashMap<String, TrumpCardPOJO> CARDS = new HashMap<>();
+    private static HashMap<String, TrumpStatusPOJO> STATUSES = new HashMap<>();
 
     private ArrayList<TrumpCardPOJO> POJOS = new ArrayList<>();
+    private ArrayList<TrumpStatusPOJO> status = new ArrayList<>();
 
     public TrumpCardController() {
 //        The chip that Hit a card
@@ -28,32 +30,36 @@ public class TrumpCardController {
         CARDS.put("changePointsLimit25", new TrumpCardPOJO("Change limit to 25", "Change game win condition to 25 instead of 21.", "changePointsLimit25", "UTILITY", new ImageIcon("resources/ChangePointLimit25.PNG")));
         CARDS.put("undoHit", new TrumpCardPOJO("Remove my last card", "Remove your latest card drawn.", "undoHit", "UTILITY", new ImageIcon("resources/UndoHit.PNG")));
         CARDS.put("invincibility", new TrumpCardPOJO("Protect from opponent's ATTACK trump cards", "Protect you from being attack by opponent's ATTACK trump cards in this round.", "invincibility", "UTILITY", new ImageIcon("resources/Invincibility.PNG")));
-    }
 
-    public void iconStatusImage() {
-//      Invincible
-        iconStatus.put("invincibility", new TrumpCardPOJO("Protect from opponent's ATTACK trump cards", "Protect you from being attack by opponent's ATTACK trump cards in this round.", "invincibility", "UTILITY", new ImageIcon("resources/Invincible_Status.PNG")));
-//      Blind
-        iconStatus.put("blind", new TrumpCardPOJO("Enemy can't see their next hit card", "Enemy can't see their next hit card.", "blind", "ATTACK", new ImageIcon("resources/Blind_Status.PNG")));
-//      Deny hit
-        iconStatus.put("denyHit", new TrumpCardPOJO("Opponent cannot hit in this round", "Opponent cannot hit in this round.", "denyHit", "ATTACK", new ImageIcon("resources/Deny_hit_Status.PNG")));
-//      Deny trump use
-        iconStatus.put("denyUserTrumpCard", new TrumpCardPOJO("Opponent cannot use their trump cards", "Opponent cannot use their trump cards.", "denyUseTrumpCard", "ATTACK", new ImageIcon("resources/Deny_Trump_Use_Status.PNG")));
+//        TrumpCard's status
+        STATUSES.put("INVINCIBILITY", new TrumpStatusPOJO("Protect from opponent's ATTACK trump cards", "Protect you from being attack by opponent's ATTACK trump cards in this round.", "INVINCIBILITY",  new ImageIcon("resources/Invincible_Status.PNG")));
+        STATUSES.put("BLIND", new TrumpStatusPOJO("Enemy can't see their next hit card", "Enemy can't see their next hit card.", "BLIND",  new ImageIcon("resources/Blind_Status.PNG")));
+        STATUSES.put("DENY_HIT", new TrumpStatusPOJO("Opponent cannot hit in this round", "Opponent cannot hit in this round.", "DENY_HIT",  new ImageIcon("resources/Deny_hit_Status.PNG")));
+        STATUSES.put("DENY_TRUMP_USE", new TrumpStatusPOJO("Opponent cannot use their trump cards", "Opponent cannot use their trump cards.", "DENY_TRUMP_USE",  new ImageIcon("resources/Deny_Trump_Use_Status.PNG")));
     }
 
     public void setPOJOS(ArrayList<TrumpCardPOJO> POJOS) {
         this.POJOS = POJOS;
     }
 
+    public void setStatus(ArrayList<TrumpStatusPOJO> status) { this.status = status;}
+
     public static HashMap<String, TrumpCardPOJO> getCARDS() {
         return CARDS;
     }
+
+    public static HashMap<String, TrumpStatusPOJO> getSTATUSES() { return STATUSES;}
 
     public ArrayList<TrumpCardPOJO> getPOJOS() {
         return this.POJOS;
     }
 
-    public HashMap<String, TrumpCardPOJO> getIconStatus() {
-        return iconStatus;
+    public ArrayList<TrumpStatusPOJO> getSTATUS() {
+        return this.status;
+    }
+
+    public void resetStatus(){
+        this.status.clear();
+        System.out.println("Reset player's status");
     }
 }
