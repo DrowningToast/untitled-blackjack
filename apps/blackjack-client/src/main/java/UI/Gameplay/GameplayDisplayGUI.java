@@ -161,7 +161,7 @@ public class GameplayDisplayGUI extends CustomFrame {
 
         playerOneNamePanel.setBackground(new java.awt.Color(102, 102, 102));
 
-        playerOneNameLabel.setFont(new java.awt.Font("Book Antiqua", 1, 18)); // NOI18N
+        playerOneNameLabel.setFont(new java.awt.Font("Book Antiqua", 1, 24)); // NOI18N
         playerOneNameLabel.setForeground(new java.awt.Color(255, 255, 255));
         playerOneNameLabel.setPreferredSize(new java.awt.Dimension(250, 90));
         playerOneNamePanel.add(playerOneNameLabel);
@@ -190,7 +190,7 @@ public class GameplayDisplayGUI extends CustomFrame {
 
         playerTwoNamePanel.setBackground(new java.awt.Color(102, 102, 102));
 
-        playerTwoNameLabel.setFont(new java.awt.Font("Book Antiqua", 1, 18)); // NOI18N
+        playerTwoNameLabel.setFont(new java.awt.Font("Book Antiqua", 1, 24)); // NOI18N
         playerTwoNameLabel.setForeground(new java.awt.Color(255, 255, 255));
         playerTwoNameLabel.setPreferredSize(new java.awt.Dimension(250, 90));
         playerTwoNamePanel.add(playerTwoNameLabel);
@@ -632,13 +632,14 @@ public class GameplayDisplayGUI extends CustomFrame {
 
     @Override
     public void onSwitch() {
-
+        playerOneNameLabel.setText(MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername());
+        playerTwoNameLabel.setText(MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername());
     }
 
     @Override
     public void onUpdate() {
         controller.updateStatusButton();
-        controller.showCard(playerOneTable ,MainRunner.getGameContext().getPlayers()[0].getPOJO());
-        controller.showCard(playerTwoTable ,MainRunner.getGameContext().getPlayers()[1].getPOJO());
+        controller.showCard(playerOneTable , scoreCardOneLabel,MainRunner.getGameContext().getPlayers()[0].getPOJO());
+        controller.showCard(playerTwoTable ,scoreCardTwoLabel,MainRunner.getGameContext().getPlayers()[1].getPOJO());
     }
 }

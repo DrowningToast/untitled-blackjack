@@ -18,15 +18,15 @@ public class GameplayController {
     private CardController card;
     @Getter
     private GameplayDisplayGUI ui;
-    public PlayerPOJO playerPOJOOne;
-    public PlayerPOJO playerPOJOTwo;
-    public CardDisplay cardPlayerOne, cardPlayerTwo;
+//    public PlayerPOJO playerPOJOOne;
+//    public PlayerPOJO playerPOJOTwo;
+    public CardDisplay cardPlayer;
 
     public GameplayController(UIController uiController, WebsocketController wsController) {
-        playerPOJOOne = MainRunner.getGameContext().getPlayers()[0].getPOJO();
-        playerPOJOTwo = MainRunner.getGameContext().getPlayers()[1].getPOJO();
-        cardPlayerOne = new CardDisplay();
-        cardPlayerTwo = new CardDisplay();
+//        playerPOJOOne = MainRunner.getGameContext().getPlayers()[0].getPOJO();
+//        playerPOJOTwo = MainRunner.getGameContext().getPlayers()[1].getPOJO();
+        cardPlayer = new CardDisplay();
+//        cardPlayerTwo = new CardDisplay();
         this.wsController = wsController;
         this.uiController = uiController;
         ui = new GameplayDisplayGUI(this, wsController);
@@ -44,27 +44,27 @@ public class GameplayController {
         }
     }
 
-    public void showCard(JPanel playerTable, PlayerPOJO player) {
-        if (player.getUsername() == playerPOJOOne.getUsername()) {
+    public void showCard(JPanel playerTable,JLabel playerCardScore, PlayerPOJO player) {
+//        if (player.getUsername() == playerPOJOOne.getUsername()) {
             playerTable.removeAll();
             playerTable.revalidate();
             playerTable.repaint();
-            for (CardPOJO i : playerPOJOOne.getCardController().getPOJOS()) {
-                cardPlayerOne.showCard(i);
-                playerTable.add(cardPlayerOne.getCard());
-                ui.getScoreCardOneLabel().setText("Score : " + player.getCardScore());
+            for (CardPOJO i : player.getCardController().getPOJOS()) {
+                cardPlayer.showCard(i);
+                playerTable.add(cardPlayer.getCard());
+                playerCardScore.setText("Score : " + player.getCardScore());
             }
-        } else if (player.getUsername() == playerPOJOTwo.getUsername()) {
-            playerTable.removeAll();
-            playerTable.revalidate();
-            playerTable.repaint();
-            for (CardPOJO i : playerPOJOTwo.getCardController().getPOJOS()) {
-                cardPlayerTwo.showCard(i);
-                playerTable.add(cardPlayerTwo.getCard());
-                ui.getScoreCardTwoLabel().setText("Score : " + player.getCardScore());
-            }
+//        } else if (player.getUsername() == playerPOJOTwo.getUsername()) {
+//            playerTable.removeAll();
+//            playerTable.revalidate();
+//            playerTable.repaint();
+//            for (CardPOJO i : playerPOJOTwo.getCardController().getPOJOS()) {
+//                cardPlayerTwo.showCard(i);
+//                playerTable.add(cardPlayerTwo.getCard());
+//                ui.getScoreCardTwoLabel().setText("Score : " + player.getCardScore());
+//            }
         }
     }
-}
+//}
 
 
