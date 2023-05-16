@@ -7,6 +7,7 @@ import {
   GameController,
   IGame,
   UserController,
+  insertErrorStack,
 } from "database";
 import { cardStateBroadcast } from "../../websocket/broadcast/cardStateBroadcast";
 import {
@@ -17,6 +18,7 @@ import {
 import { Card } from "database/src/utils/Card";
 import { hitBroadcast } from "../../websocket/broadcast/hitBroadcast";
 import { trumpStatusBroadcast } from "../../websocket/broadcast/trumpStatusBroadcast";
+import { ERR_INIT_GAME } from "../../websocket/utils/ErrorMessages";
 
 const _cardUpdateEventHandler = () =>
   AsyncExceptionHandler(async (api: APIG, game: IGame) => {
@@ -255,6 +257,17 @@ export const invincibilityTrumpEventHandler = () =>
       game.gameId
     );
     if (err3) throw err3;
+
+    // update users cards in case they're blinded
+    const [GlobalCardsContext, errAll] =
+      await GameController.getCardsOnPerspectives(game.gameId);
+
+    if (errAll) throw errAll;
+    if (!GlobalCardsContext[0]) throw insertErrorStack(ERR_INIT_GAME);
+    if (!GlobalCardsContext[1]) throw insertErrorStack(ERR_INIT_GAME);
+
+    const [_2, error2] = await cardStateBroadcast(api, GlobalCardsContext);
+    if (error2) throw ERR_INIT_GAME;
 
     // broadcast user status
     await _trumpStatusUpdateEventHandler()(api, game);
