@@ -48,7 +48,6 @@ public class MainRunner {
                 try {
                     soundController.playSound("backgroundCasinoSound");
 
-
                     // init game context
                     initGameContext();
                     System.out.println(gameContext.getPlayers()[0].getPOJO());
