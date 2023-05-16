@@ -19,7 +19,6 @@ public class TrumpCardDisplay {
     }
 
     public JLabel showTrumpCard(TrumpCardPOJO tCard) {
-        System.out.println("image trump");
         Image image = tCard.getImage().getImage();//It's ImageIcon icon = randomCard.getImage(); and Image = icon.getImage(); combine together :)
         Image scaledImage = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaledImage);
@@ -37,7 +36,6 @@ public class TrumpCardDisplay {
     }
 
     public JLabel getTrumpCard() {
-        System.out.println("get trump");
         return tCardLabel;
     }
 
