@@ -25,29 +25,26 @@ public class UpdateTrumpStatus implements WebsocketEventHandler {
         String hostUsername = (String) host.get("username");
         String guestUsername = (String) guest.get("username");
 
-        JSONObject hostUser = (JSONObject) host.get("statuses");
-        JSONObject guestUser = (JSONObject) guest.get("statuses");
-        JSONArray hostStatus = (JSONArray) hostUser.get("trumpStatus");
-        JSONArray guestStatus = (JSONArray) guestUser.get("trumpStatus");
-
+        JSONArray hostStatus = (JSONArray) host.get("statuses");
+        JSONArray guestStatus = (JSONArray) guest.get("statuses");
         ctx.getPlayer(hostUsername).getPOJO().getTrumpCardController().resetStatus();
         ArrayList<TrumpStatusPOJO> hStatus = new ArrayList<>();
         ArrayList<TrumpStatusPOJO> gStatus = new ArrayList<>();
         for (Object s : hostStatus){
-            JSONObject playerStatus = (JSONObject) s;
-            TrumpStatusPOJO status = TrumpCardController.getSTATUSES().get(playerStatus.get("trumpStatus"));
+            String playerStatus = (String) s;
+            if(playerStatus != null){ctx.getLogController().addLog(hostUsername + " has " + playerStatus + " status");}
+            TrumpStatusPOJO status = TrumpCardController.getSTATUSES().get(playerStatus);
             hStatus.add(status);
         }
         for (Object s : guestStatus){
-            JSONObject playerStatus = (JSONObject) s;
-            TrumpStatusPOJO status = TrumpCardController.getSTATUSES().get(playerStatus.get("trumpStatus"));
-            gStatus.add((status));
+            String playerStatus = (String) s;
+            if(playerStatus != null){ctx.getLogController().addLog(guestUsername + " has " + playerStatus + " status");}
+            TrumpStatusPOJO status = TrumpCardController.getSTATUSES().get(playerStatus);
+            gStatus.add(status);
         }
+
         ctx.getPlayer(hostUsername).getPOJO().getTrumpCardController().setStatus(hStatus);
         ctx.getPlayer(guestUsername).getPOJO().getTrumpCardController().setStatus(gStatus);
-
-        System.out.println(ctx.getPlayers()[0].getPOJO().getTrumpCardController().getSTATUS());
-        System.out.println(ctx.getPlayers()[1].getPOJO().getTrumpCardController().getSTATUS());
         uiController.update();
     }
 }

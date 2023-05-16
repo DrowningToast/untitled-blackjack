@@ -1,12 +1,10 @@
 package GameContext.TrumpCard;
 
-import GameContext.Card.CardPOJO;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import GameContext.GameContext;
+
 import Internal.Websocket.Controller.WebsocketController;
 
 public class TrumpCardDisplay {
@@ -29,7 +27,7 @@ public class TrumpCardDisplay {
             public void mouseClicked(MouseEvent e) {
                 System.out.println("trump clicked");
                 super.mouseClicked(e);
-                webController.trumpUse(tCard.getHandler());
+                webController.useTrump(tCard.getHandler());
             }
         });
         return tCardLabel;
