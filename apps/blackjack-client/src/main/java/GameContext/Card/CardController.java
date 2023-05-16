@@ -1,9 +1,14 @@
 package GameContext.Card;
 
+import Main.MainRunner;
+import UI.Gameplay.GameplayController;
+import UI.Gameplay.GameplayDisplayGUI;
+
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.ImageIcon;
+
 public class CardController {
 
 
@@ -28,26 +33,29 @@ public class CardController {
         CARDS.put("HIDDEN", new CardPOJO("HIDDEN", new int[]{0}, new ImageIcon("resources/Back.PNG")));// back of cards
     }
 
-    public void addCards(CardPOJO cards){
-        // check every cards condition
-       this.POJOS.add(cards);
+    public void addCards(CardPOJO cards) {
+        this.POJOS.add(cards);
     }
-    public void addCards(ArrayList<CardPOJO> cards){
+
+    public void addCards(ArrayList<CardPOJO> cards) {
         this.POJOS.addAll(cards);
     }
-    public void resetCards(){
+
+    public void resetCards() {
         this.POJOS.clear();
         System.out.println("Clear Player's cards in hand");
     }
+
     // deprecated
-    public HashMap<String, CardPOJO> getHashMap(){
+    public HashMap<String, CardPOJO> getHashMap() {
         return CARDS;
     }
 
-    public static HashMap<String, CardPOJO> getCARDS(){
+    public static HashMap<String, CardPOJO> getCARDS() {
         return CARDS;
     }
-    public ArrayList<CardPOJO> getPOJOS(){
+
+    public ArrayList<CardPOJO> getPOJOS() {
         return this.POJOS;
     }
 }

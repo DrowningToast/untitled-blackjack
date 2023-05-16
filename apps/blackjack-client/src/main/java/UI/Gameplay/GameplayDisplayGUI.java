@@ -620,5 +620,6 @@ public class GameplayDisplayGUI extends CustomFrame {
         controller.showTrumpCard(trumpHoldChipPlayerOnePanel, MainRunner.getGameContext().getPlayers()[0].getPOJO());
         controller.updateTitleGamePlay();
         controller.updatePlayerScore();
+        controller.updateCardScoreColor(scoreCardOneLabel, MainRunner.getGameContext().getPlayers()[0].getPOJO());
     }
 }
