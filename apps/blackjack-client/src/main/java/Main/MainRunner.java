@@ -4,6 +4,8 @@ import GameContext.Game.GameModel;
 import GameContext.GameContext;
 import GameContext.Log.LogController;
 import GameContext.Player.PlayerModel;
+import GameContext.Sounds.SoundController;
+import GameContext.Sounds.SoundPOJO;
 import Internal.Websocket.Controller.Errorhandlers.*;
 import Internal.Websocket.Controller.EventHandlers.*;
 import Internal.Websocket.Controller.WebsocketController;
@@ -31,6 +33,7 @@ public class MainRunner {
 
     static UIController uiController;
 
+    static SoundController soundController = new SoundController();
     /**
      * GAME CONTEXT
      */
@@ -43,6 +46,9 @@ public class MainRunner {
             @Override
             public void run() {
                 try {
+                    soundController.playSound("backgroundCasinoSound");
+
+
                     // init game context
                     initGameContext();
                     System.out.println(gameContext.getPlayers()[0].getPOJO());
@@ -93,6 +99,8 @@ public class MainRunner {
 //                    errorHandlers.put("invalid-passcode", new InvalidPasscode());
 //                    errorHandlers.put("invalid-user", new InvalidUser());
 //                    errorHandlers.put("invalid-game", new InvalidGame());
+
+
                 } catch (Exception e) {
                     System.out.println(e.toString());
                 }

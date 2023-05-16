@@ -1,6 +1,7 @@
 package UI.Gameplay;
 
 import GameContext.Card.CardPOJO;
+import GameContext.Sounds.SoundPOJO;
 import GameContext.TrumpCard.TrumpCardPOJO;
 import GameContext.TrumpCard.TrumpCardDisplay;
 import GameContext.Card.CardDisplay;
@@ -21,6 +22,8 @@ public class GameplayController {
     private TrumpCardDisplay trumpCard;
     public CardDisplay cardPlayer;
     private GameContext ctx;
+
+    private SoundPOJO sound;
 
     public GameplayController(UIController uiController, WebsocketController wsController) {
         cardPlayer = new CardDisplay();
