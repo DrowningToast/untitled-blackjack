@@ -18,7 +18,7 @@ export const newGameEvent = AsyncExceptionHandler(
     // reset player state
     const [[_2, err2], [_3, err3]] = await Promise.all(
       connectionIds.map(async (connId) => {
-        return await UserController.resetPlayersState({
+        return await UserController.hardResetPlayersState({
           connectionId: connId,
         });
       })

@@ -9,10 +9,11 @@ import {
   ERR_NO_TRUMP_FOUND,
   ERR_TRUMP_USE_DENIED,
   insertErrorStack,
-} from "../utils/error";
+} from "../utils/databaseErrors";
 import { TrumpCard, TrumpCardDocument } from "../models/TrumpCardModel";
 import { trumpCardsAsArray } from "../../../../apps/backend/src/gameplay/trumpcards/TrumpCard";
 import { GameController } from "./GameController";
+import { GameActionController } from "../..";
 
 const getAllConnections = asyncTransaction(async () => {
   const _ = (await User.find().select(["connectionId"])) as unknown as _IUser[];
@@ -39,11 +40,16 @@ const createUser = asyncTransaction(async (args: FilterQuery<IUser>) => {
  */
 const updateUser = asyncTransaction(
   async (target: FilterQuery<IUser>, value: UpdateQuery<IUser>) => {
-    const _ = await User.findOneAndUpdate(target, value);
-    if (!_?.id) {
-      return new Error("User not found");
+    console.log(value);
+    const _ = await User.updateOne(target, value);
+    if (!_) {
+      throw ERR_INVALID_USER;
     }
-    return ZodUserStrip.parse(_);
+
+    const [user, err] = await UserController.getUserMeta(target);
+    if (err) throw err;
+
+    return user;
   }
 );
 
@@ -218,28 +224,57 @@ const setStandState = asyncTransaction(
   }
 );
 
-const getCardsSums = asyncTransaction(async (target: FilterQuery<IUser>) => {
+const getCardsTotal = asyncTransaction(async (target: FilterQuery<IUser>) => {
   const [cards, err] = await getCards(target, true);
   if (err) throw err;
 
-  const firstSum = cards.reduce((acc, card) => {
-    if (card.display === "A") return acc + 1;
-    if (card.display === "J" || card.display === "Q" || card.display === "K")
-      return acc + 10;
-    return acc + Number(card.values[0]);
-  }, 0);
+  const getSum = (getFirst: boolean = false) => {
+    return cards.reduce((acc, card) => {
+      return acc + card.values[getFirst ? 0 : card.values.length - 1];
+    }, 0);
+  };
 
-  const secondSum = cards.reduce((acc, card) => {
-    if (card.display === "A") return acc + 11;
-    if (card.display === "J" || card.display === "Q" || card.display === "K")
-      return acc + 10;
-    return acc + Number(card.values[0]);
-  }, 0);
+  const [user, errUser] = await UserController.getUserMeta(target);
+  if (errUser) throw errUser;
 
-  return [firstSum, secondSum];
+  const [game, errGame] = await GameController.getGame({
+    players: user._id,
+  });
+  if (errGame) throw errGame;
+
+  const cardPointTarget = game.cardPointTarget;
+  const total = getSum(false);
+
+  if (total > cardPointTarget) {
+    return getSum(true);
+  }
+  return total;
 });
 
-const resetPlayersState = asyncTransaction(
+const softResetPlayersState = asyncTransaction(
+  async (target: FilterQuery<IUser>) => {
+    const _ = await User.updateMany(
+      {
+        ...target,
+      },
+      {
+        $set: {
+          stand: false,
+          ready: false,
+          cards: [],
+          trumpStatus: [],
+        },
+      }
+    );
+
+    const [user, err] = await getUserMeta(target);
+    if (err) throw err;
+
+    return user;
+  }
+);
+
+const hardResetPlayersState = asyncTransaction(
   async (target: FilterQuery<IUser>) => {
     const _ = await User.updateMany(
       {
@@ -303,9 +338,14 @@ const addTrumpCards = asyncTransaction(
     )
       return ownedTrumpCardsAsDoc;
 
-    const _ = await User.findOneAndUpdate(
+    console.log("new");
+    console.log(cards);
+    console.log("owned");
+    console.log(ownedTrumpCardsAsDoc);
+
+    const _ = await User.updateOne(
       {
-        ...target,
+        username: target.username,
       },
       {
         $push: {
@@ -316,6 +356,9 @@ const addTrumpCards = asyncTransaction(
 
     const [updated, err2] = await getTrumpCards(target);
     if (err2) throw err2;
+
+    console.log("updated");
+    console.log(updated);
 
     return updated;
   }
@@ -584,9 +627,16 @@ export const UserController = {
    *
    * @description Get the sum of the cards
    */
-  getCardsSums,
+  getCardsTotal: getCardsTotal,
   /**
    * @access System Level
+   *
+   * Soft reset between rounds
+   */
+  softResetPlayersState,
+  /**
+   * @access System Level
+   * RESET EVERYTHING BETWEEN GAMES
    *
    * @description Reset players'
    * 1. Stand state
@@ -597,7 +647,7 @@ export const UserController = {
    * 6. Trump Status
    *
    */
-  resetPlayersState,
+  hardResetPlayersState,
   /**
    * @access System Level
    *

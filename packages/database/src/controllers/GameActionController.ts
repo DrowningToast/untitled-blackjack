@@ -14,7 +14,7 @@ import {
   ERR_USER_STAND,
   ERR_WINNER_POINTS,
   insertErrorStack,
-} from "../utils/error";
+} from "../utils/databaseErrors";
 import { asyncTransaction } from "../utils/Transaction";
 import { trumpCardsAsArray } from "../../../../apps/backend/src/gameplay/trumpcards/TrumpCard";
 // import { trumpCards } from "../utils/TrumpCard";
@@ -25,11 +25,27 @@ import {
   GAME_WIN_SCORE_TARGET,
 } from "../utils/config";
 import { GameController } from "./GameController";
-import { UserController } from "./UserController";
 import { FilterQuery } from "mongoose";
 import { IUser, _IUser } from "../models/UserModel";
 import { TrumpCard, TrumpCardDocument } from "../models/TrumpCardModel";
 import { RoundWinner } from "../../../../apps/backend/src/websocket/utils/WebsocketResponses";
+import { UserController } from "./UserController";
+
+const softResetGameState = asyncTransaction(async (gameId: string) => {
+  // Reset the cards
+  await resetRemainingCards(gameId);
+  // Shuffle the cards
+  await shuffleRemainingCards(gameId);
+  // Reset target card points
+  await resetTargetPoint(gameId);
+  // Reset players' stand state
+
+  const [game, err] = await GameController.getGame({
+    gameId,
+  });
+  if (err) throw err;
+  return game;
+});
 
 const initRound = asyncTransaction(async (gameId: string) => {
   console.log(`INITING GAME: ${gameId}`);
@@ -43,19 +59,7 @@ const initRound = asyncTransaction(async (gameId: string) => {
 
   const [playerA, playerB] = players;
 
-  // Reset the cards
-  await resetRemainingCards(gameId);
-  // Shuffle the cards
-  await shuffleRemainingCards(gameId);
-  // Reset target card points
-  await resetTargetPoint(gameId);
-  // Reset players' stand state
-  await UserController.resetPlayersState({
-    username: playerA.username,
-  });
-  await UserController.resetPlayersState({
-    username: playerB.username,
-  });
+  await softResetGameState(gameId);
 
   // Draw 2 cards for each player
   const [_A, eA] = await drawCards(
@@ -407,7 +411,7 @@ const getPlayerCards = asyncTransaction(
   }
 );
 
-const resetPlayersState = asyncTransaction(async (gameId: string) => {
+const hardResetPlayersState = asyncTransaction(async (gameId: string) => {
   const [game, err] = await GameController.getGame({ gameId });
   if (err) throw insertErrorStack(ERR_INVALID_GAME);
 
@@ -452,22 +456,6 @@ const resetPlayersState = asyncTransaction(async (gameId: string) => {
 
   if (err4) throw err4;
   if (err5) throw err5;
-
-  // reset trump cards
-  const [[_5, err6], [_6, err7]] = await Promise.all(
-    players.map(
-      asyncTransaction(async (player) => {
-        const [user, err] = await UserController.setTrumpCards(
-          { username: player.username },
-          []
-        );
-        if (err) throw err;
-        return user;
-      })
-    )
-  );
-  if (err6) throw err6;
-  if (err7) throw err7;
 
   // reset ready state
   const [[_7, err8], [_8, err9]] = await Promise.all(
@@ -670,48 +658,54 @@ const showdownRound = asyncTransaction(
     // Find out who wins
     // get points sum
     const targetPoints = game.cardPointTarget;
-    const [playerASums, errA] = await UserController.getCardsSums({
+    const [playerASums, errA] = await UserController.getCardsTotal({
       username: playerA.username,
     });
-    const [playerBSums, errB] = await UserController.getCardsSums({
+    const [playerBSums, errB] = await UserController.getCardsTotal({
       username: playerB.username,
     });
     if (errA || errB) throw insertErrorStack(ERR_INTERNAL);
 
     let [isAExceed, isBExceed] = [false, false];
 
+    console.log(targetPoints);
+    console.log(playerASums);
+    console.log(playerBSums);
+    console.log(playerASums > targetPoints);
+    console.log(playerBSums > targetPoints);
+
     // Check if both players exceed the target points
-    if (playerASums[0] > targetPoints && playerASums[1] > targetPoints) {
+    if (playerASums > targetPoints) {
       isAExceed = true;
     }
-    if (playerBSums[0] > targetPoints && playerBSums[1] > targetPoints) {
+    if (playerBSums > targetPoints) {
       isBExceed = true;
     }
-
-    // Get safe best sum
-    let A_sum =
-      Math.max(...playerASums) <= targetPoints
-        ? Math.max(...playerASums)
-        : Math.min(...playerASums);
-    let B_sum =
-      Math.max(...playerBSums) <= targetPoints
-        ? Math.max(...playerBSums)
-        : Math.min(...playerBSums);
 
     let winner: string = "";
 
     if (isAExceed && !isBExceed) {
-      winner = "A";
+      console.log("1");
+      winner = "B";
     } else if (!isAExceed && isBExceed) {
-      winner = "B";
-    } else if (isAExceed && isBExceed) {
-      winner = "AB";
-    } else if (A_sum > B_sum) {
+      console.log("2");
       winner = "A";
-    } else if (A_sum < B_sum) {
-      winner = "B";
-    } else if (A_sum === B_sum) {
+    } else if (isAExceed && isBExceed) {
+      console.log("3");
       winner = "AB";
+    } else if (!isAExceed && !isBExceed) {
+      if (playerASums > playerBSums) {
+        console.log("4");
+        winner = "A";
+      } else if (playerASums < playerBSums) {
+        console.log("5");
+        winner = "B";
+      } else if (playerASums === playerBSums) {
+        console.log("6");
+        winner = "AB";
+      } else {
+        throw insertErrorStack(ERR_NO_WINNER);
+      }
     } else {
       throw insertErrorStack(ERR_NO_WINNER);
     }
@@ -760,6 +754,8 @@ const showdownRound = asyncTransaction(
       );
       if (err) throw err;
       if (err2) throw err2;
+    } else {
+      console.log("CANNOT DETERMINE WINNER");
     }
 
     // get cards for the reveal
@@ -812,6 +808,8 @@ const drawTrumpCards = asyncTransaction(
     const [trumpCards, err3] = await UserController.getTrumpCards(user);
     if (err3) throw err3;
 
+    console.log(trumpCards);
+
     // get randomized trump cards
     const [randomizedCards, err4] = await getRandomTrumpCards(
       amount,
@@ -825,6 +823,9 @@ const drawTrumpCards = asyncTransaction(
       randomizedCards
     );
     if (err5) throw err5;
+
+    console.log(updatedCards);
+    console.log(randomizedCards);
 
     return updatedCards;
   }
@@ -847,6 +848,7 @@ const getRandomTrumpCards = asyncTransaction(
 );
 
 export const GameActionController = {
+  softResetGameState,
   /**
    * @access System level
    *
@@ -875,7 +877,7 @@ export const GameActionController = {
    *
    * @description Reset players state for stand to false
    */
-  resetPlayersState,
+  hardResetPlayersState,
   /**
    * @access System level
    *
