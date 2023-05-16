@@ -44,6 +44,7 @@ public class RoundWinner implements WebsocketEventHandler {
         JSONArray hostCards = (JSONArray) host.get("cards");
         JSONArray guestCards = (JSONArray) guest.get("cards");
 
+        // UPDATE PLAYER'S CARD WITHOUT HIDDEN CARD
         ctx.getPlayers()[0].getPOJO().getCardController().resetCards();
         ctx.getPlayers()[1].getPOJO().getCardController().resetCards();
         for (Object c : hostCards){
@@ -57,7 +58,9 @@ public class RoundWinner implements WebsocketEventHandler {
             ctx.getPlayer(guestUsername).getPOJO().getCardController().addCards(card);
         }
 
-        // Player and Score section
+        // Winner and Score section
+        ctx.getPlayers()[0].getPOJO().addCardScore();
+        ctx.getPlayers()[1].getPOJO().addCardScore();
         JSONObject winner = (JSONObject) content.get("winner");
         long pointsEarned = (long) content.get("pointsEarned");
         if (winner != null){
@@ -69,14 +72,15 @@ public class RoundWinner implements WebsocketEventHandler {
             System.out.println(winnerCardPoint);
             System.out.println(loserCardPoint);
             JOptionPane.showMessageDialog(null, username + " won in round " + roundCounter + " with " + winnerCardPoint + " point over " + loserCardPoint + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
+            ctx.getLogController().addLog(username + " won in round " + roundCounter + " with " + winnerCardPoint + " point over " + loserCardPoint + " , Earning "+ pointsEarned +" point(s).");
         }else{
             //both win
             ctx.getPlayers()[0].getPOJO().addGameScore(pointsEarned);
             ctx.getPlayers()[1].getPOJO().addGameScore(pointsEarned);
             long cardPoint = ctx.getPlayers()[0].getPOJO().getCardScore();
             JOptionPane.showMessageDialog(null, "Both player won in round" + roundCounter + " with " + cardPoint + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
+            ctx.getLogController().addLog("Both player won in round" + roundCounter + " with " + cardPoint + " , Earning "+ pointsEarned +" point(s).");
         }
-
 
 
 

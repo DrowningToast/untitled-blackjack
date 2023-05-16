@@ -4,6 +4,7 @@ package GameContext.Player;
 import GameContext.Card.CardController;
 import GameContext.Card.CardPOJO;
 import GameContext.TrumpCard.TrumpCardController;
+import Main.MainRunner;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +18,8 @@ public class PlayerPOJO {
     @Getter
     @Setter
     private long gameScore;
-    private long cardScore;
+
+    private long cardScore = 0;
     @Getter
     @Setter
     private CardController cardController = new CardController();
@@ -25,19 +27,26 @@ public class PlayerPOJO {
     @Setter
     private TrumpCardController trumpCardController = new TrumpCardController();
 
-    public long getCardScore() {
+    public void addCardScore(){
+        this.cardScore = 0;
         long total = 0;
         for (CardPOJO card : cardController.getPOJOS()) {
             total += card.getValue()[card.getValue().length - 1];
         }
-        if (total > 21) {
+        if (total > MainRunner.getGameContext().getGame().getPOJO().getCardPointTarget()) {
             total = 0;
             for (CardPOJO card : cardController.getPOJOS()) {
                 total += card.getValue()[0];
             }
-            return total;
         }
-        return total;
+        this.cardScore = total;
+        System.out.println("this turn total cardScore : " + this.cardScore);
+    }
+    public long getCardScore() {
+        return cardScore;
+    }
+    public boolean checkCardLimit(){
+        return (this.cardScore > MainRunner.getGameContext().getGame().getPOJO().getCardPointTarget());
     }
 
     public String getCardsFormattedString() {
@@ -57,7 +66,4 @@ public class PlayerPOJO {
         this.gameScore += score;
     }
 
-    public void addCardScore(long cardScore) {
-        this.cardScore += cardScore;
-    }
 }
