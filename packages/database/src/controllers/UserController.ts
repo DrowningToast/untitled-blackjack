@@ -42,7 +42,7 @@ const updateUser = asyncTransaction(
     console.log(value);
     const _ = await User.updateOne(target, value);
     if (!_) {
-      return new Error("User not found");
+      throw ERR_INVALID_USER;
     }
 
     const [user, err] = await UserController.getUserMeta(target);
