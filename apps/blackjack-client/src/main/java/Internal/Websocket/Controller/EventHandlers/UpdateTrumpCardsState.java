@@ -29,7 +29,6 @@ public class UpdateTrumpCardsState implements WebsocketEventHandler {
             trumpCards.add(card);
         }
         ctx.getPlayers()[0].getPOJO().getTrumpCardController().setPOJOS(trumpCards);
-        ctx.getLogController().addLog(ctx.getPlayers()[0].getPOJO().getUsername()+"'s trumpCards has been updated.");
         uiController.update();
     }
 }
