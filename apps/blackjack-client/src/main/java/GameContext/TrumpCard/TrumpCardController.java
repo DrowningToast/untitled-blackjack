@@ -2,7 +2,7 @@ package GameContext.TrumpCard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import javax.swing.ImageIcon;
+import javax.swing.*;
 
 public class TrumpCardController {
 
@@ -14,6 +14,8 @@ public class TrumpCardController {
 
     public TrumpCardController() {
 //        The chip that Hit a card
+
+
         CARDS.put("ace", new TrumpCardPOJO("Hit A", "Draw Ace card from the deck.", "ace", "DRAW", new ImageIcon("resources/HitA.PNG")));
         CARDS.put("three", new TrumpCardPOJO("Hit 3", "Draw Three card from the deck. ", "three", "DRAW", new ImageIcon("resources/Hit3.PNG")));
         CARDS.put("five", new TrumpCardPOJO("Hit 5", "Draw Five card from the deck. ", "five", "DRAW", new ImageIcon("resources/Hit5.PNG")));

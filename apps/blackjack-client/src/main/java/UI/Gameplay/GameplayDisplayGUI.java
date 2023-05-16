@@ -648,7 +648,7 @@ public class GameplayDisplayGUI extends CustomFrame {
         controller.updateStatusButton();
         controller.showCard(playerOneTable, scoreCardOneLabel, MainRunner.getGameContext().getPlayers()[0].getPOJO());
         controller.showCard(playerTwoTable, scoreCardTwoLabel, MainRunner.getGameContext().getPlayers()[1].getPOJO());
-        controller.showTrumpCard(trumpHoldChipPlayerOnePanel, MainRunner.getGameContext().getPlayers()[0].getPOJO());
+        controller.showCard(trumpHoldChipPlayerOnePanel, MainRunner.getGameContext().getPlayers()[0].getPOJO());
         controller.updateTitleGamePlay();
         controller.updatePlayerScore();
     }

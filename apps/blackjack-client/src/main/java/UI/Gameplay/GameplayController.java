@@ -69,12 +69,9 @@ public class GameplayController {
         System.out.println(newText);
     }
 
-    public void showTrumpCard(JPanel playerTrumpHold, PlayerPOJO player) {
-        System.out.println(player.getTrumpCardController().getPOJOS().get(0));
-        System.out.println("trump add");
+    public void showCard(JPanel playerTrumpHold, PlayerPOJO player) {
         playerTrumpHold.removeAll();
         for (TrumpCardPOJO i : player.getTrumpCardController().getPOJOS()) {
-            System.out.println("add trump");
             trumpCard.showTrumpCard(i);
             playerTrumpHold.add(trumpCard.getTrumpCard());
         }
