@@ -29,7 +29,7 @@ public class GameplayController {
 
     public GameplayController(UIController uiController, WebsocketController wsController) {
         cardPlayer = new CardDisplay();
-        trumpCard = new TrumpCardDisplay();
+        trumpCard = new TrumpCardDisplay(wsController);
         this.wsController = wsController;
         this.uiController = uiController;
         this.ctx = MainRunner.getGameContext();
@@ -42,12 +42,18 @@ public class GameplayController {
         String username =  MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername();
         String checker = MainRunner.getGameContext().getGame().getPOJO().getTurnOwner();
         if (username.equals(checker)){
+            System.out.println("disable button and trump");
             ui.getHitButtonPlayerOne().setEnabled(false);
             ui.getStandButtonPlayerOne().setEnabled(false);
+            ui.getTrumpHoldChipPlayerOnePanel().setEnabled(false);
+            System.out.println();
         } else if (MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername()
                 .equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
+            System.out.println("enable button and trump");
             ui.getHitButtonPlayerOne().setEnabled(true);
             ui.getStandButtonPlayerOne().setEnabled(true);
+            ui.getTrumpHoldChipPlayerOnePanel().setEnabled(true);
+            System.out.println();
         }
     }
 

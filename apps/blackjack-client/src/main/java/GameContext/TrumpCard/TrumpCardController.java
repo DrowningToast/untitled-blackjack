@@ -36,6 +36,7 @@ public class TrumpCardController {
         STATUSES.put("BLIND", new TrumpStatusPOJO("Enemy can't see their next hit card", "Enemy can't see their next hit card.", "BLIND",  new ImageIcon("resources/Blind_Status.PNG")));
         STATUSES.put("DENY_HIT", new TrumpStatusPOJO("Opponent cannot hit in this round", "Opponent cannot hit in this round.", "DENY_HIT",  new ImageIcon("resources/Deny_hit_Status.PNG")));
         STATUSES.put("DENY_TRUMP_USE", new TrumpStatusPOJO("Opponent cannot use their trump cards", "Opponent cannot use their trump cards.", "DENY_TRUMP_USE",  new ImageIcon("resources/Deny_Trump_Use_Status.PNG")));
+
     }
 
     public void setPOJOS(ArrayList<TrumpCardPOJO> POJOS) {
