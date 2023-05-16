@@ -11,6 +11,7 @@ import Main.MainRunner;
 import Internal.UserInterface.UIController;
 import lombok.Getter;
 import javax.swing.*;
+import java.awt.*;
 
 public class GameplayController {
 
@@ -60,6 +61,12 @@ public class GameplayController {
         playerTable.repaint();
         for (CardPOJO i : player.getCardController().getPOJOS()) {
             cardPlayer.showCard(i);
+            if(player.checkCardLimit()){
+                playerCardScore.setForeground(Color.red);
+            }
+            else{
+                playerCardScore.setForeground(Color.WHITE);
+            }
             playerTable.add(cardPlayer.getCard());
             playerCardScore.setText("Score : " + player.getCardScore());
         }
