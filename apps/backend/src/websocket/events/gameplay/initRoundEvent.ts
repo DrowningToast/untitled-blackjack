@@ -23,6 +23,7 @@ export const initRoundEvent = AsyncExceptionHandler(
     // init the game
     const [game, err2] = await GameActionController.initRound(gameId);
     if (err2) throw err2;
+    console.log(game);
 
     // get connection ids
     const [connectionIds, errIds] = await GameController.getPlayerConnectionIds(

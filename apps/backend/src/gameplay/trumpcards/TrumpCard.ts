@@ -134,6 +134,7 @@ const removeLastCardTrump: TrumpCard<Card[] | undefined> = {
       },
       true
     );
+
     if (errTargetCards) throw errTargetCards;
 
     // check if the target has only 2 cards
@@ -142,12 +143,12 @@ const removeLastCardTrump: TrumpCard<Card[] | undefined> = {
     // check if the opponent is invincible
     const [opponent, errOpponent] = await GameController.getOpponent(
       game.gameId,
-      target.username
+      cardUser.username
     );
     if (errOpponent) throw errOpponent;
-    const [isInvinc, errInvinc] = await UserController.checkInvincibility(
-      opponent
-    );
+    const [isInvinc, errInvinc] = await UserController.checkInvincibility({
+      username: opponent.username,
+    });
     if (errInvinc) throw errInvinc;
     if (isInvinc) return;
 
@@ -160,6 +161,8 @@ const removeLastCardTrump: TrumpCard<Card[] | undefined> = {
     const [cards, err3] = await UserController.removeCards(connectionId, [
       targetCards[targetCards.length - 1],
     ]);
+
+    console.log(cards);
     if (err3) throw err3;
 
     return cards;
