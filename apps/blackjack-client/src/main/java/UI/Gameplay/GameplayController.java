@@ -61,12 +61,6 @@ public class GameplayController {
         playerTable.repaint();
         for (CardPOJO i : player.getCardController().getPOJOS()) {
             cardPlayer.showCard(i);
-            if(player.checkCardLimit()){
-                playerCardScore.setForeground(Color.red);
-            }
-            else{
-                playerCardScore.setForeground(Color.WHITE);
-            }
             playerTable.add(cardPlayer.getCard());
             playerCardScore.setText("Score : " + player.getCardScore());
         }
@@ -101,5 +95,17 @@ public class GameplayController {
         long playerScoreGameTwo = ctx.getPlayers()[1].getPOJO().getGameScore();
         ui.setTitle("Untitled-BlackJack [" + playerNameOne + "] " + playerScoreGameOne + " VS " + playerScoreGameTwo
                 + " [" + playerNameTwo + "]");
+    }
+
+    public void updateCardScoreColor(JLabel playerCardScore, PlayerPOJO player) {
+        if(player.checkCardLimit()){
+            playerCardScore.setForeground(Color.RED);
+        }
+        else if (player.getCardScore() == MainRunner.getGameContext().getGame().getPOJO().getCardPointTarget()) {
+            playerCardScore.setForeground(Color.GREEN);
+        }
+        else{
+            playerCardScore.setForeground(Color.WHITE);
+        }
     }
 }
