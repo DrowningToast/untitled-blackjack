@@ -90,7 +90,7 @@ public class WebsocketController {
             content.put("trumpCard", tHandler);
             System.out.println(content);
 
-            message.setHandler("useTrumpCard").setContent(content).send();
+            message.setHandler("useTrump").setContent(content).send();
 
         } catch (Exception e) {
             System.out.println("trump catch");
