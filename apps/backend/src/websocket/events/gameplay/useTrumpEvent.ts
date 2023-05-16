@@ -13,6 +13,8 @@ import { useTrumpBroadcast } from "../../broadcast/useTrumpBroadcast";
 import { APIG } from "../../APIGateway";
 import { trumpCardsAsArray } from "../../../gameplay/trumpcards/TrumpCard";
 import { ERR_OPPONENT_INVINCIBILITY } from "../../utils/ErrorMessages";
+import { updateTrumpCardStateMessage } from "../../utils/WebsocketResponses";
+import { trumpCardStateBroadcast } from "../../broadcast/trumpCardStateBroadcast";
 
 export const useTrumpEvent = AsyncExceptionHandler(
   async (api: APIG, userConnectionId: string, trumpHandler: string) => {
@@ -90,6 +92,14 @@ export const useTrumpEvent = AsyncExceptionHandler(
       trumpCard
     );
     if (errBroadcast) throw errBroadcast;
+
+    const [remainingTrumpCards, errRemain] = await UserController.getTrumpCards;
+
+    // send trump card update to the trump card user
+    await api.send(
+      updateTrumpCardStateMessage(remainingTrumpCards),
+      userConnectionId
+    );
 
     if (trumpCard.type === "DRAW") {
       // check if the user has drawn the card successfully or not
