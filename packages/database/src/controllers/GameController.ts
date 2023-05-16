@@ -25,7 +25,7 @@ import {
   ERR_INVALID_GAME,
   ERR_INVALID_USER,
   insertErrorStack,
-} from "../utils/error";
+} from "../utils/databaseErrors";
 
 /**
  * There should be no function that updates the game instance data directly for security reasons

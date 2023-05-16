@@ -9,10 +9,11 @@ import {
   ERR_NO_TRUMP_FOUND,
   ERR_TRUMP_USE_DENIED,
   insertErrorStack,
-} from "../utils/error";
+} from "../utils/databaseErrors";
 import { TrumpCard, TrumpCardDocument } from "../models/TrumpCardModel";
 import { trumpCardsAsArray } from "../../../../apps/backend/src/gameplay/trumpcards/TrumpCard";
 import { GameController } from "./GameController";
+import { GameActionController } from "../..";
 
 const getAllConnections = asyncTransaction(async () => {
   const _ = (await User.find().select(["connectionId"])) as unknown as _IUser[];
@@ -223,25 +224,31 @@ const setStandState = asyncTransaction(
   }
 );
 
-const getCardsSums = asyncTransaction(async (target: FilterQuery<IUser>) => {
+const getCardsTotal = asyncTransaction(async (target: FilterQuery<IUser>) => {
   const [cards, err] = await getCards(target, true);
   if (err) throw err;
 
-  const firstSum = cards.reduce((acc, card) => {
-    if (card.display === "A") return acc + 1;
-    if (card.display === "J" || card.display === "Q" || card.display === "K")
-      return acc + 10;
-    return acc + Number(card.values[0]);
-  }, 0);
+  const getSum = (getFirst: boolean = false) => {
+    return cards.reduce((acc, card) => {
+      return acc + card.values[getFirst ? 0 : card.values.length - 1];
+    }, 0);
+  };
 
-  const secondSum = cards.reduce((acc, card) => {
-    if (card.display === "A") return acc + 11;
-    if (card.display === "J" || card.display === "Q" || card.display === "K")
-      return acc + 10;
-    return acc + Number(card.values[0]);
-  }, 0);
+  const [user, errUser] = await UserController.getUserMeta(target);
+  if (errUser) throw errUser;
 
-  return [firstSum, secondSum];
+  const [game, errGame] = await GameController.getGame({
+    players: user._id,
+  });
+  if (errGame) throw errGame;
+
+  const cardPointTarget = game.cardPointTarget;
+  const total = getSum(false);
+
+  if (total > cardPointTarget) {
+    return getSum(true);
+  }
+  return total;
 });
 
 const resetPlayersState = asyncTransaction(
@@ -301,6 +308,9 @@ const addTrumpCards = asyncTransaction(
     const [ownedTrumpCardsAsDoc, err] = await getTrumpCards(target);
     if (err) throw err;
 
+    console.log("Owned trump cards");
+    console.log(ownedTrumpCardsAsDoc);
+
     if (
       ownedTrumpCardsAsDoc.find((owned) =>
         cards.find((c) => c.handler === owned.handler)
@@ -308,9 +318,11 @@ const addTrumpCards = asyncTransaction(
     )
       return ownedTrumpCardsAsDoc;
 
-    const _ = await User.findOneAndUpdate(
+    console.log(cards);
+
+    const _ = await User.updateOne(
       {
-        ...target,
+        username: target.username,
       },
       {
         $push: {
@@ -589,7 +601,7 @@ export const UserController = {
    *
    * @description Get the sum of the cards
    */
-  getCardsSums,
+  getCardsTotal: getCardsTotal,
   /**
    * @access System Level
    *
