@@ -85,6 +85,8 @@ export const useTrumpEvent = AsyncExceptionHandler(
     );
     if (err3) throw err3;
 
+    console.log("used");
+
     // announce use or trump card
     const [_, errBroadcast] = await useTrumpBroadcast(
       api,
@@ -93,7 +95,9 @@ export const useTrumpEvent = AsyncExceptionHandler(
     );
     if (errBroadcast) throw errBroadcast;
 
-    const [remainingTrumpCards, errRemain] = await UserController.getTrumpCards;
+    const [remainingTrumpCards, errRemain] =
+      await UserController.getTrumpCards();
+    if (errRemain) errRemain;
 
     // send trump card update to the trump card user
     await api.send(

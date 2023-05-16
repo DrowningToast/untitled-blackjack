@@ -8,6 +8,8 @@ export const useTrumpBroadcast = AsyncExceptionHandler(
   async (api: APIG, username: String, trumpCard: TrumpCard) => {
     const { broadcast } = api;
 
+    console.log(trumpCard);
+
     // get user
     const [user, err] = await UserController.getUserMeta({ username });
     if (err) throw err;
@@ -21,6 +23,8 @@ export const useTrumpBroadcast = AsyncExceptionHandler(
       game.gameId
     );
     if (err3) throw err3;
+
+    console.log(connectionIds);
 
     await broadcast(useTrumpMessage(user.username, trumpCard), connectionIds);
   }

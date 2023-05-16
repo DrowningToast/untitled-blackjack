@@ -20,11 +20,14 @@ import { trumpStatusBroadcast } from "../../websocket/broadcast/trumpStatusBroad
 
 const _cardUpdateEventHandler = () =>
   AsyncExceptionHandler(async (api: APIG, game: IGame) => {
+    console.log("getting visible cards");
     // get visible cards and update everybody's card state
     const [visibleCards, err5] = await GameController.getCardsOnPerspectives(
       game.gameId
     );
     if (err5) throw err5;
+
+    console.log(visibleCards);
 
     // get cards from user respective pov
     const [[cards_A, err4], [cards_B, err7]] = await Promise.all([

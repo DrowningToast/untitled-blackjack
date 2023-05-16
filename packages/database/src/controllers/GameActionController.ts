@@ -668,12 +668,6 @@ const showdownRound = asyncTransaction(
 
     let [isAExceed, isBExceed] = [false, false];
 
-    console.log(targetPoints);
-    console.log(playerASums);
-    console.log(playerBSums);
-    console.log(playerASums > targetPoints);
-    console.log(playerBSums > targetPoints);
-
     // Check if both players exceed the target points
     if (playerASums > targetPoints) {
       isAExceed = true;
@@ -685,23 +679,17 @@ const showdownRound = asyncTransaction(
     let winner: string = "";
 
     if (isAExceed && !isBExceed) {
-      console.log("1");
       winner = "B";
     } else if (!isAExceed && isBExceed) {
-      console.log("2");
       winner = "A";
     } else if (isAExceed && isBExceed) {
-      console.log("3");
       winner = "AB";
     } else if (!isAExceed && !isBExceed) {
       if (playerASums > playerBSums) {
-        console.log("4");
         winner = "A";
       } else if (playerASums < playerBSums) {
-        console.log("5");
         winner = "B";
       } else if (playerASums === playerBSums) {
-        console.log("6");
         winner = "AB";
       } else {
         throw insertErrorStack(ERR_NO_WINNER);
@@ -808,8 +796,6 @@ const drawTrumpCards = asyncTransaction(
     const [trumpCards, err3] = await UserController.getTrumpCards(user);
     if (err3) throw err3;
 
-    console.log(trumpCards);
-
     // get randomized trump cards
     const [randomizedCards, err4] = await getRandomTrumpCards(
       amount,
@@ -823,9 +809,6 @@ const drawTrumpCards = asyncTransaction(
       randomizedCards
     );
     if (err5) throw err5;
-
-    console.log(updatedCards);
-    console.log(randomizedCards);
 
     return updatedCards;
   }

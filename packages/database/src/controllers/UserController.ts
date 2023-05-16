@@ -40,7 +40,6 @@ const createUser = asyncTransaction(async (args: FilterQuery<IUser>) => {
  */
 const updateUser = asyncTransaction(
   async (target: FilterQuery<IUser>, value: UpdateQuery<IUser>) => {
-    console.log(value);
     const _ = await User.updateOne(target, value);
     if (!_) {
       throw ERR_INVALID_USER;
@@ -338,11 +337,6 @@ const addTrumpCards = asyncTransaction(
     )
       return ownedTrumpCardsAsDoc;
 
-    console.log("new");
-    console.log(cards);
-    console.log("owned");
-    console.log(ownedTrumpCardsAsDoc);
-
     const _ = await User.updateOne(
       {
         username: target.username,
@@ -356,9 +350,6 @@ const addTrumpCards = asyncTransaction(
 
     const [updated, err2] = await getTrumpCards(target);
     if (err2) throw err2;
-
-    console.log("updated");
-    console.log(updated);
 
     return updated;
   }
@@ -492,8 +483,12 @@ const useTrumpCard = asyncTransaction(
     const [user, errUser] = await getUserMeta({ username: trumpUser.username });
     if (errUser) throw errUser;
 
+    console.log("using trump card");
+
     const [cards, err] = await getTrumpCards(trumpUser);
     if (err) throw err;
+
+    console.log(cards);
 
     if (!trumpCardsAsArray.find((card) => card.handler === trumpCard.handler))
       throw insertErrorStack(ERR_INVALID_TRUMP_CARD);

@@ -61,6 +61,8 @@ const _handleDrawTrumpOnUse =
     );
     if (err3) throw err3;
 
+    console.log(choosenCard);
+
     // return the choosenCard indicating that the card was used
     return choosenCard as typeof aceCard;
   };
@@ -162,7 +164,6 @@ const removeLastCardTrump: TrumpCard<Card[] | undefined> = {
       targetCards[targetCards.length - 1],
     ]);
 
-    console.log(cards);
     if (err3) throw err3;
 
     return cards;
