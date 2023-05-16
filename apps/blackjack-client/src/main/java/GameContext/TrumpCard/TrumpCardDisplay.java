@@ -1,21 +1,17 @@
 package GameContext.TrumpCard;
 
-import GameContext.Card.CardPOJO;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import GameContext.GameContext;
-import GameContext.Sounds.SoundController;
 import Internal.Websocket.Controller.WebsocketController;
+import Main.MainRunner;
 
 public class TrumpCardDisplay {
 
     private JLabel tCardLabel;
     private  WebsocketController webController;
-
-    private SoundController soundController = new SoundController();
 
     public TrumpCardDisplay(WebsocketController webController) {
         this.webController = webController;
@@ -33,7 +29,7 @@ public class TrumpCardDisplay {
 
                 System.out.println("trump clicked");
                 super.mouseClicked(e);
-                soundController.playSound("drawTrumpCard");
+                MainRunner.getGameContext().getSoundController().playSound("drawTrumpCard");
                 webController.trumpUse(tCard.getHandler());
             }
         });

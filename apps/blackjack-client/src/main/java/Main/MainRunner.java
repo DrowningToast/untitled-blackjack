@@ -5,7 +5,6 @@ import GameContext.GameContext;
 import GameContext.Log.LogController;
 import GameContext.Player.PlayerModel;
 import GameContext.Sounds.SoundController;
-import GameContext.Sounds.SoundPOJO;
 import Internal.Websocket.Controller.Errorhandlers.*;
 import Internal.Websocket.Controller.EventHandlers.*;
 import Internal.Websocket.Controller.WebsocketController;
@@ -30,10 +29,8 @@ public class MainRunner {
     static GameplayController gamePlayController;
     static PlayerPOJO playerPOJO;
     static GamePOJO gameModel;
-
     static UIController uiController;
 
-    static SoundController soundController = new SoundController();
     /**
      * GAME CONTEXT
      */
@@ -46,8 +43,6 @@ public class MainRunner {
             @Override
             public void run() {
                 try {
-                    soundController.playSound("backgroundCasinoSound");
-
                     // init game context
                     initGameContext();
                     System.out.println(gameContext.getPlayers()[0].getPOJO());
@@ -93,11 +88,12 @@ public class MainRunner {
                     eventHandlers.put("NEXT_HIT_CARD_TRUMP_EFFECT", new NextHitTrumpCardEffect(uiController));
                     eventHandlers.put("GAME_STOP_DUE_QUITTING", new GameStopDueQuitting(uiController));
 
-
                     errorHandlers.put("existed-user", new ExistedUser());
 //                    errorHandlers.put("invalid-passcode", new InvalidPasscode());
 //                    errorHandlers.put("invalid-user", new InvalidUser());
 //                    errorHandlers.put("invalid-game", new InvalidGame());
+
+                    gameContext.getSoundController().playSound("backgroundCasinoSound");
 
                 } catch (Exception e) {
                     System.out.println(e.toString());
@@ -111,7 +107,8 @@ public class MainRunner {
         PlayerModel[] players = {new PlayerModel(), new PlayerModel()};
         GameModel game = new GameModel();
         LogController log = new LogController();
+        SoundController soundController = new SoundController();
 
-        gameContext = new GameContext(game, players, log);
+        gameContext = new GameContext(game, players, log, soundController);
     }
 }

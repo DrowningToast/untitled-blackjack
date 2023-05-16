@@ -5,6 +5,7 @@ import GameContext.Sounds.SoundController;
 import Internal.Websocket.Controller.WebsocketController;
 import Main.MainRunner;
 import Internal.UserInterface.CustomFrame;
+import com.sun.tools.javac.Main;
 
 import java.awt.Label;
 import java.awt.TextArea;
@@ -71,12 +72,13 @@ public class GameplayDisplayGUI extends CustomFrame {
         playerTwoNameScoreLabel = new java.awt.Label();
         vsPanel = new javax.swing.JPanel();
         vsLabel = new javax.swing.JLabel();
+        trumpCardPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         buttonPanelPlayerTwo = new javax.swing.JPanel();
         scoreCardTwoLabel = new javax.swing.JLabel();
         deckCardPanel = new javax.swing.JPanel();
         deckCardBackground = new javax.swing.JLabel();
         background = new javax.swing.JLabel();
-        iconAssetJPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -87,7 +89,7 @@ public class GameplayDisplayGUI extends CustomFrame {
         gamePlayPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         trumpHoldChipPlayerOnePanel.setBackground(new java.awt.Color(0, 0, 0));
-        gamePlayPanel.add(trumpHoldChipPlayerOnePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 440, 250, 160));
+        gamePlayPanel.add(trumpHoldChipPlayerOnePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 410, 250, 240));
 
         buttonPanelPlayerOne.setBackground(new java.awt.Color(153, 153, 153));
         buttonPanelPlayerOne.setForeground(new java.awt.Color(255, 255, 255));
@@ -100,7 +102,7 @@ public class GameplayDisplayGUI extends CustomFrame {
         hitButtonPlayerOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                    soundController.playSound("drawCard");
+                    MainRunner.getGameContext().getSoundController().playSound("drawCard");
                     hitButtonPlayerOneActionPerformed(evt);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -115,7 +117,7 @@ public class GameplayDisplayGUI extends CustomFrame {
         standButtonPlayerOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                    soundController.playSound("stand");
+                    MainRunner.getGameContext().getSoundController().playSound("stand");
                     standButtonPlayerOneActionPerformed(evt);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -206,12 +208,10 @@ public class GameplayDisplayGUI extends CustomFrame {
         );
         chatPanelLayout.setVerticalGroup(
             chatPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(chatPanelLayout.createSequentialGroup()
-                .addComponent(gameplayTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(gameplayTextArea, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
         );
 
-        gamePlayPanel.add(chatPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, 250, 260));
+        gamePlayPanel.add(chatPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, 250, 250));
 
         scoreGamePlayerOneLabel.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         scoreGamePlayerOneLabel.setText("0");
@@ -273,6 +273,30 @@ public class GameplayDisplayGUI extends CustomFrame {
 
         gamePlayPanel.add(vsPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 350, 70, 60));
 
+        trumpCardPanel.setBackground(new java.awt.Color(255, 204, 0));
+
+        jLabel1.setFont(new java.awt.Font("Book Antiqua", 1, 24)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("TrumpCard");
+        jLabel1.setPreferredSize(new java.awt.Dimension(250, 30));
+
+        javax.swing.GroupLayout trumpCardPanelLayout = new javax.swing.GroupLayout(trumpCardPanel);
+        trumpCardPanel.setLayout(trumpCardPanelLayout);
+        trumpCardPanelLayout.setHorizontalGroup(
+            trumpCardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(trumpCardPanelLayout.createSequentialGroup()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        trumpCardPanelLayout.setVerticalGroup(
+            trumpCardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(trumpCardPanelLayout.createSequentialGroup()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        gamePlayPanel.add(trumpCardPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 380, 250, 30));
+
         buttonPanelPlayerTwo.setBackground(new java.awt.Color(153, 153, 153));
 
         scoreCardTwoLabel.setFont(new java.awt.Font("Segoe UI", 0, 30)); // NOI18N
@@ -312,21 +336,6 @@ public class GameplayDisplayGUI extends CustomFrame {
 
         gamePlayPanel.add(deckCardPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1107, 247, 150, 210));
         gamePlayPanel.add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1280, 790));
-
-        iconAssetJPanel.setBackground(new java.awt.Color(204, 204, 204));
-
-        javax.swing.GroupLayout iconAssetJPanelLayout = new javax.swing.GroupLayout(iconAssetJPanel);
-        iconAssetJPanel.setLayout(iconAssetJPanelLayout);
-        iconAssetJPanelLayout.setHorizontalGroup(
-            iconAssetJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 160, Short.MAX_VALUE)
-        );
-        iconAssetJPanelLayout.setVerticalGroup(
-            iconAssetJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 150, Short.MAX_VALUE)
-        );
-
-        gamePlayPanel.add(iconAssetJPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 80, 160, 150));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -370,7 +379,7 @@ public class GameplayDisplayGUI extends CustomFrame {
     private javax.swing.JPanel gamePlayPanel;
     private java.awt.TextArea gameplayTextArea;
     private javax.swing.JButton hitButtonPlayerOne;
-    private javax.swing.JPanel iconAssetJPanel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel playerOneNameLabel;
     private javax.swing.JPanel playerOneNamePanel;
     private java.awt.Label playerOneNameScoreLabel;
@@ -386,6 +395,7 @@ public class GameplayDisplayGUI extends CustomFrame {
     private javax.swing.JLabel scoreGamePlayerTwoLabel;
     private javax.swing.JPanel scoreGamePlayerTwoPanel;
     private javax.swing.JButton standButtonPlayerOne;
+    private javax.swing.JPanel trumpCardPanel;
     private javax.swing.JPanel trumpHoldChipPlayerOnePanel;
     private javax.swing.JPanel trumpStatusPlayerOnePanel;
     private javax.swing.JPanel trumpStatusPlayerTwoPanel;
@@ -599,14 +609,6 @@ public class GameplayDisplayGUI extends CustomFrame {
 
     public void setGameplayTextArea(TextArea gameplayTextArea) {
         this.gameplayTextArea = gameplayTextArea;
-    }
-
-    public JPanel getIconAssetJPanel() {
-        return iconAssetJPanel;
-    }
-
-    public void setIconAssetJPanel(JPanel iconAssetJPanel) {
-        this.iconAssetJPanel = iconAssetJPanel;
     }
 
     @Override

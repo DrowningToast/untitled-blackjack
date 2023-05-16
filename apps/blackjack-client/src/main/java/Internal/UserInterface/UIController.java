@@ -14,11 +14,8 @@ public class UIController {
     private WebsocketController wsController;
     private HashMap<String, CustomFrame> scenes = new HashMap<>();
 
-    private SoundPOJO sound;
-
     // Methods for switching active windows
     public void switchActiveWindow(CustomFrame frame) {
-//        sound = new SoundPOJO();
         activeFrame.dispose();
         System.out.println(frame);
         frame.pack();
@@ -26,10 +23,6 @@ public class UIController {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         activeFrame = frame;
         frame.onSwitch();
-//        sound.play();
-//        sound.loop();
-
-
     }
 
     public void switchActiveWindow(String frameName) {
