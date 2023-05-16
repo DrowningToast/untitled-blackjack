@@ -2,7 +2,7 @@ package GameContext.TrumpCard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import javax.swing.ImageIcon;
+import javax.swing.*;
 
 public class TrumpCardController {
 
@@ -14,6 +14,8 @@ public class TrumpCardController {
 
     public TrumpCardController() {
 //        The chip that Hit a card
+
+
         CARDS.put("ace", new TrumpCardPOJO("Hit A", "Draw Ace card from the deck.", "ace", "DRAW", new ImageIcon("resources/HitA.PNG")));
         CARDS.put("three", new TrumpCardPOJO("Hit 3", "Draw Three card from the deck. ", "three", "DRAW", new ImageIcon("resources/Hit3.PNG")));
         CARDS.put("five", new TrumpCardPOJO("Hit 5", "Draw Five card from the deck. ", "five", "DRAW", new ImageIcon("resources/Hit5.PNG")));
@@ -36,6 +38,7 @@ public class TrumpCardController {
         STATUSES.put("BLIND", new TrumpStatusPOJO("Enemy can't see their next hit card", "Enemy can't see their next hit card.", "BLIND",  new ImageIcon("resources/Blind_Status.PNG")));
         STATUSES.put("DENY_HIT", new TrumpStatusPOJO("Opponent cannot hit in this round", "Opponent cannot hit in this round.", "DENY_HIT",  new ImageIcon("resources/Deny_hit_Status.PNG")));
         STATUSES.put("DENY_TRUMP_USE", new TrumpStatusPOJO("Opponent cannot use their trump cards", "Opponent cannot use their trump cards.", "DENY_TRUMP_USE",  new ImageIcon("resources/Deny_Trump_Use_Status.PNG")));
+
     }
 
     public void setPOJOS(ArrayList<TrumpCardPOJO> POJOS) {

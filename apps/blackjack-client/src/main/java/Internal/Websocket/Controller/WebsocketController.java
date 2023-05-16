@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -48,7 +49,6 @@ public class WebsocketController {
     }
 
 
-
     public void setReady(boolean ready) {
         try {
             System.out.println("send ready");
@@ -82,6 +82,20 @@ public class WebsocketController {
         System.out.println(message);
     }
 
+    public void trumpUse(String tHandler) {
+        try {
+            System.out.println("send trump use : "+tHandler);
+            MessageBuilder message = new MessageBuilder(client);
+            HashMap content = new HashMap();
+            content.put("trumpCard", tHandler);
+            System.out.println(content);
+
+            message.setHandler("useTrump").setContent(content).send();
+
+        } catch (Exception e) {
+            System.out.println("trump catch");
+        }
+    }
 
     public void handleMessage(String raw) {
         JSONParser parser = new JSONParser();
@@ -138,7 +152,12 @@ public class WebsocketController {
         }
     }
 
-    public WebsocketClientEndpoint getClient(){
+    public void handleDisconnect() {
+        int input = JOptionPane.showOptionDialog(null, "You're being idle for too long.", "Timed out", JOptionPane.PLAIN_MESSAGE, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+        if (input == JOptionPane.OK_OPTION) {System.out.println("yes");System.exit(0);}
+    }
+
+    public WebsocketClientEndpoint getClient() {
         return client;
     }
 

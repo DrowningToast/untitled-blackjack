@@ -5,6 +5,7 @@ import jakarta.websocket.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -56,5 +57,9 @@ public class WebsocketClientEndpoint {
         }
     }
 
+    @OnClose
+    public void onClose(){
+        controller.handleDisconnect();
+    }
 
 }

@@ -1,7 +1,8 @@
 package UI.Gameplay;
 
-import GameContext.Card.CardController;
 import GameContext.Card.CardPOJO;
+import GameContext.TrumpCard.TrumpCardPOJO;
+import GameContext.TrumpCard.TrumpCardDisplay;
 import GameContext.Card.CardDisplay;
 import GameContext.GameContext;
 import GameContext.Player.PlayerPOJO;
@@ -9,20 +10,22 @@ import Internal.Websocket.Controller.WebsocketController;
 import Main.MainRunner;
 import Internal.UserInterface.UIController;
 import lombok.Getter;
-
 import javax.swing.*;
-import java.util.ArrayList;
+import java.awt.*;
 
 public class GameplayController {
+
     private WebsocketController wsController;
     private UIController uiController;
     @Getter
     private GameplayDisplayGUI ui;
+    private TrumpCardDisplay trumpCard;
     public CardDisplay cardPlayer;
     private GameContext ctx;
 
     public GameplayController(UIController uiController, WebsocketController wsController) {
         cardPlayer = new CardDisplay();
+        trumpCard = new TrumpCardDisplay(wsController);
         this.wsController = wsController;
         this.uiController = uiController;
         this.ctx = MainRunner.getGameContext();
@@ -30,15 +33,25 @@ public class GameplayController {
 
     }
 
-    //    update status Button
+    // update status Button
     public void updateStatusButton() {
-
-        if (MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername().equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
-            ui.getHitButtonPlayerOne().setEnabled(false);
-            ui.getStandButtonPlayerOne().setEnabled(false);
-        } else if (MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername().equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
+        String myUsername = MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername();
+        String opponentUsername = MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername();
+        String checker = MainRunner.getGameContext().getGame().getPOJO().getTurnOwner();
+        if (myUsername.equals(checker)) {
+            // MY TURN
+            // check player's card value if it's more than 21 or not
             ui.getHitButtonPlayerOne().setEnabled(true);
             ui.getStandButtonPlayerOne().setEnabled(true);
+            if (MainRunner.getGameContext().getPlayers()[0].getPOJO().checkCardLimit()) {
+                ui.getHitButtonPlayerOne().setEnabled(false);
+            }
+        } else if (opponentUsername.equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
+            // THEIR TURN
+            ui.getHitButtonPlayerOne().setEnabled(false);
+            ui.getStandButtonPlayerOne().setEnabled(false);
+        } else {
+            System.out.println("TurnOwner's username doesn't match players.");
         }
     }
 
@@ -60,19 +73,39 @@ public class GameplayController {
         System.out.println(newText);
     }
 
-    public void updatePlayerScore(){
+    public void showTrumpCard(JPanel trumpPlace, PlayerPOJO player) {
+        trumpPlace.removeAll();
+        for (TrumpCardPOJO i : player.getTrumpCardController().getPOJOS()) {
+            trumpCard.showTrumpCard(i);
+            trumpPlace.add(trumpCard.getTrumpCard());
+        }
+        trumpPlace.revalidate();
+        trumpPlace.repaint();
+    }
+
+    public void updatePlayerScore() {
         ui.getScoreGamePlayerOneLabel().setText(ctx.getPlayers()[0].getPOJO().getGameScore() + "");
         ui.getScoreGamePlayerTwoLabel().setText(ctx.getPlayers()[1].getPOJO().getGameScore() + "");
     }
 
-    public void updateTitleGamePlay(){
+    public void updateTitleGamePlay() {
         String playerNameOne = ctx.getPlayers()[0].getPOJO().getUsername();
         String playerNameTwo = ctx.getPlayers()[1].getPOJO().getUsername();
-        Long playerScoreGameOne = ctx.getPlayers()[0].getPOJO().getGameScore();
-        Long playerScoreGameTwo = ctx.getPlayers()[1].getPOJO().getGameScore();
-        ui.setTitle("Untitled-BlackJack [" + playerNameOne + "] " + playerScoreGameOne + " VS " + playerScoreGameTwo + " [" + playerNameTwo + "]");
+        long playerScoreGameOne = ctx.getPlayers()[0].getPOJO().getGameScore();
+        long playerScoreGameTwo = ctx.getPlayers()[1].getPOJO().getGameScore();
+        ui.setTitle("Untitled-BlackJack [" + playerNameOne + "] " + playerScoreGameOne + " VS " + playerScoreGameTwo
+                + " [" + playerNameTwo + "]");
+    }
+
+    public void updateCardScoreColor(JLabel playerCardScore, PlayerPOJO player) {
+        if(player.checkCardLimit()){
+            playerCardScore.setForeground(Color.RED);
+        }
+        else if (player.getCardScore() == MainRunner.getGameContext().getGame().getPOJO().getCardPointTarget()) {
+            playerCardScore.setForeground(Color.GREEN);
+        }
+        else{
+            playerCardScore.setForeground(Color.WHITE);
+        }
     }
 }
-
-
-
