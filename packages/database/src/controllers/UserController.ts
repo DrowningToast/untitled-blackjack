@@ -251,7 +251,30 @@ const getCardsTotal = asyncTransaction(async (target: FilterQuery<IUser>) => {
   return total;
 });
 
-const resetPlayersState = asyncTransaction(
+const softResetPlayersState = asyncTransaction(
+  async (target: FilterQuery<IUser>) => {
+    const _ = await User.updateMany(
+      {
+        ...target,
+      },
+      {
+        $set: {
+          stand: false,
+          ready: false,
+          cards: [],
+          trumpStatus: [],
+        },
+      }
+    );
+
+    const [user, err] = await getUserMeta(target);
+    if (err) throw err;
+
+    return user;
+  }
+);
+
+const hardResetPlayersState = asyncTransaction(
   async (target: FilterQuery<IUser>) => {
     const _ = await User.updateMany(
       {
@@ -308,9 +331,6 @@ const addTrumpCards = asyncTransaction(
     const [ownedTrumpCardsAsDoc, err] = await getTrumpCards(target);
     if (err) throw err;
 
-    console.log("Owned trump cards");
-    console.log(ownedTrumpCardsAsDoc);
-
     if (
       ownedTrumpCardsAsDoc.find((owned) =>
         cards.find((c) => c.handler === owned.handler)
@@ -318,7 +338,10 @@ const addTrumpCards = asyncTransaction(
     )
       return ownedTrumpCardsAsDoc;
 
+    console.log("new");
     console.log(cards);
+    console.log("owned");
+    console.log(ownedTrumpCardsAsDoc);
 
     const _ = await User.updateOne(
       {
@@ -333,6 +356,9 @@ const addTrumpCards = asyncTransaction(
 
     const [updated, err2] = await getTrumpCards(target);
     if (err2) throw err2;
+
+    console.log("updated");
+    console.log(updated);
 
     return updated;
   }
@@ -605,6 +631,13 @@ export const UserController = {
   /**
    * @access System Level
    *
+   * Soft reset between rounds
+   */
+  softResetPlayersState,
+  /**
+   * @access System Level
+   * RESET EVERYTHING BETWEEN GAMES
+   *
    * @description Reset players'
    * 1. Stand state
    * 2. Ready state
@@ -614,7 +647,7 @@ export const UserController = {
    * 6. Trump Status
    *
    */
-  resetPlayersState,
+  hardResetPlayersState,
   /**
    * @access System Level
    *

@@ -31,6 +31,22 @@ import { TrumpCard, TrumpCardDocument } from "../models/TrumpCardModel";
 import { RoundWinner } from "../../../../apps/backend/src/websocket/utils/WebsocketResponses";
 import { UserController } from "./UserController";
 
+const softResetGameState = asyncTransaction(async (gameId: string) => {
+  // Reset the cards
+  await resetRemainingCards(gameId);
+  // Shuffle the cards
+  await shuffleRemainingCards(gameId);
+  // Reset target card points
+  await resetTargetPoint(gameId);
+  // Reset players' stand state
+
+  const [game, err] = await GameController.getGame({
+    gameId,
+  });
+  if (err) throw err;
+  return game;
+});
+
 const initRound = asyncTransaction(async (gameId: string) => {
   console.log(`INITING GAME: ${gameId}`);
 
@@ -43,19 +59,7 @@ const initRound = asyncTransaction(async (gameId: string) => {
 
   const [playerA, playerB] = players;
 
-  // Reset the cards
-  await resetRemainingCards(gameId);
-  // Shuffle the cards
-  await shuffleRemainingCards(gameId);
-  // Reset target card points
-  await resetTargetPoint(gameId);
-  // Reset players' stand state
-  await UserController.resetPlayersState({
-    username: playerA.username,
-  });
-  await UserController.resetPlayersState({
-    username: playerB.username,
-  });
+  await softResetGameState(gameId);
 
   // Draw 2 cards for each player
   const [_A, eA] = await drawCards(
@@ -407,7 +411,7 @@ const getPlayerCards = asyncTransaction(
   }
 );
 
-const resetPlayersState = asyncTransaction(async (gameId: string) => {
+const hardResetPlayersState = asyncTransaction(async (gameId: string) => {
   const [game, err] = await GameController.getGame({ gameId });
   if (err) throw insertErrorStack(ERR_INVALID_GAME);
 
@@ -452,22 +456,6 @@ const resetPlayersState = asyncTransaction(async (gameId: string) => {
 
   if (err4) throw err4;
   if (err5) throw err5;
-
-  // reset trump cards
-  const [[_5, err6], [_6, err7]] = await Promise.all(
-    players.map(
-      asyncTransaction(async (player) => {
-        const [user, err] = await UserController.setTrumpCards(
-          { username: player.username },
-          []
-        );
-        if (err) throw err;
-        return user;
-      })
-    )
-  );
-  if (err6) throw err6;
-  if (err7) throw err7;
 
   // reset ready state
   const [[_7, err8], [_8, err9]] = await Promise.all(
@@ -860,6 +848,7 @@ const getRandomTrumpCards = asyncTransaction(
 );
 
 export const GameActionController = {
+  softResetGameState,
   /**
    * @access System level
    *
@@ -888,7 +877,7 @@ export const GameActionController = {
    *
    * @description Reset players state for stand to false
    */
-  resetPlayersState,
+  hardResetPlayersState,
   /**
    * @access System level
    *

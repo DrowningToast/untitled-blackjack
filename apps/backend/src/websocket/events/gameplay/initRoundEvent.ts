@@ -10,6 +10,7 @@ import { initRoundBroadcast } from "../../broadcast/initRoundBroadcast";
 import { cardStateBroadcast } from "../../broadcast/cardStateBroadcast";
 import { AsyncExceptionHandler } from "../../AsyncExceptionHandler";
 import { trumpCardStateBroadcast } from "../../broadcast/trumpCardStateBroadcast";
+import { trumpStatusBroadcast } from "../../broadcast/trumpStatusBroadcast";
 
 /**
  * Initialize the game with full setup
@@ -20,16 +21,26 @@ export const initRoundEvent = AsyncExceptionHandler(
 
     console.log("INITING ROUND EVENT");
 
-    // init the game
-    const [game, err2] = await GameActionController.initRound(gameId);
-    if (err2) throw err2;
-    console.log(game);
-
     // get connection ids
     const [connectionIds, errIds] = await GameController.getPlayerConnectionIds(
       gameId
     );
     if (errIds) throw errIds;
+
+    // soft reset player states
+    const [[A, errResetA], [B, errResetB]] = await Promise.all(
+      connectionIds.map(async (id) => {
+        return await UserController.softResetPlayersState({
+          connectionId: id,
+        });
+      })
+    );
+    if (errResetA) throw errResetA;
+    if (errResetB) throw errResetB;
+
+    // init the game
+    const [game, err2] = await GameActionController.initRound(gameId);
+    if (err2) throw err2;
 
     const [GlobalCardsContext, errAll] =
       await GameController.getCardsOnPerspectives(gameId);
@@ -80,5 +91,9 @@ export const initRoundEvent = AsyncExceptionHandler(
       },
     ]);
     if (error3) throw ERR_INIT_GAME;
+
+    // update trump status
+    const [___, error4] = await trumpStatusBroadcast(api, gameId);
+    if (error4) throw error4;
   }
 );
