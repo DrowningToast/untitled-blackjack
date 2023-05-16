@@ -29,6 +29,7 @@ public class CardController {
     }
 
     public void addCards(CardPOJO cards){
+        // check every cards condition
        this.POJOS.add(cards);
     }
     public void addCards(ArrayList<CardPOJO> cards){

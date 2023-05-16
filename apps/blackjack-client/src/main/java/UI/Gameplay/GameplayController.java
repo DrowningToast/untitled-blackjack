@@ -70,11 +70,11 @@ public class GameplayController {
     }
 
     public void showTrumpCard(JPanel playerTrumpHold, PlayerPOJO player) {
-        System.out.println(player.getTrumpCardController().getPOJOS().get(0));
-        System.out.println("trump add");
+//        System.out.println(player.getTrumpCardController().getPOJOS().get(0));
+//        System.out.println("trump add");
         playerTrumpHold.removeAll();
         for (TrumpCardPOJO i : player.getTrumpCardController().getPOJOS()) {
-            System.out.println("add trump");
+//            System.out.println("add trump");
             trumpCard.showTrumpCard(i);
             playerTrumpHold.add(trumpCard.getTrumpCard());
         }
@@ -90,8 +90,8 @@ public class GameplayController {
     public void updateTitleGamePlay(){
         String playerNameOne = ctx.getPlayers()[0].getPOJO().getUsername();
         String playerNameTwo = ctx.getPlayers()[1].getPOJO().getUsername();
-        Long playerScoreGameOne = ctx.getPlayers()[0].getPOJO().getGameScore();
-        Long playerScoreGameTwo = ctx.getPlayers()[1].getPOJO().getGameScore();
+        long playerScoreGameOne = ctx.getPlayers()[0].getPOJO().getGameScore();
+        long playerScoreGameTwo = ctx.getPlayers()[1].getPOJO().getGameScore();
         ui.setTitle("Untitled-BlackJack [" + playerNameOne + "] " + playerScoreGameOne + " VS " + playerScoreGameTwo + " [" + playerNameTwo + "]");
     }
 }
