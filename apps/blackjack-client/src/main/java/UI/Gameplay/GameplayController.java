@@ -1,21 +1,16 @@
 package UI.Gameplay;
 
-import GameContext.Card.CardController;
 import GameContext.Card.CardPOJO;
 import GameContext.TrumpCard.TrumpCardPOJO;
 import GameContext.TrumpCard.TrumpCardDisplay;
 import GameContext.Card.CardDisplay;
 import GameContext.GameContext;
 import GameContext.Player.PlayerPOJO;
-
-import GameContext.TrumpCard.TrumpCardPOJO;
 import Internal.Websocket.Controller.WebsocketController;
 import Main.MainRunner;
 import Internal.UserInterface.UIController;
 import lombok.Getter;
-
 import javax.swing.*;
-import java.util.ArrayList;
 
 public class GameplayController {
 
@@ -68,8 +63,7 @@ public class GameplayController {
         ui.getGameplayTextArea().setText(oldText + newText);
         System.out.println(newText);
     }
-
-    public void showCard(JPanel trumpPlace, PlayerPOJO player) {
+    public void showTrumpCard(JPanel trumpPlace, PlayerPOJO player) {
         trumpPlace.removeAll();
         for (TrumpCardPOJO i : player.getTrumpCardController().getPOJOS()) {
             trumpCard.showTrumpCard(i);
