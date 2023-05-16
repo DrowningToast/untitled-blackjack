@@ -34,21 +34,23 @@ public class GameplayController {
 
     // update status Button
     public void updateStatusButton() {
-        String username =  MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername();
+        String myUsername = MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername();
+        String opponentUsername = MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername();
         String checker = MainRunner.getGameContext().getGame().getPOJO().getTurnOwner();
-        if (username.equals(checker)){
-            System.out.println("disable button and trump");
-            ui.getHitButtonPlayerOne().setEnabled(false);
-            ui.getStandButtonPlayerOne().setEnabled(false);
-            ui.getTrumpHoldChipPlayerOnePanel().setEnabled(false);
-            System.out.println();
-        } else if (MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername()
-                .equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
-            System.out.println("enable button and trump");
+        if (myUsername.equals(checker)) {
+            // MY TURN
+            // check player's card value if it's more than 21 or not
             ui.getHitButtonPlayerOne().setEnabled(true);
             ui.getStandButtonPlayerOne().setEnabled(true);
-            ui.getTrumpHoldChipPlayerOnePanel().setEnabled(true);
-            System.out.println();
+            if (MainRunner.getGameContext().getPlayers()[0].getPOJO().checkCardLimit()) {
+                ui.getHitButtonPlayerOne().setEnabled(false);
+            }
+        } else if (opponentUsername.equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
+            // THEIR TURN
+            ui.getHitButtonPlayerOne().setEnabled(false);
+            ui.getStandButtonPlayerOne().setEnabled(false);
+        } else {
+            System.out.println("TurnOwner's username doesn't match players.");
         }
     }
 
@@ -69,7 +71,7 @@ public class GameplayController {
         ui.getGameplayTextArea().setText(oldText + newText);
         System.out.println(newText);
     }
-  
+
     public void showTrumpCard(JPanel trumpPlace, PlayerPOJO player) {
         trumpPlace.removeAll();
         for (TrumpCardPOJO i : player.getTrumpCardController().getPOJOS()) {
@@ -85,11 +87,12 @@ public class GameplayController {
         ui.getScoreGamePlayerTwoLabel().setText(ctx.getPlayers()[1].getPOJO().getGameScore() + "");
     }
 
-    public void updateTitleGamePlay(){
+    public void updateTitleGamePlay() {
         String playerNameOne = ctx.getPlayers()[0].getPOJO().getUsername();
         String playerNameTwo = ctx.getPlayers()[1].getPOJO().getUsername();
         long playerScoreGameOne = ctx.getPlayers()[0].getPOJO().getGameScore();
         long playerScoreGameTwo = ctx.getPlayers()[1].getPOJO().getGameScore();
-        ui.setTitle("Untitled-BlackJack [" + playerNameOne + "] " + playerScoreGameOne + " VS " + playerScoreGameTwo + " [" + playerNameTwo + "]");
+        ui.setTitle("Untitled-BlackJack [" + playerNameOne + "] " + playerScoreGameOne + " VS " + playerScoreGameTwo
+                + " [" + playerNameTwo + "]");
     }
 }
