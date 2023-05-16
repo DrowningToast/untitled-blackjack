@@ -93,7 +93,7 @@ export const initRoundEvent = AsyncExceptionHandler(
     if (error3) throw ERR_INIT_GAME;
 
     // update trump status
-    const [___, error4] = await trumpStatusBroadcast(api, gameId);
-    if (error4) throw error4;
+    // const [___, error4] = await trumpStatusBroadcast(api, gameId);
+    // if (error4) throw error4;
   }
 );
