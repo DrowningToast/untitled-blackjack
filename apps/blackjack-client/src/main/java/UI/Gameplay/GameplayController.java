@@ -69,14 +69,14 @@ public class GameplayController {
         System.out.println(newText);
     }
 
-    public void showCard(JPanel playerTrumpHold, PlayerPOJO player) {
-        playerTrumpHold.removeAll();
+    public void showCard(JPanel trumpPlace, PlayerPOJO player) {
+        trumpPlace.removeAll();
         for (TrumpCardPOJO i : player.getTrumpCardController().getPOJOS()) {
             trumpCard.showTrumpCard(i);
-            playerTrumpHold.add(trumpCard.getTrumpCard());
+            trumpPlace.add(trumpCard.getTrumpCard());
         }
-        playerTrumpHold.revalidate();
-        playerTrumpHold.repaint();
+        trumpPlace.revalidate();
+        trumpPlace.repaint();
     }
 
     public void updatePlayerScore() {
