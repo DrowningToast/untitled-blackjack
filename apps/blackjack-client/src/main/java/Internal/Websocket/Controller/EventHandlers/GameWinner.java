@@ -34,13 +34,6 @@ public class GameWinner implements WebsocketEventHandler{
         }
         System.exit(0);
 
-//        if (result == JOptionPane.YES_OPTION) {
-//            System.exit(0);
-//        }
-//        else {
-//            System.exit(0);
-//        }
-
         uiController.update();
 
         //Guss won in round 1 with 19 points over 16. Earning 1 point(s).
