@@ -67,9 +67,9 @@ public class GameplayController {
     }
 
     public void updateChatLog() {
-        String oldText = ui.getGameplayTextArea().getText() + "\n";
+        String oldText = ui.getGameplayTextArea().getText();
         String newText = ctx.getLogController().getLog().get(ctx.getLogController().getLog().size() - 1);
-        ui.getGameplayTextArea().setText(oldText + newText);
+        ui.getGameplayTextArea().setText(newText + "\n" + oldText);
         System.out.println(newText);
     }
 
