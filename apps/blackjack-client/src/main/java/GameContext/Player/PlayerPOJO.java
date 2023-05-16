@@ -27,8 +27,8 @@ public class PlayerPOJO {
     @Setter
     private TrumpCardController trumpCardController = new TrumpCardController();
 
-    public void addCardScore(){
-        this.cardScore = 0;
+
+    public long getCardScore() {
         long total = 0;
         for (CardPOJO card : cardController.getPOJOS()) {
             total += card.getValue()[card.getValue().length - 1];
@@ -40,19 +40,17 @@ public class PlayerPOJO {
             }
         }
         this.cardScore = total;
-        System.out.println("this turn total cardScore : " + this.cardScore);
-    }
-    public long getCardScore() {
         return cardScore;
     }
-    public boolean checkCardLimit(){
+
+    public boolean checkCardLimit() {
         return (this.cardScore > MainRunner.getGameContext().getGame().getPOJO().getCardPointTarget());
     }
 
     public String getCardsFormattedString() {
         String displayName = "";
         for (CardPOJO card : cardController.getPOJOS()) {
-                displayName += card.getDisplayName();
+            displayName += card.getDisplayName();
             try {
                 displayName += ", ";
             } catch (IndexOutOfBoundsException e) {
