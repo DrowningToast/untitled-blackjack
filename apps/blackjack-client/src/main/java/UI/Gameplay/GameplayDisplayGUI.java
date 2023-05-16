@@ -1,6 +1,7 @@
 
 package UI.Gameplay;
 
+import GameContext.Sounds.SoundController;
 import Internal.Websocket.Controller.WebsocketController;
 import Main.MainRunner;
 import Internal.UserInterface.CustomFrame;
@@ -21,6 +22,8 @@ public class GameplayDisplayGUI extends CustomFrame {
     public Object getDeckCardPanel;
     public GameplayController controller;
     public WebsocketController wsController;
+
+    private SoundController soundController= new SoundController();
 
     public GameplayDisplayGUI(GameplayController controller, WebsocketController wsController) {
         this.wsController = wsController;
@@ -52,10 +55,10 @@ public class GameplayDisplayGUI extends CustomFrame {
         scoreCardOneLabel = new javax.swing.JLabel();
         playerOneTable = new javax.swing.JPanel();
         playerTwoTable = new javax.swing.JPanel();
-        trumpChipPlayerTwoPanel = new javax.swing.JPanel();
+        trumpStatusPlayerTwoPanel = new javax.swing.JPanel();
         playerOneNamePanel = new javax.swing.JPanel();
         playerOneNameLabel = new javax.swing.JLabel();
-        trumpChipPlayerOnePanel = new javax.swing.JPanel();
+        trumpStatusPlayerOnePanel = new javax.swing.JPanel();
         playerTwoNamePanel = new javax.swing.JPanel();
         playerTwoNameLabel = new javax.swing.JLabel();
         chatPanel = new javax.swing.JPanel();
@@ -97,6 +100,7 @@ public class GameplayDisplayGUI extends CustomFrame {
         hitButtonPlayerOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
+                    soundController.playSound("drawCard");
                     hitButtonPlayerOneActionPerformed(evt);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -111,6 +115,7 @@ public class GameplayDisplayGUI extends CustomFrame {
         standButtonPlayerOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
+                    soundController.playSound("stand");
                     standButtonPlayerOneActionPerformed(evt);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -128,16 +133,15 @@ public class GameplayDisplayGUI extends CustomFrame {
         buttonPanelPlayerOneLayout.setHorizontalGroup(
             buttonPanelPlayerOneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(buttonPanelPlayerOneLayout.createSequentialGroup()
-                .addGroup(buttonPanelPlayerOneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(buttonPanelPlayerOneLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(scoreCardOneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(buttonPanelPlayerOneLayout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addGroup(buttonPanelPlayerOneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(hitButtonPlayerOne, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(standButtonPlayerOne, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(28, 28, 28)
+                .addGroup(buttonPanelPlayerOneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(hitButtonPlayerOne, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(standButtonPlayerOne, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(28, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buttonPanelPlayerOneLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(scoreCardOneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         buttonPanelPlayerOneLayout.setVerticalGroup(
             buttonPanelPlayerOneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -161,8 +165,8 @@ public class GameplayDisplayGUI extends CustomFrame {
         playerTwoTable.setPreferredSize(new java.awt.Dimension(720, 330));
         gamePlayPanel.add(playerTwoTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 10, 730, 240));
 
-        trumpChipPlayerTwoPanel.setBackground(new java.awt.Color(51, 51, 51));
-        gamePlayPanel.add(trumpChipPlayerTwoPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 260, 600, 70));
+        trumpStatusPlayerTwoPanel.setBackground(new java.awt.Color(51, 51, 51));
+        gamePlayPanel.add(trumpStatusPlayerTwoPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 260, 600, 70));
 
         playerOneNamePanel.setBackground(new java.awt.Color(102, 102, 102));
 
@@ -173,10 +177,9 @@ public class GameplayDisplayGUI extends CustomFrame {
 
         gamePlayPanel.add(playerOneNamePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 660, 250, 90));
 
-        trumpChipPlayerOnePanel.setBackground(new java.awt.Color(51, 51, 51));
-        trumpChipPlayerOnePanel.setAutoscrolls(true);
-        trumpChipPlayerOnePanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        gamePlayPanel.add(trumpChipPlayerOnePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 440, 600, 70));
+        trumpStatusPlayerOnePanel.setBackground(new java.awt.Color(51, 51, 51));
+        trumpStatusPlayerOnePanel.setAutoscrolls(true);
+        gamePlayPanel.add(trumpStatusPlayerOnePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 440, 600, 70));
 
         playerTwoNamePanel.setBackground(new java.awt.Color(102, 102, 102));
 
@@ -280,9 +283,9 @@ public class GameplayDisplayGUI extends CustomFrame {
         buttonPanelPlayerTwo.setLayout(buttonPanelPlayerTwoLayout);
         buttonPanelPlayerTwoLayout.setHorizontalGroup(
             buttonPanelPlayerTwoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(buttonPanelPlayerTwoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(scoreCardTwoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buttonPanelPlayerTwoLayout.createSequentialGroup()
+                .addContainerGap(26, Short.MAX_VALUE)
+                .addComponent(scoreCardTwoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         buttonPanelPlayerTwoLayout.setVerticalGroup(
@@ -383,9 +386,9 @@ public class GameplayDisplayGUI extends CustomFrame {
     private javax.swing.JLabel scoreGamePlayerTwoLabel;
     private javax.swing.JPanel scoreGamePlayerTwoPanel;
     private javax.swing.JButton standButtonPlayerOne;
-    private javax.swing.JPanel trumpChipPlayerOnePanel;
-    private javax.swing.JPanel trumpChipPlayerTwoPanel;
     private javax.swing.JPanel trumpHoldChipPlayerOnePanel;
+    private javax.swing.JPanel trumpStatusPlayerOnePanel;
+    private javax.swing.JPanel trumpStatusPlayerTwoPanel;
     private javax.swing.JLabel vsLabel;
     private javax.swing.JPanel vsPanel;
     // End of variables declaration//GEN-END:variables
@@ -551,19 +554,19 @@ public class GameplayDisplayGUI extends CustomFrame {
     }
 
     public JPanel getTrumpChipPlayerOnePanel() {
-        return trumpChipPlayerOnePanel;
+        return trumpStatusPlayerOnePanel;
     }
 
     public void setTrumpChipPlayerOnePanel(JPanel trumpChipPlayerOnePanel) {
-        this.trumpChipPlayerOnePanel = trumpChipPlayerOnePanel;
+        this.trumpStatusPlayerOnePanel = trumpChipPlayerOnePanel;
     }
 
     public JPanel getTrumpChipPlayerTwoPanel() {
-        return trumpChipPlayerTwoPanel;
+        return trumpStatusPlayerTwoPanel;
     }
 
     public void setTrumpChipPlayerTwoPanel(JPanel trumpChipPlayerTwoPanel) {
-        this.trumpChipPlayerTwoPanel = trumpChipPlayerTwoPanel;
+        this.trumpStatusPlayerTwoPanel = trumpChipPlayerTwoPanel;
     }
 
     public JPanel getTrumpHoldChipPlayerOnePanel() {

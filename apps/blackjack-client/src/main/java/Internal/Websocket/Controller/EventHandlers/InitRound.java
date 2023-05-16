@@ -1,13 +1,14 @@
 package Internal.Websocket.Controller.EventHandlers;
 
 import GameContext.GameContext;
+import GameContext.Sounds.SoundController;
 import Internal.UserInterface.UIController;
 import org.json.simple.JSONObject;
 
 public class InitRound implements WebsocketEventHandler{
     private UIController uiController;
     public InitRound(UIController uiController){ this.uiController = uiController;}
-
+    private SoundController soundController = new SoundController();
 
     @Override
     public void handler(GameContext ctx, JSONObject body) {
@@ -29,6 +30,7 @@ public class InitRound implements WebsocketEventHandler{
         // set value to log
         ctx.getLogController().addLog("Game start !");
 
+        soundController.playSound("shuffleCard");
         uiController.update();
     }
 }

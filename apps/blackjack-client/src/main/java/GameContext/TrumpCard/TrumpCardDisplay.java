@@ -7,12 +7,15 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import GameContext.GameContext;
+import GameContext.Sounds.SoundController;
 import Internal.Websocket.Controller.WebsocketController;
 
 public class TrumpCardDisplay {
 
     private JLabel tCardLabel;
     private  WebsocketController webController;
+
+    private SoundController soundController = new SoundController();
 
     public TrumpCardDisplay(WebsocketController webController) {
         this.webController = webController;
@@ -27,8 +30,10 @@ public class TrumpCardDisplay {
         tCardLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+
                 System.out.println("trump clicked");
                 super.mouseClicked(e);
+                soundController.playSound("drawTrumpCard");
                 webController.trumpUse(tCard.getHandler());
             }
         });

@@ -4,6 +4,7 @@
  */
 package UI.Waiting;
 
+import GameContext.Sounds.SoundController;
 import Main.MainRunner;
 import Internal.UserInterface.CustomFrame;
 
@@ -14,6 +15,8 @@ import java.awt.Font;
  */
 public class WaitingRoomGUI extends CustomFrame {
     private WaitingRoomController controller;
+
+    private SoundController soundController = new SoundController();
 
     public WaitingRoomGUI(WaitingRoomController controller) {
         init();
@@ -168,6 +171,7 @@ public class WaitingRoomGUI extends CustomFrame {
 
     @Override
     public void onUpdate() {
+        soundController.playSound("opponentJoinRoom");
         String labelTextA = "Player1 : waiting...";
         String labelTextB = "Player2 : waiting...";
         boolean statusA = MainRunner.getGameContext().getPlayers()[0].getPOJO().isReady();

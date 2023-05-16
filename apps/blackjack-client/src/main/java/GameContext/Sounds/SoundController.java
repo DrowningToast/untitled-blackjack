@@ -19,8 +19,10 @@ public class SoundController {
         SOUNDS.put("drawTrumpCard", new SoundPOJO("drawTrumpCard", new File("sounds/drawTrumpCard.wav")));
         SOUNDS.put("drawTrumpCard_2", new SoundPOJO("drawTrumpCard_2", new File("sounds/drawTrumpCard_2.wav")));
         SOUNDS.put("drawCard", new SoundPOJO("drawCard", new File("sounds/drawCard.wav")));
+        SOUNDS.put("stand", new SoundPOJO("stand", new File("sounds/stand.wav")));
+
         SOUNDS.put("shuffleCard", new SoundPOJO("shuffleCard", new File("sounds/shuffleCard.wav")));
-        SOUNDS.put("backgroundCasinoSound", new SoundPOJO("backgroundCasinoSound", new File("sounds/backgroundCasinoSound.wav")));
+        SOUNDS.put("backgroundCasinoSound", new SoundPOJO("backgroundCasinoSound", new File("sounds/backgroundCasinoSound.wav"),true));
     }
 
     public HashMap<String, SoundPOJO> getSOUNDS() {
@@ -28,28 +30,7 @@ public class SoundController {
     }
 
     public void playSound(String handler) {
-
-        playSound(SOUNDS.get(handler));
-    }
-
-    public void playSound(SoundPOJO sound) {
-
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (sound == null) {
-                        System.out.println("SOUND NOT FOUND");
-                    }
-                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(sound.getFile().getAbsoluteFile());
-                    Clip clip = AudioSystem.getClip();
-                    clip.open(audioInputStream);
-                    clip.start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        Thread thread = new Thread(SOUNDS.get(handler));
         thread.start();
     }
 
