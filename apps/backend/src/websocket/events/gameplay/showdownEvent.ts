@@ -17,10 +17,12 @@ import { roundWinnerBroadcast } from "../../broadcast/roundWinnerBroadcast";
 
 export const showdownEvent = AsyncExceptionHandler(
   async (api: APIG, gameId: string) => {
+    console.log(gameId);
     const [showdown, errShowdown] = await GameActionController.showdownRound(
       gameId
     );
     if (errShowdown) throw errShowdown;
+    console.log(showdown);
 
     // get connection ids
     const [connectionIds, errConnectionIds] =

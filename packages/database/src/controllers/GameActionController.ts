@@ -14,7 +14,7 @@ import {
   ERR_USER_STAND,
   ERR_WINNER_POINTS,
   insertErrorStack,
-} from "../utils/error";
+} from "../utils/databaseErrors";
 import { asyncTransaction } from "../utils/Transaction";
 import { trumpCardsAsArray } from "../../../../apps/backend/src/gameplay/trumpcards/TrumpCard";
 // import { trumpCards } from "../utils/TrumpCard";
@@ -25,11 +25,11 @@ import {
   GAME_WIN_SCORE_TARGET,
 } from "../utils/config";
 import { GameController } from "./GameController";
-import { UserController } from "./UserController";
 import { FilterQuery } from "mongoose";
 import { IUser, _IUser } from "../models/UserModel";
 import { TrumpCard, TrumpCardDocument } from "../models/TrumpCardModel";
 import { RoundWinner } from "../../../../apps/backend/src/websocket/utils/WebsocketResponses";
+import { UserController } from "./UserController";
 
 const initRound = asyncTransaction(async (gameId: string) => {
   console.log(`INITING GAME: ${gameId}`);
@@ -670,48 +670,54 @@ const showdownRound = asyncTransaction(
     // Find out who wins
     // get points sum
     const targetPoints = game.cardPointTarget;
-    const [playerASums, errA] = await UserController.getCardsSums({
+    const [playerASums, errA] = await UserController.getCardsTotal({
       username: playerA.username,
     });
-    const [playerBSums, errB] = await UserController.getCardsSums({
+    const [playerBSums, errB] = await UserController.getCardsTotal({
       username: playerB.username,
     });
     if (errA || errB) throw insertErrorStack(ERR_INTERNAL);
 
     let [isAExceed, isBExceed] = [false, false];
 
+    console.log(targetPoints);
+    console.log(playerASums);
+    console.log(playerBSums);
+    console.log(playerASums > targetPoints);
+    console.log(playerBSums > targetPoints);
+
     // Check if both players exceed the target points
-    if (playerASums[0] > targetPoints && playerASums[1] > targetPoints) {
+    if (playerASums > targetPoints) {
       isAExceed = true;
     }
-    if (playerBSums[0] > targetPoints && playerBSums[1] > targetPoints) {
+    if (playerBSums > targetPoints) {
       isBExceed = true;
     }
-
-    // Get safe best sum
-    let A_sum =
-      Math.max(...playerASums) <= targetPoints
-        ? Math.max(...playerASums)
-        : Math.min(...playerASums);
-    let B_sum =
-      Math.max(...playerBSums) <= targetPoints
-        ? Math.max(...playerBSums)
-        : Math.min(...playerBSums);
 
     let winner: string = "";
 
     if (isAExceed && !isBExceed) {
-      winner = "A";
+      console.log("1");
+      winner = "B";
     } else if (!isAExceed && isBExceed) {
-      winner = "B";
-    } else if (isAExceed && isBExceed) {
-      winner = "AB";
-    } else if (A_sum > B_sum) {
+      console.log("2");
       winner = "A";
-    } else if (A_sum < B_sum) {
-      winner = "B";
-    } else if (A_sum === B_sum) {
+    } else if (isAExceed && isBExceed) {
+      console.log("3");
       winner = "AB";
+    } else if (!isAExceed && !isBExceed) {
+      if (playerASums > playerBSums) {
+        console.log("4");
+        winner = "A";
+      } else if (playerASums < playerBSums) {
+        console.log("5");
+        winner = "B";
+      } else if (playerASums === playerBSums) {
+        console.log("6");
+        winner = "AB";
+      } else {
+        throw insertErrorStack(ERR_NO_WINNER);
+      }
     } else {
       throw insertErrorStack(ERR_NO_WINNER);
     }
@@ -814,6 +820,8 @@ const drawTrumpCards = asyncTransaction(
     const [trumpCards, err3] = await UserController.getTrumpCards(user);
     if (err3) throw err3;
 
+    console.log(trumpCards);
+
     // get randomized trump cards
     const [randomizedCards, err4] = await getRandomTrumpCards(
       amount,
@@ -827,6 +835,9 @@ const drawTrumpCards = asyncTransaction(
       randomizedCards
     );
     if (err5) throw err5;
+
+    console.log(updatedCards);
+    console.log(randomizedCards);
 
     return updatedCards;
   }

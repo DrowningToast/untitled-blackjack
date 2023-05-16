@@ -3,7 +3,7 @@ import {
   ErrorMessage,
   ZodErrorMessage,
   insertErrorStack,
-} from "./error";
+} from "./databaseErrors";
 
 /**
  * @description Error handling function which accepts callbacks
