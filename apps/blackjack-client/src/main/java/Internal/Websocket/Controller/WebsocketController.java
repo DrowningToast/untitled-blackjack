@@ -82,6 +82,20 @@ public class WebsocketController {
         System.out.println(message);
     }
 
+    public void trumpUse(String tHandler) {
+        try {
+            System.out.println("send trump use : "+tHandler);
+            MessageBuilder message = new MessageBuilder(client);
+            HashMap content = new HashMap();
+            content.put("trumpCard", tHandler);
+            System.out.println(content);
+
+            message.setHandler("useTrumpCard").setContent(content).send();
+
+        } catch (Exception e) {
+            System.out.println("trump catch");
+        }
+    }
 
     public void handleMessage(String raw) {
         JSONParser parser = new JSONParser();

@@ -29,7 +29,7 @@ public class GameplayController {
 
     public GameplayController(UIController uiController, WebsocketController wsController) {
         cardPlayer = new CardDisplay();
-        trumpCard = new TrumpCardDisplay();
+        trumpCard = new TrumpCardDisplay(wsController);
         this.wsController = wsController;
         this.uiController = uiController;
         this.ctx = MainRunner.getGameContext();
