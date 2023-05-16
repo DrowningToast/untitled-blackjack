@@ -18,7 +18,7 @@ public class UseTrump implements WebsocketEventHandler{
         JSONObject content = (JSONObject) body.get("content");
         String username = (String) content.get("content");
         TrumpCardPOJO trumpCard = TrumpCardController.getCARDS().get(content.get("trumpCard"));
-        ctx.getLogController().addLog(username + " used " + trumpCard.getDisplayName() + "!");
+//        ctx.getLogController().addLog(username + " used " + trumpCard.getDisplayName() + "!");
         uiController.update();
     }
 }

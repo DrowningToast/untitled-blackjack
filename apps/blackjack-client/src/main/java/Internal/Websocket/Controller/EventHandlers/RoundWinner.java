@@ -21,6 +21,7 @@ public class RoundWinner implements WebsocketEventHandler {
         JSONObject content = (JSONObject) body.get("content");
         System.out.println(content.get("cards"));
 
+
         // IGame set value section
         JSONObject game = (JSONObject) content.get("game");
         String gameState = (String) game.get("gameState");
@@ -28,6 +29,7 @@ public class RoundWinner implements WebsocketEventHandler {
         String turnOwner = (String) turnOwnerObj.get("username");
         long roundCounter = (long) game.get("roundCounter");
         long cardPointTarget = (long) game.get("cardPointTarget");
+        CardPOJO cards = CardController.getCARDS().get(game.get("cards"));
         ctx.getGame().getPOJO().setGameState(gameState);
         ctx.getGame().getPOJO().setRoundCounter(roundCounter);
         ctx.getGame().getPOJO().setTurnOwner(turnOwner);
@@ -42,6 +44,8 @@ public class RoundWinner implements WebsocketEventHandler {
         JSONArray hostCards = (JSONArray) host.get("cards");
         JSONArray guestCards = (JSONArray) guest.get("cards");
 
+        ctx.getPlayers()[0].getPOJO().getCardController().resetCards();
+        ctx.getPlayers()[1].getPOJO().getCardController().resetCards();
         for (Object c : hostCards){
             JSONObject cardObject = (JSONObject) c;
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
@@ -52,6 +56,7 @@ public class RoundWinner implements WebsocketEventHandler {
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
             ctx.getPlayer(guestUsername).getPOJO().getCardController().addCards(card);
         }
+
         // Player and Score section
         JSONObject winner = (JSONObject) content.get("winner");
         long pointsEarned = (long) content.get("pointsEarned");
@@ -61,6 +66,8 @@ public class RoundWinner implements WebsocketEventHandler {
             ctx.getLogController().addLog(username + " won in round " + roundCounter);
             long winnerCardPoint = ctx.getPlayer(username).getPOJO().getCardScore();
             long loserCardPoint = ctx.getAnotherPlayer(username).getPOJO().getCardScore();
+            System.out.println(winnerCardPoint);
+            System.out.println(loserCardPoint);
             JOptionPane.showMessageDialog(null, username + " won in round " + roundCounter + " with " + winnerCardPoint + " point over " + loserCardPoint + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
         }else{
             //both win
@@ -69,6 +76,9 @@ public class RoundWinner implements WebsocketEventHandler {
             long cardPoint = ctx.getPlayers()[0].getPOJO().getCardScore();
             JOptionPane.showMessageDialog(null, "Both player won in round" + roundCounter + " with " + cardPoint + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
         }
+
+
+
 
         // set attribute point card
         uiController.update();
