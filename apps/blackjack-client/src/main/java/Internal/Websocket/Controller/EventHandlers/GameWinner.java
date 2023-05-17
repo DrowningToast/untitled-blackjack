@@ -8,7 +8,6 @@ import javax.swing.*;
 
 public class GameWinner implements WebsocketEventHandler{
     private UIController uiController;
-    private JOptionPane exitpane;
     public GameWinner(UIController uiController) {
         this.uiController = uiController;
     }
@@ -36,6 +35,5 @@ public class GameWinner implements WebsocketEventHandler{
 
         uiController.update();
 
-        //Guss won in round 1 with 19 points over 16. Earning 1 point(s).
     }
 }
