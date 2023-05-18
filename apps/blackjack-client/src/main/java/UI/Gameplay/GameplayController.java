@@ -88,7 +88,6 @@ public class GameplayController {
         }
     }
     public void showStatus(JPanel statusPlace, PlayerPOJO player){
-        System.out.println("remove");
         statusPlace.removeAll();
         statusPlace.revalidate();
         statusPlace.repaint();
