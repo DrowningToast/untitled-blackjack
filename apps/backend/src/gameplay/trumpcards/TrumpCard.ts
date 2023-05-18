@@ -358,7 +358,11 @@ const undoHitTrump: TrumpCard<Card[]> = {
   handler: "undoHit",
   type: "UTILITY",
   onUse: async (cardUser, game) => {
-    const [currCards, errCurr] = await UserController.getCards(cardUser, true);
+    const [currCards, errCurr] = await UserController.getCards(
+      cardUser,
+      true,
+      true
+    );
     if (errCurr) throw errCurr;
 
     if (currCards.length < 3) return currCards;
