@@ -23,7 +23,6 @@ public class HitEvent implements WebsocketEventHandler {
             System.out.println("Deck is empty");
             return ;
         }
-        CardPOJO card = CardController.getCARDS().get(c.get("display"));
         ctx.getLogController().addLog(username + " used hit.");
         uiController.update();
     }

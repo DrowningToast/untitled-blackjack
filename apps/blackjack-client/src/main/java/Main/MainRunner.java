@@ -90,9 +90,9 @@ public class MainRunner {
                     eventHandlers.put("GAME_STOP_DUE_QUITTING", new GameStopDueQuitting(uiController));
 
                     errorHandlers.put("existed-user", new ExistedUser());
-//                    errorHandlers.put("invalid-passcode", new InvalidPasscode());
-//                    errorHandlers.put("invalid-user", new InvalidUser());
-//                    errorHandlers.put("invalid-game", new InvalidGame());
+                    errorHandlers.put("trump-use-denied", new ExistedUser());
+                    errorHandlers.put("opponent-invincibility", new ExistedUser());
+
 
                     gameContext.getSoundController().playSound("backgroundCasinoSound");
 

@@ -23,7 +23,6 @@ public class ReadyState implements WebsocketEventHandler {
             //for guest
             ctx.getPlayers()[0].getPOJO().setReady(ready);
             uiController.update();
-            return;
         } else {
             //for host
             ctx.getPlayers()[1].getPOJO().setUsername(username);

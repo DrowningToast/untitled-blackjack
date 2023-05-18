@@ -1,18 +1,18 @@
 package UI.Gameplay;
 
-import GameContext.Card.CardPOJO;
-import GameContext.Sounds.SoundPOJO;
-import GameContext.TrumpCard.TrumpCardPOJO;
-import GameContext.TrumpCard.TrumpCardDisplay;
 import GameContext.Card.CardDisplay;
+import GameContext.Card.CardPOJO;
 import GameContext.GameContext;
 import GameContext.Player.PlayerPOJO;
+import GameContext.Sounds.SoundPOJO;
+import GameContext.TrumpCard.TrumpCardDisplay;
+import GameContext.TrumpCard.TrumpCardPOJO;
 import GameContext.TrumpCard.TrumpStatusDisplay;
 import GameContext.TrumpCard.TrumpStatusPOJO;
+import Internal.UserInterface.UIController;
 import Internal.Websocket.Controller.WebsocketController;
 import Main.MainRunner;
-import Internal.UserInterface.UIController;
-import lombok.Getter;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -20,7 +20,6 @@ public class GameplayController {
 
     private WebsocketController wsController;
     private UIController uiController;
-    @Getter
     private GameplayDisplayGUI ui;
     private TrumpCardDisplay trumpCard;
     private TrumpStatusDisplay trumpStatus;
@@ -51,7 +50,10 @@ public class GameplayController {
             ui.getHitButtonPlayerOne().setEnabled(true);
             ui.getStandButtonPlayerOne().setEnabled(true);
             if (MainRunner.getGameContext().getPlayers()[0].getPOJO().checkCardLimit()) {
-                ui.getHitButtonPlayerOne().setEnabled(false);
+                disableHit();
+            }
+            if(ctx.getPlayers()[0].getPOJO().getTrumpCardController().checkStatus()){
+                disableHit();
             }
         } else if (opponentUsername.equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
             // THEIR TURN
@@ -61,15 +63,15 @@ public class GameplayController {
             System.out.println("TurnOwner's username doesn't match players.");
         }
     }
-    public void showTurn(JLabel showPlayerTurn, JPanel showTurn){
+
+    public void showTurn(JLabel showPlayerTurn, JPanel showTurn) {
         String checker = MainRunner.getGameContext().getGame().getPOJO().getTurnOwner();
         String myTurn = MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername();
         if (checker.equals(myTurn)) {
             showPlayerTurn.setText("Your turn");
             showPlayerTurn.setForeground(Color.black);
             showTurn.setBackground(new Color(106, 190, 48));
-        }
-        else{
+        } else {
             showPlayerTurn.setText("Waiting...");
             showPlayerTurn.setForeground(Color.RED);
             showTurn.setBackground(Color.black);
@@ -87,7 +89,8 @@ public class GameplayController {
             playerCardScore.setText(player.getCardScore() + " / " + cardPointTarget);
         }
     }
-    public void showStatus(JPanel statusPlace, PlayerPOJO player){
+
+    public void showStatus(JPanel statusPlace, PlayerPOJO player) {
         statusPlace.removeAll();
         statusPlace.revalidate();
         statusPlace.repaint();
@@ -102,6 +105,10 @@ public class GameplayController {
         String newText = ctx.getLogController().getLog().get(ctx.getLogController().getLog().size() - 1);
         ui.getGameplayTextArea().setText(newText + "\n" + oldText);
         System.out.println(newText);
+    }
+
+    public void clearLog() {
+        ui.getGameplayTextArea().setText("");
     }
 
     public void showTrumpCard(JPanel trumpPlace, PlayerPOJO player) {
@@ -129,14 +136,20 @@ public class GameplayController {
     }
 
     public void updateCardScoreColor(JLabel playerCardScore, PlayerPOJO player) {
-        if(player.checkCardLimit()){
+        if (player.checkCardLimit()) {
             playerCardScore.setForeground(Color.RED);
-        }
-        else if (player.getCardScore() == MainRunner.getGameContext().getGame().getPOJO().getCardPointTarget()) {
+        } else if (player.getCardScore() == MainRunner.getGameContext().getGame().getPOJO().getCardPointTarget()) {
             playerCardScore.setForeground(Color.GREEN);
-        }
-        else{
+        } else {
             playerCardScore.setForeground(Color.WHITE);
         }
+    }
+
+    public GameplayDisplayGUI getUi() {
+        return this.ui;
+    }
+
+    public void disableHit(){
+        ui.getHitButtonPlayerOne().setEnabled(false);
     }
 }

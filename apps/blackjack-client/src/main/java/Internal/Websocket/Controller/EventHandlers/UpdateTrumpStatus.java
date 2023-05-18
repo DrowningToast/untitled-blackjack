@@ -2,7 +2,6 @@ package Internal.Websocket.Controller.EventHandlers;
 
 import GameContext.GameContext;
 import GameContext.TrumpCard.TrumpCardController;
-import GameContext.TrumpCard.TrumpCardPOJO;
 import GameContext.TrumpCard.TrumpStatusPOJO;
 import Internal.UserInterface.UIController;
 import org.json.simple.JSONArray;
