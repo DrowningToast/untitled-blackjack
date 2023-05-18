@@ -16,9 +16,6 @@ public class NewGame implements WebsocketEventHandler{
     public void handler(GameContext ctx, JSONObject body) {
         String content = (String) body.get("content");
         ctx.getGame().getPOJO().setGameId(content);
-        // GO TO LOBBY WINDOW
-        // ready message is from the players[0]
-        // check getPLayer[1] is ready
         uiController.switchActiveWindow("gameplayUI");
     }
 }

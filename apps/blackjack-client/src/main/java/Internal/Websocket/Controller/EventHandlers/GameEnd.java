@@ -15,5 +15,7 @@ public class GameEnd implements WebsocketEventHandler{
     public void handler(GameContext ctx, JSONObject body) {
         System.out.println("Nothing just tell that the game has end.");
         ctx.getLogController().addLog("Game ended !");
+        uiController.update();
+        System.exit(0);
     }
 }

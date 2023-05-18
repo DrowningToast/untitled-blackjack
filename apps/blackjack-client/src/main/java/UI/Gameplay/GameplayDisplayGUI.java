@@ -609,7 +609,7 @@ public class GameplayDisplayGUI extends CustomFrame {
     @Override
     public void onSwitch() {
         // REMOVE LATER
-//        wsController.dev_trumpCheat();
+        wsController.dev_trumpCheat();
 
 
         playerOneNameLabel.setText(MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername());

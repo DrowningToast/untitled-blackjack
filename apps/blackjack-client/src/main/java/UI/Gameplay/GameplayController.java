@@ -73,6 +73,10 @@ public class GameplayController {
         System.out.println(newText);
     }
 
+    public void clearLog() {
+        ui.getGameplayTextArea().setText("");
+    }
+
     public void showTrumpCard(JPanel trumpPlace, PlayerPOJO player) {
         trumpPlace.removeAll();
         for (TrumpCardPOJO i : player.getTrumpCardController().getPOJOS()) {
