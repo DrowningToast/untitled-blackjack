@@ -658,12 +658,18 @@ const showdownRound = asyncTransaction(
     // Find out who wins
     // get points sum
     const targetPoints = game.cardPointTarget;
-    const [playerASums, errA] = await UserController.getCardsTotal({
-      username: playerA.username,
-    });
-    const [playerBSums, errB] = await UserController.getCardsTotal({
-      username: playerB.username,
-    });
+    const [playerASums, errA] = await UserController.getCardsTotal(
+      {
+        username: playerA.username,
+      },
+      true
+    );
+    const [playerBSums, errB] = await UserController.getCardsTotal(
+      {
+        username: playerB.username,
+      },
+      true
+    );
     if (errA || errB) throw insertErrorStack(ERR_INTERNAL);
 
     let [isAExceed, isBExceed] = [false, false];
@@ -697,6 +703,8 @@ const showdownRound = asyncTransaction(
     } else {
       throw insertErrorStack(ERR_NO_WINNER);
     }
+
+    console.log(winner);
 
     // determine how many points the winner gets
     const winnerPoints = GAME_ROUND_SCORE_MAPPING[game.roundCounter];

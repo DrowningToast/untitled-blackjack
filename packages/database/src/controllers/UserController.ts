@@ -223,32 +223,34 @@ const setStandState = asyncTransaction(
   }
 );
 
-const getCardsTotal = asyncTransaction(async (target: FilterQuery<IUser>) => {
-  const [cards, err] = await getCards(target, true);
-  if (err) throw err;
+const getCardsTotal = asyncTransaction(
+  async (target: FilterQuery<IUser>, bypassBlind: boolean = false) => {
+    const [cards, err] = await getCards(target, true, bypassBlind);
+    if (err) throw err;
 
-  const getSum = (getFirst: boolean = false) => {
-    return cards.reduce((acc, card) => {
-      return acc + card.values[getFirst ? 0 : card.values.length - 1];
-    }, 0);
-  };
+    const getSum = (getFirst: boolean = false) => {
+      return cards.reduce((acc, card) => {
+        return acc + card.values[getFirst ? 0 : card.values.length - 1];
+      }, 0);
+    };
 
-  const [user, errUser] = await UserController.getUserMeta(target);
-  if (errUser) throw errUser;
+    const [user, errUser] = await UserController.getUserMeta(target);
+    if (errUser) throw errUser;
 
-  const [game, errGame] = await GameController.getGame({
-    players: user._id,
-  });
-  if (errGame) throw errGame;
+    const [game, errGame] = await GameController.getGame({
+      players: user._id,
+    });
+    if (errGame) throw errGame;
 
-  const cardPointTarget = game.cardPointTarget;
-  const total = getSum(false);
+    const cardPointTarget = game.cardPointTarget;
+    const total = getSum(false);
 
-  if (total > cardPointTarget) {
-    return getSum(true);
+    if (total > cardPointTarget) {
+      return getSum(true);
+    }
+    return total;
   }
-  return total;
-});
+);
 
 const softResetPlayersState = asyncTransaction(
   async (target: FilterQuery<IUser>) => {
