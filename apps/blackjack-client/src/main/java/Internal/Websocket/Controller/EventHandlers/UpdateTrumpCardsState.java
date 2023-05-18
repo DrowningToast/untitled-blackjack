@@ -1,8 +1,6 @@
 package Internal.Websocket.Controller.EventHandlers;
 
-import GameContext.Card.CardController;
 import GameContext.GameContext;
-import GameContext.Log.LogController;
 import GameContext.TrumpCard.TrumpCardController;
 import GameContext.TrumpCard.TrumpCardPOJO;
 import Internal.UserInterface.UIController;

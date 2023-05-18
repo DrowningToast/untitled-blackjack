@@ -29,8 +29,6 @@ public class GameWinner implements WebsocketEventHandler{
             JOptionPane.showMessageDialog(null, "Winner is "+myName+"and"+opponentName+"!", "Game End",JOptionPane.OK_OPTION);
 
         }
-        System.exit(0);
-
         uiController.update();
 
     }

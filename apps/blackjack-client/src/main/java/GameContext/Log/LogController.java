@@ -17,6 +17,6 @@ public class LogController {
 
     public void clearLog(){
         this.log.clear();
-        System.out.println("Clear log");
+        MainRunner.getGamePlayController().clearLog();
     }
 }
