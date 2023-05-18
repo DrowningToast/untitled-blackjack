@@ -27,8 +27,6 @@ public class GameplayDisplayGUI extends CustomFrame {
     public GameplayController controller;
     public WebsocketController wsController;
 
-    private SoundController soundController= new SoundController();
-
     public GameplayDisplayGUI(GameplayController controller, WebsocketController wsController) {
         this.wsController = wsController;
         this.controller = controller;

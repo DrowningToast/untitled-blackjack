@@ -2,7 +2,7 @@ package Internal.UserInterface;
 
 import javax.swing.*;
 
-public abstract class CustomFrame extends JFrame implements CustomFrameEvents {
+public abstract class CustomFrame extends JFrame {
 
     // INVOKE WHEN SWITCH TO ACTIVE FRAME
     public void onSwitch(){

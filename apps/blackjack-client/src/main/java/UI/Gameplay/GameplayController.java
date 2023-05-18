@@ -26,8 +26,6 @@ public class GameplayController {
     public CardDisplay cardPlayer;
     private GameContext ctx;
 
-    private SoundPOJO sound;
-
     public GameplayController(UIController uiController, WebsocketController wsController) {
         cardPlayer = new CardDisplay();
         trumpCard = new TrumpCardDisplay(wsController);

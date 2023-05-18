@@ -6,7 +6,6 @@ import java.util.HashMap;
 public class SoundController {
     private static HashMap<String, SoundPOJO> SOUNDS = new HashMap<>();
 
-    private SoundPOJO sound;
     private float volume = 0f;
     private boolean mute = false;
 

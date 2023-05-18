@@ -6,7 +6,6 @@ import lombok.Setter;
 import javax.swing.ImageIcon;
 
 
-
 public class CardPOJO {
     @Getter
     @Setter
@@ -22,10 +21,6 @@ public class CardPOJO {
         this.displayName = displayName;
         this.value = value;
         this.image = image;
-    }
-
-    public CardPOJO() {
-        this("", new int[]{0}, null);
     }
 }
 

@@ -13,7 +13,6 @@ public class InitRound implements WebsocketEventHandler{
         JSONObject content = (JSONObject) body.get("content");
 
         // create variable
-        String gameId = (String) content.get("gameId");
         String gameState = (String) content.get("gameState");
         long roundCounter = (long)  content.get("roundCounter");
         long cardPointTarget = (long) content.get("cardPointTarget");

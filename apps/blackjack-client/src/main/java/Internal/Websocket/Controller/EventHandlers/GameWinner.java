@@ -30,6 +30,5 @@ public class GameWinner implements WebsocketEventHandler{
 
         }
         uiController.update();
-
     }
 }

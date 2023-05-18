@@ -35,8 +35,8 @@ public class GameContext {
         }else{
             return null;
         }
-
     }
+
     public PlayerModel getAnotherPlayer(String username){
         if (username.equals(players[0].getPOJO().getUsername())){
             return players[1];

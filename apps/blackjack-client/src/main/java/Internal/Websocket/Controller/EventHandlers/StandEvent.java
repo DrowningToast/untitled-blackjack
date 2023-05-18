@@ -6,11 +6,6 @@ import org.json.simple.JSONObject;
 
 public class StandEvent implements WebsocketEventHandler {
 
-    private UIController uiController;
-
-    public StandEvent(UIController uiController) {
-        this.uiController = uiController;
-    }
 
     @Override
     public void handler(GameContext ctx, JSONObject body) {
