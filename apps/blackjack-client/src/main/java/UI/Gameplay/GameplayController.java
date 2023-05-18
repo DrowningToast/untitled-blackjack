@@ -50,7 +50,10 @@ public class GameplayController {
             ui.getHitButtonPlayerOne().setEnabled(true);
             ui.getStandButtonPlayerOne().setEnabled(true);
             if (MainRunner.getGameContext().getPlayers()[0].getPOJO().checkCardLimit()) {
-                ui.getHitButtonPlayerOne().setEnabled(false);
+                disableHit();
+            }
+            if(ctx.getPlayers()[0].getPOJO().getTrumpCardController().checkStatus()){
+                disableHit();
             }
         } else if (opponentUsername.equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
             // THEIR TURN
@@ -144,5 +147,9 @@ public class GameplayController {
 
     public GameplayDisplayGUI getUi() {
         return this.ui;
+    }
+
+    public void disableHit(){
+        ui.getHitButtonPlayerOne().setEnabled(false);
     }
 }
