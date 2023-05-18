@@ -122,12 +122,7 @@ public class LobbyDisplayGUI extends CustomFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_passCodeActionPerformed
 
-    public void init() {
-        initComponents();
-        this.setLocationRelativeTo(null);//to set everything in frame to the center of the frame
-        this.setSize(1280, 800);
-        this.setVisible(true);
-    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel LobbyPanel;

@@ -5,6 +5,7 @@ import GameContext.GameContext;
 import GameContext.Log.LogController;
 import GameContext.Player.PlayerModel;
 import GameContext.Sounds.SoundController;
+import GameContext.Sounds.SoundPOJO;
 import Internal.Websocket.Controller.Errorhandlers.*;
 import Internal.Websocket.Controller.EventHandlers.*;
 import Internal.Websocket.Controller.WebsocketController;

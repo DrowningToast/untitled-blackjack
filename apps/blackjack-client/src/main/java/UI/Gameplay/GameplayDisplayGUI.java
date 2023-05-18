@@ -2,6 +2,7 @@
 package UI.Gameplay;
 
 import GameContext.Sounds.SoundController;
+import GameContext.Sounds.SoundPOJO;
 import Internal.Websocket.Controller.WebsocketController;
 import Main.MainRunner;
 import Internal.UserInterface.CustomFrame;
@@ -10,6 +11,8 @@ import com.sun.tools.javac.Main;
 import java.awt.Label;
 import java.awt.TextArea;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -30,6 +33,10 @@ public class GameplayDisplayGUI extends CustomFrame {
         this.wsController = wsController;
         this.controller = controller;
         initComponents();
+        soundControlMuteLabel.setIcon((new javax.swing.ImageIcon("resources/VolumeMute.PNG")));
+        soundControlDownLabel.setIcon((new javax.swing.ImageIcon("resources/VolumeDown.PNG")));
+        soundControlUpLabel.setIcon((new javax.swing.ImageIcon("resources/VolumeUp.PNG")));
+
         playerTwoTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30,
                 new javax.swing.ImageIcon("resources/Table.PNG")));
         playerOneTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30,
@@ -80,6 +87,12 @@ public class GameplayDisplayGUI extends CustomFrame {
         showPlayerTurnLabel = new javax.swing.JLabel();
         deckCardPanel = new javax.swing.JPanel();
         deckCardBackground = new javax.swing.JLabel();
+        soundControlMutePanel = new javax.swing.JPanel();
+        soundControlMuteLabel = new javax.swing.JLabel();
+        soundControlUpPanel = new javax.swing.JPanel();
+        soundControlUpLabel = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        soundControlDownLabel = new javax.swing.JLabel();
         background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -87,6 +100,7 @@ public class GameplayDisplayGUI extends CustomFrame {
         setSize(new java.awt.Dimension(0, 0));
 
         gamePlayPanel.setBackground(new java.awt.Color(204, 255, 153));
+        gamePlayPanel.setMinimumSize(new java.awt.Dimension(1280, 800));
         gamePlayPanel.setPreferredSize(new java.awt.Dimension(1280, 800));
         gamePlayPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -312,18 +326,18 @@ public class GameplayDisplayGUI extends CustomFrame {
         buttonPanelPlayerTwoLayout.setHorizontalGroup(
             buttonPanelPlayerTwoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buttonPanelPlayerTwoLayout.createSequentialGroup()
-                .addContainerGap(26, Short.MAX_VALUE)
-                .addComponent(scoreCardTwoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(0, 32, Short.MAX_VALUE)
+                .addComponent(scoreCardTwoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         buttonPanelPlayerTwoLayout.setVerticalGroup(
             buttonPanelPlayerTwoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(buttonPanelPlayerTwoLayout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(scoreCardTwoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 10, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        gamePlayPanel.add(buttonPanelPlayerTwo, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 10, 160, 60));
+        gamePlayPanel.add(buttonPanelPlayerTwo, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 80, 160, 60));
 
         showTurn.setBackground(new java.awt.Color(255, 153, 0));
 
@@ -337,18 +351,18 @@ public class GameplayDisplayGUI extends CustomFrame {
         showTurn.setLayout(showTurnLayout);
         showTurnLayout.setHorizontalGroup(
             showTurnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(showTurnLayout.createSequentialGroup()
-                .addComponent(showPlayerTurnLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, showTurnLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(showPlayerTurnLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         showTurnLayout.setVerticalGroup(
             showTurnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(showTurnLayout.createSequentialGroup()
-                .addComponent(showPlayerTurnLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, showTurnLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(showPlayerTurnLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        gamePlayPanel.add(showTurn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 110, 200, 90));
+        gamePlayPanel.add(showTurn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 160, 200, 90));
 
         deckCardPanel.setPreferredSize(new java.awt.Dimension(107, 157));
 
@@ -356,15 +370,100 @@ public class GameplayDisplayGUI extends CustomFrame {
         deckCardPanel.setLayout(deckCardPanelLayout);
         deckCardPanelLayout.setHorizontalGroup(
             deckCardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(deckCardBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, deckCardPanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(deckCardBackground, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         deckCardPanelLayout.setVerticalGroup(
             deckCardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(deckCardBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, deckCardPanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(deckCardBackground, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        gamePlayPanel.add(deckCardPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1107, 247, 150, 210));
-        gamePlayPanel.add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1280, 790));
+        gamePlayPanel.add(deckCardPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 280, 150, 210));
+
+        soundControlMuteLabel.setBackground(new java.awt.Color(255, 102, 102));
+        soundControlMuteLabel.setPreferredSize(new java.awt.Dimension(40, 40));
+
+        javax.swing.GroupLayout soundControlMutePanelLayout = new javax.swing.GroupLayout(soundControlMutePanel);
+        soundControlMutePanel.setLayout(soundControlMutePanelLayout);
+        soundControlMutePanelLayout.setHorizontalGroup(
+            soundControlMutePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(soundControlMutePanelLayout.createSequentialGroup()
+                .addComponent(soundControlMuteLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        soundControlMutePanelLayout.setVerticalGroup(
+            soundControlMutePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, soundControlMutePanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(soundControlMuteLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        gamePlayPanel.add(soundControlMutePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1220, 20, 40, 40));
+        soundControlMuteLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("mute");
+                MainRunner.getGameContext().getSoundController().stop("backgroundCasinoSound");
+            }
+        });
+
+        soundControlUpPanel.setPreferredSize(new java.awt.Dimension(40, 40));
+
+        soundControlUpLabel.setPreferredSize(new java.awt.Dimension(40, 40));
+        soundControlUpLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("up");
+                MainRunner.getGameContext().getSoundController().volumeUp("backgroundCasinoSound");
+            }
+        });
+        javax.swing.GroupLayout soundControlUpPanelLayout = new javax.swing.GroupLayout(soundControlUpPanel);
+        soundControlUpPanel.setLayout(soundControlUpPanelLayout);
+        soundControlUpPanelLayout.setHorizontalGroup(
+            soundControlUpPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, soundControlUpPanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(soundControlUpLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        soundControlUpPanelLayout.setVerticalGroup(
+            soundControlUpPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, soundControlUpPanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(soundControlUpLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        gamePlayPanel.add(soundControlUpPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1160, 20, -1, -1));
+
+
+        soundControlDownLabel.setBackground(new java.awt.Color(153, 0, 0));
+        soundControlDownLabel.setPreferredSize(new java.awt.Dimension(40, 40));
+        soundControlDownLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("Down");
+                MainRunner.getGameContext().getSoundController().volumeDown("backgroundCasinoSound");
+            }
+        });
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(soundControlDownLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(soundControlDownLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        gamePlayPanel.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 20, 40, 40));
+        gamePlayPanel.add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1280, 800));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -391,12 +490,7 @@ public class GameplayDisplayGUI extends CustomFrame {
         wsController.sendStand();
     }
 
-    public void init() {
-        initComponents();
-        this.setLocationRelativeTo(null);
-        this.setSize(1280, 800);
-        this.setVisible(true);
-    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel background;
@@ -408,6 +502,7 @@ public class GameplayDisplayGUI extends CustomFrame {
     private javax.swing.JPanel gamePlayPanel;
     private java.awt.TextArea gameplayTextArea;
     private javax.swing.JButton hitButtonPlayerOne;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel playerOneNameLabel;
     private javax.swing.JPanel playerOneNamePanel;
     private java.awt.Label playerOneNameScoreLabel;
@@ -424,6 +519,11 @@ public class GameplayDisplayGUI extends CustomFrame {
     private javax.swing.JPanel scoreGamePlayerTwoPanel;
     private javax.swing.JLabel showPlayerTurnLabel;
     private javax.swing.JPanel showTurn;
+    private javax.swing.JLabel soundControlDownLabel;
+    private javax.swing.JLabel soundControlMuteLabel;
+    private javax.swing.JPanel soundControlMutePanel;
+    private javax.swing.JLabel soundControlUpLabel;
+    private javax.swing.JPanel soundControlUpPanel;
     private javax.swing.JButton standButtonPlayerOne;
     private javax.swing.JLabel trumpCardLabel;
     private javax.swing.JPanel trumpCardPanel;
@@ -633,6 +733,32 @@ public class GameplayDisplayGUI extends CustomFrame {
     public void setGameplayTextArea(TextArea gameplayTextArea) {
         this.gameplayTextArea = gameplayTextArea;
     }
+
+    public JLabel getSoundControlDownLabel() {
+        return soundControlDownLabel;
+    }
+
+    public void setSoundControlDownLabel(JLabel soundControlDownLabel) {
+        this.soundControlDownLabel = soundControlDownLabel;
+    }
+
+    public JLabel getSoundControlMuteLabel() {
+        return soundControlMuteLabel;
+    }
+
+    public void setSoundControlMuteLabel(JLabel soundControlMuteLabel) {
+        this.soundControlMuteLabel = soundControlMuteLabel;
+    }
+
+    public JLabel getSoundControlUpLabel() {
+        return soundControlUpLabel;
+    }
+
+    public void setSoundControlUpLabel(JLabel soundControlUpLabel) {
+        this.soundControlUpLabel = soundControlUpLabel;
+    }
+    
+    
 
     @Override
     public void onSwitch() {
