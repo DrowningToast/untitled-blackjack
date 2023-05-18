@@ -61,14 +61,18 @@ public class GameplayController {
             System.out.println("TurnOwner's username doesn't match players.");
         }
     }
-    public void showTurn(JLabel showPlayerTurn){
+    public void showTurn(JLabel showPlayerTurn, JPanel showTurn){
         String checker = MainRunner.getGameContext().getGame().getPOJO().getTurnOwner();
         String myTurn = MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername();
         if (checker.equals(myTurn)) {
             showPlayerTurn.setText("Your turn");
+            showPlayerTurn.setForeground(Color.black);
+            showTurn.setBackground(new Color(106, 190, 48));
         }
         else{
-            showPlayerTurn.setText("Opponent's turn");
+            showPlayerTurn.setText("Waiting...");
+            showPlayerTurn.setForeground(Color.RED);
+            showTurn.setBackground(Color.black);
         }
     }
 
@@ -83,15 +87,15 @@ public class GameplayController {
             playerCardScore.setText(player.getCardScore() + " / " + cardPointTarget);
         }
     }
-//    public void showStatus(JPanel statusPlace, PlayerPOJO player){
-//        statusPlace.removeAll();
-//        statusPlace.revalidate();
-//        statusPlace.repaint();
-//        for (TrumpStatusPOJO i : player) {
-//            trumpStatus.showTrumpStatus(i);
-//            statusPlace.add(trumpStatus.getTrumpStatus());
-//        }
-//    }
+    public void showStatus(JPanel statusPlace, PlayerPOJO player){
+        statusPlace.removeAll();
+        statusPlace.revalidate();
+        statusPlace.repaint();
+        for (TrumpStatusPOJO i : player.getTrumpCardController().getSTATUS()) {
+            trumpStatus.showTrumpStatus(i);
+            statusPlace.add(trumpStatus.getTrumpStatus());
+        }
+    }
 
     public void updateChatLog() {
         String oldText = ui.getGameplayTextArea().getText();

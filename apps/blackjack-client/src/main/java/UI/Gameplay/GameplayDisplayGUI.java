@@ -329,9 +329,10 @@ public class GameplayDisplayGUI extends CustomFrame {
 
         showTurn.setBackground(new java.awt.Color(255, 153, 0));
 
-        showPlayerTurnLabel.setFont(new java.awt.Font("Book Antiqua", 1, 24)); // NOI18N
-        showPlayerTurnLabel.setForeground(new java.awt.Color(0, 102, 102));
+        showPlayerTurnLabel.setFont(new java.awt.Font("Book Antiqua", 1, 36)); // NOI18N
+        showPlayerTurnLabel.setForeground(new java.awt.Color(255, 0, 0));
         showPlayerTurnLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        showPlayerTurnLabel.setText("Waiting...");
         showPlayerTurnLabel.setPreferredSize(new java.awt.Dimension(200, 90));
 
         javax.swing.GroupLayout showTurnLayout = new javax.swing.GroupLayout(showTurn);
@@ -656,6 +657,8 @@ public class GameplayDisplayGUI extends CustomFrame {
         controller.updateTitleGamePlay();
         controller.updatePlayerScore();
         controller.updateCardScoreColor(scoreCardOneLabel, MainRunner.getGameContext().getPlayers()[0].getPOJO());
-        controller.showTurn(showPlayerTurnLabel);
+        controller.showTurn(showPlayerTurnLabel, showTurn);
+        controller.showStatus(trumpStatusPlayerOnePanel, MainRunner.getGameContext().getPlayers()[0].getPOJO());
+        controller.showStatus(trumpStatusPlayerTwoPanel, MainRunner.getGameContext().getPlayers()[1].getPOJO());
     }
 }
