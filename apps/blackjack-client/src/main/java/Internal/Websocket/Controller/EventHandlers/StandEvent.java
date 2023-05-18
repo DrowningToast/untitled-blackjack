@@ -16,6 +16,6 @@ public class StandEvent implements WebsocketEventHandler {
     public void handler(GameContext ctx, JSONObject body) {
         String username = (String) body.get("content");
 //        for sending text in chat further more
-        ctx.getLogController().addLog(ctx.getPlayers()[0].getPOJO().getUsername() + "used stand.");
+        ctx.getLogController().addLog(ctx.getPlayers()[0].getPOJO().getUsername() + " used stand.");
     }
 }

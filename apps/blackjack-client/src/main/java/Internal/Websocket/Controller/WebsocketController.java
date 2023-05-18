@@ -92,6 +92,8 @@ public class WebsocketController {
 
             message.setHandler("useTrump").setContent(content).send();
 
+            ctx.getLogController().addLog(ctx.getPlayers()[0].getPOJO().getUsername() + " used " + tHandler + "card!");
+
         } catch (Exception e) {
             System.out.println("trump catch");
         }
