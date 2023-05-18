@@ -27,7 +27,7 @@ public class TrumpCardDisplay {
             public void mouseClicked(MouseEvent e) {
                 System.out.println("trump clicked");
                 super.mouseClicked(e);
-                wsController.trumpUse(tCard.getHandler());
+                wsController.useTrump(tCard.getHandler());
             }
         });
         return tCardLabel;
