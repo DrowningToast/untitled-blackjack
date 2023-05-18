@@ -17,6 +17,9 @@ public class NextRound implements WebsocketEventHandler {
         long roundCounter = (long) body.get("content");
         ctx.getGame().getPOJO().setRoundCounter(roundCounter);
 
+        //
+        ctx.getPlayers()[0].getPOJO().getTrumpCardController().resetStatus();
+        ctx.getPlayers()[1].getPOJO().getTrumpCardController().resetStatus();
         uiController.update();
     }
 }
