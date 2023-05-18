@@ -4,6 +4,7 @@ import GameContext.GameContext;
 import GameContext.TrumpCard.TrumpCardController;
 import GameContext.TrumpCard.TrumpCardPOJO;
 import Internal.UserInterface.UIController;
+import Main.MainRunner;
 import org.json.simple.JSONObject;
 
 public class UseTrump implements WebsocketEventHandler{
@@ -21,6 +22,7 @@ public class UseTrump implements WebsocketEventHandler{
         String handler = (String) card.get("handler");
         TrumpCardPOJO trumpCard = TrumpCardController.getCARDS().get(handler);
         ctx.getLogController().addLog(username +  trumpCard.getDisplayName() + "!");
+        MainRunner.getGameContext().getSoundController().playSound("drawTrumpCard");
         uiController.update();
     }
 }

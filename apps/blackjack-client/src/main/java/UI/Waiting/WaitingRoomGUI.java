@@ -168,6 +168,7 @@ public class WaitingRoomGUI extends CustomFrame {
 
     @Override
     public void onUpdate() {
+        MainRunner.getGameContext().getSoundController().playSound("opponentJoinRoom");
         String labelTextA = "Player1 : waiting...";
         String labelTextB = "Player2 : waiting...";
         boolean statusA = MainRunner.getGameContext().getPlayers()[0].getPOJO().isReady();

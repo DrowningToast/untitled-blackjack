@@ -4,16 +4,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import Internal.Websocket.Controller.WebsocketController;
+import Main.MainRunner;
 
 public class TrumpCardDisplay {
 
     private JLabel tCardLabel;
-    private  WebsocketController webController;
+    private  WebsocketController wsController;
 
-    public TrumpCardDisplay(WebsocketController webController) {
-        this.webController = webController;
+    public TrumpCardDisplay(WebsocketController wsController) {
+        this.wsController = wsController;
     }
 
     public JLabel showTrumpCard(TrumpCardPOJO tCard) {
@@ -27,7 +27,7 @@ public class TrumpCardDisplay {
             public void mouseClicked(MouseEvent e) {
                 System.out.println("trump clicked");
                 super.mouseClicked(e);
-                webController.useTrump(tCard.getHandler());
+                wsController.trumpUse(tCard.getHandler());
             }
         });
         return tCardLabel;

@@ -2,13 +2,12 @@ package Internal.Websocket.Controller.EventHandlers;
 
 import GameContext.GameContext;
 import Internal.UserInterface.UIController;
+import Main.MainRunner;
 import org.json.simple.JSONObject;
 
 public class InitRound implements WebsocketEventHandler{
     private UIController uiController;
     public InitRound(UIController uiController){ this.uiController = uiController;}
-
-
     @Override
     public void handler(GameContext ctx, JSONObject body) {
         JSONObject content = (JSONObject) body.get("content");
@@ -29,6 +28,7 @@ public class InitRound implements WebsocketEventHandler{
         // set value to log
         ctx.getLogController().addLog("Game start !");
 
+        ctx.getSoundController().playSound("shuffleCard");
         uiController.update();
     }
 }

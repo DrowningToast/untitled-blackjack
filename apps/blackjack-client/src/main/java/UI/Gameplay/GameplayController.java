@@ -1,11 +1,14 @@
 package UI.Gameplay;
 
 import GameContext.Card.CardPOJO;
+import GameContext.Sounds.SoundPOJO;
 import GameContext.TrumpCard.TrumpCardPOJO;
 import GameContext.TrumpCard.TrumpCardDisplay;
 import GameContext.Card.CardDisplay;
 import GameContext.GameContext;
 import GameContext.Player.PlayerPOJO;
+import GameContext.TrumpCard.TrumpStatusDisplay;
+import GameContext.TrumpCard.TrumpStatusPOJO;
 import Internal.Websocket.Controller.WebsocketController;
 import Main.MainRunner;
 import Internal.UserInterface.UIController;
@@ -20,12 +23,16 @@ public class GameplayController {
     @Getter
     private GameplayDisplayGUI ui;
     private TrumpCardDisplay trumpCard;
+    private TrumpStatusDisplay trumpStatus;
     public CardDisplay cardPlayer;
     private GameContext ctx;
+
+    private SoundPOJO sound;
 
     public GameplayController(UIController uiController, WebsocketController wsController) {
         cardPlayer = new CardDisplay();
         trumpCard = new TrumpCardDisplay(wsController);
+        trumpStatus = new TrumpStatusDisplay();
         this.wsController = wsController;
         this.uiController = uiController;
         this.ctx = MainRunner.getGameContext();
@@ -54,17 +61,37 @@ public class GameplayController {
             System.out.println("TurnOwner's username doesn't match players.");
         }
     }
+    public void showTurn(JLabel showPlayerTurn){
+        String checker = MainRunner.getGameContext().getGame().getPOJO().getTurnOwner();
+        String myTurn = MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername();
+        if (checker.equals(myTurn)) {
+            showPlayerTurn.setText("Your turn");
+        }
+        else{
+            showPlayerTurn.setText("Opponent's turn");
+        }
+    }
 
     public void showCard(JPanel playerTable, JLabel playerCardScore, PlayerPOJO player) {
+        long cardPointTarget = MainRunner.getGameContext().getGame().getPOJO().getCardPointTarget();
         playerTable.removeAll();
         playerTable.revalidate();
         playerTable.repaint();
         for (CardPOJO i : player.getCardController().getPOJOS()) {
             cardPlayer.showCard(i);
             playerTable.add(cardPlayer.getCard());
-            playerCardScore.setText("Score : " + player.getCardScore());
+            playerCardScore.setText(player.getCardScore() + " / " + cardPointTarget);
         }
     }
+//    public void showStatus(JPanel statusPlace, PlayerPOJO player){
+//        statusPlace.removeAll();
+//        statusPlace.revalidate();
+//        statusPlace.repaint();
+//        for (TrumpStatusPOJO i : player) {
+//            trumpStatus.showTrumpStatus(i);
+//            statusPlace.add(trumpStatus.getTrumpStatus());
+//        }
+//    }
 
     public void updateChatLog() {
         String oldText = ui.getGameplayTextArea().getText();

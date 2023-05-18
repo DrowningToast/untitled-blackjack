@@ -7,7 +7,6 @@ import javax.swing.JLabel;
 
 public class CardDisplay {
     private JLabel cardLabel;
-//    private CardPOJO cards;
 
     public CardDisplay(){
     }
