@@ -95,8 +95,11 @@ export const useTrumpEvent = AsyncExceptionHandler(
     );
     if (errBroadcast) throw errBroadcast;
 
-    const [remainingTrumpCards, errRemain] =
-      await UserController.getTrumpCards();
+    const [remainingTrumpCards, errRemain] = await UserController.getTrumpCards(
+      {
+        username: user.username,
+      }
+    );
     if (errRemain) errRemain;
 
     // send trump card update to the trump card user
