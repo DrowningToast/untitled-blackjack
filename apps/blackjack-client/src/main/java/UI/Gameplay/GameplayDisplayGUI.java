@@ -73,9 +73,11 @@ public class GameplayDisplayGUI extends CustomFrame {
         vsPanel = new javax.swing.JPanel();
         vsLabel = new javax.swing.JLabel();
         trumpCardPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        trumpCardLabel = new javax.swing.JLabel();
         buttonPanelPlayerTwo = new javax.swing.JPanel();
         scoreCardTwoLabel = new javax.swing.JLabel();
+        showTurn = new javax.swing.JPanel();
+        showPlayerTurnLabel = new javax.swing.JLabel();
         deckCardPanel = new javax.swing.JPanel();
         deckCardBackground = new javax.swing.JLabel();
         background = new javax.swing.JLabel();
@@ -216,7 +218,9 @@ public class GameplayDisplayGUI extends CustomFrame {
         scoreGamePlayerOneLabel.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         scoreGamePlayerOneLabel.setText("0");
 
+        playerOneNameScoreLabel.setAlignment(java.awt.Label.CENTER);
         playerOneNameScoreLabel.setBackground(new java.awt.Color(0, 0, 0));
+        playerOneNameScoreLabel.setFont(new java.awt.Font("Book Antiqua", 1, 26)); // NOI18N
         playerOneNameScoreLabel.setForeground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout scoreGamePlayerOnePanelLayout = new javax.swing.GroupLayout(scoreGamePlayerOnePanel);
@@ -242,7 +246,9 @@ public class GameplayDisplayGUI extends CustomFrame {
         scoreGamePlayerTwoLabel.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         scoreGamePlayerTwoLabel.setText("0");
 
+        playerTwoNameScoreLabel.setAlignment(java.awt.Label.CENTER);
         playerTwoNameScoreLabel.setBackground(new java.awt.Color(0, 0, 0));
+        playerTwoNameScoreLabel.setFont(new java.awt.Font("Book Antiqua", 1, 26)); // NOI18N
         playerTwoNameScoreLabel.setForeground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout scoreGamePlayerTwoPanelLayout = new javax.swing.GroupLayout(scoreGamePlayerTwoPanel);
@@ -275,23 +281,23 @@ public class GameplayDisplayGUI extends CustomFrame {
 
         trumpCardPanel.setBackground(new java.awt.Color(255, 204, 0));
 
-        jLabel1.setFont(new java.awt.Font("Book Antiqua", 1, 24)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("TrumpCard");
-        jLabel1.setPreferredSize(new java.awt.Dimension(250, 30));
+        trumpCardLabel.setFont(new java.awt.Font("Book Antiqua", 1, 24)); // NOI18N
+        trumpCardLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        trumpCardLabel.setText("TrumpCard");
+        trumpCardLabel.setPreferredSize(new java.awt.Dimension(250, 30));
 
         javax.swing.GroupLayout trumpCardPanelLayout = new javax.swing.GroupLayout(trumpCardPanel);
         trumpCardPanel.setLayout(trumpCardPanelLayout);
         trumpCardPanelLayout.setHorizontalGroup(
             trumpCardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(trumpCardPanelLayout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(trumpCardLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         trumpCardPanelLayout.setVerticalGroup(
             trumpCardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(trumpCardPanelLayout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(trumpCardLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -320,6 +326,30 @@ public class GameplayDisplayGUI extends CustomFrame {
         );
 
         gamePlayPanel.add(buttonPanelPlayerTwo, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 10, 160, 60));
+
+        showTurn.setBackground(new java.awt.Color(255, 153, 0));
+
+        showPlayerTurnLabel.setFont(new java.awt.Font("Book Antiqua", 1, 24)); // NOI18N
+        showPlayerTurnLabel.setForeground(new java.awt.Color(0, 102, 102));
+        showPlayerTurnLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        showPlayerTurnLabel.setPreferredSize(new java.awt.Dimension(200, 90));
+
+        javax.swing.GroupLayout showTurnLayout = new javax.swing.GroupLayout(showTurn);
+        showTurn.setLayout(showTurnLayout);
+        showTurnLayout.setHorizontalGroup(
+            showTurnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(showTurnLayout.createSequentialGroup()
+                .addComponent(showPlayerTurnLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        showTurnLayout.setVerticalGroup(
+            showTurnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(showTurnLayout.createSequentialGroup()
+                .addComponent(showPlayerTurnLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        gamePlayPanel.add(showTurn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 110, 200, 90));
 
         deckCardPanel.setPreferredSize(new java.awt.Dimension(107, 157));
 
@@ -379,7 +409,6 @@ public class GameplayDisplayGUI extends CustomFrame {
     private javax.swing.JPanel gamePlayPanel;
     private java.awt.TextArea gameplayTextArea;
     private javax.swing.JButton hitButtonPlayerOne;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel playerOneNameLabel;
     private javax.swing.JPanel playerOneNamePanel;
     private java.awt.Label playerOneNameScoreLabel;
@@ -394,7 +423,10 @@ public class GameplayDisplayGUI extends CustomFrame {
     private javax.swing.JPanel scoreGamePlayerOnePanel;
     private javax.swing.JLabel scoreGamePlayerTwoLabel;
     private javax.swing.JPanel scoreGamePlayerTwoPanel;
+    private javax.swing.JLabel showPlayerTurnLabel;
+    private javax.swing.JPanel showTurn;
     private javax.swing.JButton standButtonPlayerOne;
+    private javax.swing.JLabel trumpCardLabel;
     private javax.swing.JPanel trumpCardPanel;
     private javax.swing.JPanel trumpHoldChipPlayerOnePanel;
     private javax.swing.JPanel trumpStatusPlayerOnePanel;
@@ -450,14 +482,6 @@ public class GameplayDisplayGUI extends CustomFrame {
     public void setHitButtonPlayerOne(JButton hitButtonPlayerOne) {
         this.hitButtonPlayerOne = hitButtonPlayerOne;
     }
-
-    // public JButton getHitButtonPlayerTwo() {
-    // return hitButtonPlayerTwo;
-    // }
-    //
-    // public void setHitButtonPlayerTwo(JButton hitButtonPlayerTwo) {
-    // this.hitButtonPlayerTwo = hitButtonPlayerTwo;
-    // }
 
     public JPanel getPlayerOneNamePanel() {
         return playerOneNamePanel;
@@ -614,7 +638,9 @@ public class GameplayDisplayGUI extends CustomFrame {
     @Override
     public void onSwitch() {
         playerOneNameLabel.setText(MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername());
+        playerOneNameScoreLabel.setText(MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername());
         playerTwoNameLabel.setText(MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername());
+        playerTwoNameScoreLabel.setText(MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername());
     }
 
     @Override
@@ -626,5 +652,6 @@ public class GameplayDisplayGUI extends CustomFrame {
         controller.updateTitleGamePlay();
         controller.updatePlayerScore();
         controller.updateCardScoreColor(scoreCardOneLabel, MainRunner.getGameContext().getPlayers()[0].getPOJO());
+        controller.showTurn(showPlayerTurnLabel);
     }
 }

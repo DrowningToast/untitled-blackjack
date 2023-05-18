@@ -11,10 +11,10 @@ import Main.MainRunner;
 public class TrumpCardDisplay {
 
     private JLabel tCardLabel;
-    private  WebsocketController webController;
+    private  WebsocketController wsController;
 
-    public TrumpCardDisplay(WebsocketController webController) {
-        this.webController = webController;
+    public TrumpCardDisplay(WebsocketController wsController) {
+        this.wsController = wsController;
     }
 
     public JLabel showTrumpCard(TrumpCardPOJO tCard) {
@@ -26,10 +26,9 @@ public class TrumpCardDisplay {
         tCardLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
                 System.out.println("trump clicked");
                 super.mouseClicked(e);
-                webController.trumpUse(tCard.getHandler());
+                wsController.trumpUse(tCard.getHandler());
             }
         });
         return tCardLabel;

@@ -61,6 +61,16 @@ public class GameplayController {
             System.out.println("TurnOwner's username doesn't match players.");
         }
     }
+    public void showTurn(JLabel showPlayerTurn){
+        String checker = MainRunner.getGameContext().getGame().getPOJO().getTurnOwner();
+        String myTurn = MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername();
+        if (checker.equals(myTurn)) {
+            showPlayerTurn.setText("Your turn");
+        }
+        else{
+            showPlayerTurn.setText("Opponent's turn");
+        }
+    }
 
     public void showCard(JPanel playerTable, JLabel playerCardScore, PlayerPOJO player) {
         long cardPointTarget = MainRunner.getGameContext().getGame().getPOJO().getCardPointTarget();
