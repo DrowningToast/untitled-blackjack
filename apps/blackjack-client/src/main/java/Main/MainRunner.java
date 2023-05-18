@@ -5,6 +5,7 @@ import GameContext.GameContext;
 import GameContext.Log.LogController;
 import GameContext.Player.PlayerModel;
 import GameContext.Sounds.SoundController;
+import GameContext.Sounds.SoundPOJO;
 import Internal.Websocket.Controller.Errorhandlers.*;
 import Internal.Websocket.Controller.EventHandlers.*;
 import Internal.Websocket.Controller.WebsocketController;
@@ -107,7 +108,7 @@ public class MainRunner {
         PlayerModel[] players = {new PlayerModel(), new PlayerModel()};
         GameModel game = new GameModel();
         LogController log = new LogController();
-        SoundController soundController = new SoundController();
+        SoundController soundController = new SoundController(new SoundPOJO());
 
         gameContext = new GameContext(game, players, log, soundController);
     }
