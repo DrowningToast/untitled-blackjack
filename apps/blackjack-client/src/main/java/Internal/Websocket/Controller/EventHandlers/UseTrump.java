@@ -17,9 +17,11 @@ public class UseTrump implements WebsocketEventHandler{
     @Override
     public void handler(GameContext ctx, JSONObject body) {
         JSONObject content = (JSONObject) body.get("content");
-        String username = (String) content.get("content");
-        TrumpCardPOJO trumpCard = TrumpCardController.getCARDS().get(content.get("trumpCard"));
-//        ctx.getLogController().addLog(username + " used " + trumpCard.getDisplayName() + "!");
+        String username = (String) content.get("username");
+        JSONObject card = (JSONObject) content.get("trumpCard");
+        String handler = (String) card.get("handler");
+        TrumpCardPOJO trumpCard = TrumpCardController.getCARDS().get(handler);
+        ctx.getLogController().addLog(username +  trumpCard.getDisplayName() + "!");
         MainRunner.getGameContext().getSoundController().playSound("drawTrumpCard");
         uiController.update();
     }

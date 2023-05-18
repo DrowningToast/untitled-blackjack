@@ -82,7 +82,7 @@ public class WebsocketController {
         System.out.println(message);
     }
 
-    public void trumpUse(String tHandler) {
+    public void useTrump(String tHandler) {
         try {
             System.out.println("send trump use : "+tHandler);
             MessageBuilder message = new MessageBuilder(client);
@@ -92,8 +92,19 @@ public class WebsocketController {
 
             message.setHandler("useTrump").setContent(content).send();
 
+            ctx.getLogController().addLog(ctx.getPlayers()[0].getPOJO().getUsername() + " used " + tHandler + "card!");
+
         } catch (Exception e) {
             System.out.println("trump catch");
+        }
+    }
+
+    public void dev_trumpCheat() {
+        try {
+            MessageBuilder message = new MessageBuilder(client);
+            message.setHandler("dev_cheatTrump").send();
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 

@@ -637,6 +637,10 @@ public class GameplayDisplayGUI extends CustomFrame {
 
     @Override
     public void onSwitch() {
+        // REMOVE LATER
+//        wsController.dev_trumpCheat();
+
+
         playerOneNameLabel.setText(MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername());
         playerOneNameScoreLabel.setText(MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername());
         playerTwoNameLabel.setText(MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername());

@@ -75,9 +75,8 @@ public class RoundWinner implements WebsocketEventHandler {
             //both win
             ctx.getPlayers()[0].getPOJO().addGameScore(pointsEarned);
             ctx.getPlayers()[1].getPOJO().addGameScore(pointsEarned);
-            long cardPoint = ctx.getPlayers()[0].getPOJO().getCardScore();
-            JOptionPane.showMessageDialog(null, "Both player won in round" + roundCounter + " with " + cardPoint + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
-            ctx.getLogController().addLog("Both player won in round" + roundCounter + " with " + cardPoint + " , Earning "+ pointsEarned +" point(s).");
+            JOptionPane.showMessageDialog(null, "Both player won in round" + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
+            ctx.getLogController().addLog("Both player won in round" + " , Earning "+ pointsEarned +" point(s).");
         }
 
         // set attribute point card

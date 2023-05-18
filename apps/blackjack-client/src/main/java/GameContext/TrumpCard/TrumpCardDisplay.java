@@ -1,6 +1,5 @@
 package GameContext.TrumpCard;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;

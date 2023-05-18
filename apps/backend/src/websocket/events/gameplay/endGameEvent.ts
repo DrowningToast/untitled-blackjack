@@ -36,8 +36,8 @@ export const endGameEvent = AsyncExceptionHandler(
     /**
      * Clean up
      */
-    const [resetPlayersState, errReset] =
-      await GameActionController.resetPlayersState(gameId);
+    const [hardResetPlayersState, errReset] =
+      await GameActionController.hardResetPlayersState(gameId);
     if (errReset) throw errReset;
 
     // delete the game instance

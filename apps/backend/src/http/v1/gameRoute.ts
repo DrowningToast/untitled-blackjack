@@ -4,7 +4,7 @@ import {
   ERR_ILLEGAL_OPERATION,
   ERR_INVALID_CONNECTION_ID,
   ERR_INVALID_PASSCODE,
-} from "database/src/utils/error";
+} from "database/src/utils/databaseErrors";
 import { FastifyInstance } from "fastify";
 import {
   ERR_BAD_REQUEST,

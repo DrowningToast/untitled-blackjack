@@ -24,7 +24,7 @@ public class HitEvent implements WebsocketEventHandler {
             return ;
         }
         CardPOJO card = CardController.getCARDS().get(c.get("display"));
-        ctx.getLogController().addLog(username + "used hit.");
+        ctx.getLogController().addLog(username + " used hit.");
         uiController.update();
     }
 }
