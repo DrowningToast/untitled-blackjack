@@ -16,11 +16,11 @@ public class TrumpCardController {
 //        The chip that Hit a card
 
 
-        CARDS.put("ace", new TrumpCardPOJO("hit A.", "Draw Ace card from the deck. If this card already on the table, nothing will happen.", "ace", "DRAW", new ImageIcon("resources/HitA.PNG")));
-        CARDS.put("three", new TrumpCardPOJO("hit 3.", "Draw Three card from the deck. If this card already on the table, nothing will happen.", "three", "DRAW", new ImageIcon("resources/Hit3.PNG")));
-        CARDS.put("five", new TrumpCardPOJO("hit 5.", "Draw Five card from the deck. If this card already on the table, nothing will happen.", "five", "DRAW", new ImageIcon("resources/Hit5.PNG")));
-        CARDS.put("seven", new TrumpCardPOJO("hit 7.", "Draw Seven card from the deck. If this card already on the table, nothing will happen.", "seven", "DRAW", new ImageIcon("resources/Hit7.PNG")));
-        CARDS.put("tens", new TrumpCardPOJO("hit 10.", "Draw any cards that its value equals to 10 left in the deck. If this card already on the table, nothing will happen.", "tens", "DRAW", new ImageIcon("resources/Hit10.PNG")));
+        CARDS.put("ace", new TrumpCardPOJO("hit A.", "Draw Ace card from the deck if it's still available.", "ace", "DRAW", new ImageIcon("resources/HitA.PNG")));
+        CARDS.put("three", new TrumpCardPOJO("hit 3.", "Draw Three card from the deck if it's still available.", "three", "DRAW", new ImageIcon("resources/Hit3.PNG")));
+        CARDS.put("five", new TrumpCardPOJO("hit 5.", "Draw Five card from the deck if it's still available.", "five", "DRAW", new ImageIcon("resources/Hit5.PNG")));
+        CARDS.put("seven", new TrumpCardPOJO("hit 7.", "Draw Seven card from the deck if it's still available.", "seven", "DRAW", new ImageIcon("resources/Hit7.PNG")));
+        CARDS.put("tens", new TrumpCardPOJO("hit 10.", "Draw any cards which its value equals to 10 left in the deck if it's still available.", "tens", "DRAW", new ImageIcon("resources/Hit10.PNG")));
 //        The attack chip
         CARDS.put("removeLastCard", new TrumpCardPOJO("removed opponent last card.", "Remove opponent's last card. *Does not effect opponent first 2 cards*", "removeLastCard", "ATTACK", new ImageIcon("resources/RemoveLastCard.PNG")));
         CARDS.put("blind", new TrumpCardPOJO("blinded their opponent.", "Opponent can't see any cards for one round.", "blind", "ATTACK", new ImageIcon("resources/BlindDraw.PNG")));
