@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 
 public class RoundWinner implements WebsocketEventHandler {
     private UIController uiController;
+
     public RoundWinner(UIController uiController) {
         this.uiController = uiController;
     }
@@ -66,6 +67,7 @@ public class RoundWinner implements WebsocketEventHandler {
             ctx.getLogController().addLog(username + " won in round " + roundCounter);
             long winnerCardPoint = ctx.getPlayer(username).getPOJO().getCardScore();
             long loserCardPoint = ctx.getAnotherPlayer(username).getPOJO().getCardScore();
+            MainRunner.getGameContext().getSoundController().playSound("win");
             JOptionPane.showMessageDialog(null, username + " won in round " + roundCounter + " with " + winnerCardPoint + " point over " + loserCardPoint + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
             ctx.getLogController().addLog(username + " won in round " + roundCounter + " with " + winnerCardPoint + " point over " + loserCardPoint + " , Earning "+ pointsEarned +" point(s).");
         }else{
@@ -75,8 +77,6 @@ public class RoundWinner implements WebsocketEventHandler {
             JOptionPane.showMessageDialog(null, "Both player won in round" + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
             ctx.getLogController().addLog("Both player won in round" + " , Earning "+ pointsEarned +" point(s).");
         }
-
-
 
         // set attribute point card
         uiController.update();

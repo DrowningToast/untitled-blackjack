@@ -1,5 +1,6 @@
 package Internal.UserInterface;
 
+import GameContext.Sounds.SoundPOJO;
 import Internal.Websocket.Controller.WebsocketController;
 import UI.Login.LoginDisplayGUI;
 
