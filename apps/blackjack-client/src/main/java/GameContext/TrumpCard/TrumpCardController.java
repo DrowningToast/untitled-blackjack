@@ -25,7 +25,7 @@ public class TrumpCardController {
         CARDS.put("removeLastCard", new TrumpCardPOJO("Remove opponent's last card", "Remove opponent's last card.", "removeLastCard", "ATTACK", new ImageIcon("resources/RemoveLastCard.PNG")));
         CARDS.put("blind", new TrumpCardPOJO("Enemy can't see their next hit card", "Enemy can't see their next hit card.", "blind", "ATTACK", new ImageIcon("resources/BlindDraw.PNG")));
         CARDS.put("denyHit", new TrumpCardPOJO("Opponent cannot hit in this round", "Opponent cannot hit in this round.", "denyHit", "ATTACK", new ImageIcon("resources/DenyHit.PNG")));
-        CARDS.put("denyUseTrumpCard", new TrumpCardPOJO("Opponent cannot use their trump cards", "Opponent cannot use their trump cards.", "denyUseTrumpCard", "ATTACK", new ImageIcon("resources/DenyUseTrumpChip.PNG")));
+        CARDS.put("denyUseTrumpCard", new TrumpCardPOJO("Opponent cannot use their trump cards", "Opponent cannot use their trump cards.", "denyUseTrumpCard", "ATTACK", new ImageIcon("resources/DenyUseTrumpCard.PNG")));
         CARDS.put("maxCardOpponent", new TrumpCardPOJO("Give the most value card left in deck to enemy", "Give the most value card left in deck to enemy.", "maxCardOpponent", "ATTACK", new ImageIcon("resources/MaxCardOpponent.PNG")));
 //        The utility chip
         CARDS.put("seeNextHit", new TrumpCardPOJO("See next 2 cards from the deck", "Player will be notified what the next 2 cards in the deck are.", "seeNextHit", "UTILITY", new ImageIcon("resources/SeeNextHit.PNG")));

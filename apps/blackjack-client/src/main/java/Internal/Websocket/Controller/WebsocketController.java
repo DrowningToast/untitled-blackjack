@@ -118,8 +118,6 @@ public class WebsocketController {
             e.printStackTrace();
             System.out.println("No handler");
         }
-
-
     }
 
     public void handleError(String raw) {
