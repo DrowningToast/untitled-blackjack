@@ -29,9 +29,6 @@ public class SoundPOJO implements Runnable {
     @Setter
     private FloatControl gainControl;
 
-    public SoundPOJO() {
-        this("", "");
-    }
 
     public SoundPOJO(String handler, String filePath) {
         this(handler, new File(filePath), false);
@@ -56,14 +53,12 @@ public class SoundPOJO implements Runnable {
     @Override
     public void run() {
         try {
-            System.out.println("try");
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(this.getFile().getAbsoluteFile());
             clip = AudioSystem.getClip();
 
 
             // play sound
             if (clip != null) {
-                System.out.println("into run");
                 clip.setFramePosition(0);
                 clip.open(audioInputStream);
                 gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
@@ -76,10 +71,8 @@ public class SoundPOJO implements Runnable {
                     clip.start();
 
                 }
-                System.out.println("Sound on!");
             }
         } catch (Exception e) {
-            System.out.println("catch");
             System.out.println(e.toString());
             e.printStackTrace();
         }

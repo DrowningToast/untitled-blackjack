@@ -10,8 +10,7 @@ public class SoundController {
     private float volume = 0f;
     private boolean mute = false;
 
-    public SoundController(SoundPOJO sound) {
-        System.out.println("in sound controller");
+    public SoundController() {
         SOUNDS.put("win", new SoundPOJO("win", new File("sounds/win.wav")));
         SOUNDS.put("lose", new SoundPOJO("lose", new File("sounds/lose.wav")));
         SOUNDS.put("opponentJoinRoom", new SoundPOJO("opponentJoinRoom", new File("sounds/opponentJoinRoom.wav")));
@@ -22,7 +21,7 @@ public class SoundController {
 
         SOUNDS.put("shuffleCard", new SoundPOJO("shuffleCard", new File("sounds/shuffleCard.wav")));
         SOUNDS.put("backgroundCasinoSound", new SoundPOJO("backgroundCasinoSound", new File("sounds/backgroundCasinoSound.wav"), true));
-        this.sound = sound;
+
     }
 
     public static HashMap<String, SoundPOJO> getSOUNDS() {
