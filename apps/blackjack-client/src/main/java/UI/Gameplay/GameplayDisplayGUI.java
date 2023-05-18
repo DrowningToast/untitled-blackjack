@@ -104,7 +104,6 @@ public class GameplayDisplayGUI extends CustomFrame {
         hitButtonPlayerOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                    MainRunner.getGameContext().getSoundController().playSound("drawCard");
                     hitButtonPlayerOneActionPerformed(evt);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -119,7 +118,6 @@ public class GameplayDisplayGUI extends CustomFrame {
         standButtonPlayerOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                    MainRunner.getGameContext().getSoundController().playSound("stand");
                     standButtonPlayerOneActionPerformed(evt);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
