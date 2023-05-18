@@ -108,7 +108,7 @@ public class MainRunner {
         PlayerModel[] players = {new PlayerModel(), new PlayerModel()};
         GameModel game = new GameModel();
         LogController log = new LogController();
-        SoundController soundController = new SoundController(new SoundPOJO());
+        SoundController soundController = new SoundController();
 
         gameContext = new GameContext(game, players, log, soundController);
     }
