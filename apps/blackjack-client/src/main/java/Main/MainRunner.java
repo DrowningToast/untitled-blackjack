@@ -93,7 +93,7 @@ public class MainRunner {
 //                    errorHandlers.put("invalid-user", new InvalidUser());
 //                    errorHandlers.put("invalid-game", new InvalidGame());
 
-//                    gameContext.getSoundController().playSound("backgroundCasinoSound");
+                    gameContext.getSoundController().playSound("backgroundCasinoSound");
 
                 } catch (Exception e) {
                     System.out.println(e.toString());

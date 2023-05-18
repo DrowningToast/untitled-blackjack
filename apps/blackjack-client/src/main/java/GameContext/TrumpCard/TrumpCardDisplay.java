@@ -29,8 +29,6 @@ public class TrumpCardDisplay {
 
                 System.out.println("trump clicked");
                 super.mouseClicked(e);
-                System.out.println("kuyyyyyyyyyyyyyyyyyyyyy");
-                MainRunner.getGameContext().getSoundController().playSound("drawTrumpCard");
                 webController.trumpUse(tCard.getHandler());
             }
         });
