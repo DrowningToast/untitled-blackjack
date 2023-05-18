@@ -623,9 +623,15 @@ const endGame = asyncTransaction(async (gameId: string) => {
   );
   if (errState) throw errState;
 
-  if (playerA.gameScore >= GAME_WIN_SCORE_TARGET) {
+  if (
+    playerA.gameScore >= GAME_WIN_SCORE_TARGET &&
+    playerA.gameScore > playerB.gameScore
+  ) {
     return playerA;
-  } else if (playerB.gameScore >= GAME_WIN_SCORE_TARGET) {
+  } else if (
+    playerB.gameScore >= GAME_WIN_SCORE_TARGET &&
+    playerA.gameScore < playerB.gameScore
+  ) {
     return playerB;
   } else {
     return null;
