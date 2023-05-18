@@ -74,7 +74,7 @@ export const useTrumpRouter: WebsocketRouter = async (event, context) => {
   }
 
   const [_3, err3] = await switchTurnEvent(apig);
-  if (err1) {
+  if (err3) {
     return await apig.send({
       status: "INTERNAL_ERROR",
       error: err1,
