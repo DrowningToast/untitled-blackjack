@@ -29,18 +29,6 @@ const _cardUpdateEventHandler = () =>
     );
     if (err5) throw err5;
 
-    console.log(visibleCards);
-
-    // get cards from user respective pov
-    const [[cards_A, err4], [cards_B, err7]] = await Promise.all([
-      UserController.getCards({ username: game.players[0].username }, true),
-      UserController.getCards({ username: game.players[1].username }, true),
-    ]);
-
-    if (err4 || err7 || !cards_A || !cards_B || !visibleCards) {
-      throw ERR_INTERNAL;
-    }
-
     await cardStateBroadcast(api, visibleCards);
   });
 

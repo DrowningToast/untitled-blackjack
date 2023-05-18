@@ -162,19 +162,25 @@ const addCards = asyncTransaction(
 
 const removeCards = asyncTransaction(
   async (connectionId: string, cards: Card[]) => {
-    const [oldCards, err] = await getCards({ connectionId });
+    const [oldCards, err] = await getCards({ connectionId }, true, true);
     if (err) throw err;
+
+    console.log("old cards");
+    console.log(oldCards);
+    console.log("remove target cards");
+    console.log(cards);
 
     const newCards = oldCards.filter(
       (card) => !cards.map((c) => c.display).includes(card.display)
     );
 
+    console.log("new cards");
+    console.log(newCards);
+
     const [user, errSet] = await setCards(connectionId, newCards);
     if (errSet) throw errSet;
 
-    return oldCards.filter(
-      (card) => !cards.map((c) => c.display).includes(card.display)
-    );
+    return newCards;
   }
 );
 
