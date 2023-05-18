@@ -21,13 +21,11 @@ public class GameWinner implements WebsocketEventHandler{
         if (winner != null) {
             username = (String) winner.get("username");
             ctx.getLogController().addLog(username + " has won the game !");
-            exitpane = new JOptionPane();
             JOptionPane.showMessageDialog(null, "Winner is "+username+"!", "Game End", JOptionPane.OK_OPTION);
         }else{
             String myName = ctx.getPlayers()[0].getPOJO().getUsername();
             String opponentName = ctx.getPlayers()[1].getPOJO().getUsername();
             ctx.getLogController().addLog(myName + " and " + opponentName + "both won the game !");
-            exitpane = new JOptionPane();
             JOptionPane.showMessageDialog(null, "Winner is "+myName+"and"+opponentName+"!", "Game End",JOptionPane.OK_OPTION);
 
         }
