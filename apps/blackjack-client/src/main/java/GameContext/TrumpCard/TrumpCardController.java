@@ -23,10 +23,10 @@ public class TrumpCardController {
         CARDS.put("tens", new TrumpCardPOJO("hit 10.", "Draw any cards that its value equals to 10 left in the deck. If this card already on the table, nothing will happen.", "tens", "DRAW", new ImageIcon("resources/Hit10.PNG")));
 //        The attack chip
         CARDS.put("removeLastCard", new TrumpCardPOJO("removed opponent last card.", "Remove opponent's last card. *Does not effect opponent first 2 cards*", "removeLastCard", "ATTACK", new ImageIcon("resources/RemoveLastCard.PNG")));
-        CARDS.put("blind", new TrumpCardPOJO("blinded you.", "Opponent can't see any cards for one round.", "blind", "ATTACK", new ImageIcon("resources/BlindDraw.PNG")));
-        CARDS.put("denyHit", new TrumpCardPOJO("denied you to hit.", "Opponent cannot hit for one round.", "denyHit", "ATTACK", new ImageIcon("resources/DenyHit.PNG")));
-        CARDS.put("denyUseTrumpCard", new TrumpCardPOJO("denied you to use trump cards.", "Opponent cannot use their trump cards for one round.", "denyUseTrumpCard", "ATTACK", new ImageIcon("resources/DenyUseTrumpChip.PNG")));
-        CARDS.put("maxCardOpponent", new TrumpCardPOJO("drew you the most value card in the deck.", "Give the most value card left in deck to enemy. *Start in order from Ace to 2*", "maxCardOpponent", "ATTACK", new ImageIcon("resources/MaxCardOpponent.PNG")));
+        CARDS.put("blind", new TrumpCardPOJO("blinded their opponent.", "Opponent can't see any cards for one round.", "blind", "ATTACK", new ImageIcon("resources/BlindDraw.PNG")));
+        CARDS.put("denyHit", new TrumpCardPOJO("prevent opponent from performing hit.", "Opponent cannot hit for one round.", "denyHit", "ATTACK", new ImageIcon("resources/DenyHit.PNG")));
+        CARDS.put("denyUseTrumpCard", new TrumpCardPOJO("prevent opponent from performing trump cards.", "Opponent cannot use their trump cards for one round.", "denyUseTrumpCard", "ATTACK", new ImageIcon("resources/DenyUseTrumpChip.PNG")));
+        CARDS.put("maxCardOpponent", new TrumpCardPOJO("drew opponent the most value card in the deck.", "Give the most value card left in deck to enemy. *Start in order from Ace to 2*", "maxCardOpponent", "ATTACK", new ImageIcon("resources/MaxCardOpponent.PNG")));
 //        The utility chip
         CARDS.put("seeNextHit", new TrumpCardPOJO("saw next 2 cards from the deck.", "Player will be notified what the next 2 cards in being draw next.", "seeNextHit", "UTILITY", new ImageIcon("resources/SeeNextHit.PNG")));
         CARDS.put("changePointsLimit25", new TrumpCardPOJO("change point target to 25.", "Change round win condition to 25 instead of 21.", "changePointsLimit25", "UTILITY", new ImageIcon("resources/ChangePointLimit25.PNG")));
