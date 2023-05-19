@@ -15,6 +15,7 @@ import Main.MainRunner;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Line2D;
 
 public class GameplayController {
 
@@ -34,7 +35,6 @@ public class GameplayController {
         this.uiController = uiController;
         this.ctx = MainRunner.getGameContext();
         ui = new GameplayDisplayGUI(this, wsController);
-
     }
 
     // update status Button
@@ -50,7 +50,7 @@ public class GameplayController {
             if (MainRunner.getGameContext().getPlayers()[0].getPOJO().checkCardLimit()) {
                 disableHit();
             }
-            if(ctx.getPlayers()[0].getPOJO().getTrumpCardController().checkStatus()){
+            if (ctx.getPlayers()[0].getPOJO().getTrumpCardController().checkStatus()) {
                 disableHit();
             }
         } else if (opponentUsername.equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
@@ -98,6 +98,7 @@ public class GameplayController {
         }
     }
 
+
     public void updateChatLog() {
         String oldText = ui.getGameplayTextArea().getText();
         String newText = ctx.getLogController().getLog().get(ctx.getLogController().getLog().size() - 1);
@@ -143,11 +144,21 @@ public class GameplayController {
         }
     }
 
+//    public void updateScoreBar(JPanel scoreBarPanel) {
+//        ScoreBarPanel line = new ScoreBarPanel();
+//        scoreBarPanel.removeAll();
+//        scoreBarPanel.add(line);
+//        System.out.println("added shits");
+//        scoreBarPanel.revalidate();
+//        scoreBarPanel.repaint();
+//    }
+
+
     public GameplayDisplayGUI getUi() {
         return this.ui;
     }
 
-    public void disableHit(){
+    public void disableHit() {
         ui.getHitButtonPlayerOne().setEnabled(false);
     }
 }

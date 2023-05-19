@@ -12,6 +12,8 @@ import javax.swing.JTextField;
 import Internal.Websocket.Controller.WebsocketController;
 import Internal.UserInterface.CustomFrame;
 
+import java.awt.*;
+
 /**
  * @author Suchanan
  */
@@ -28,6 +30,7 @@ public class LoginDisplayGUI extends CustomFrame {
         this.controller = controller;
         initComponents();
         this.setTitle("Untitled-Blackjack");
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
 
     /**
@@ -65,7 +68,7 @@ public class LoginDisplayGUI extends CustomFrame {
                 startButtonActionPerformed(evt);
             }
         });
-        loginPanel.add(startButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(454, 538, 400, 60));
+        loginPanel.add(startButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 540, 400, 60));
 
         titlePanel.setBackground(new java.awt.Color(0, 0, 0));
 
@@ -76,43 +79,44 @@ public class LoginDisplayGUI extends CustomFrame {
         javax.swing.GroupLayout titlePanelLayout = new javax.swing.GroupLayout(titlePanel);
         titlePanel.setLayout(titlePanelLayout);
         titlePanelLayout.setHorizontalGroup(
-                titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, titlePanelLayout.createSequentialGroup()
-                                .addContainerGap(34, Short.MAX_VALUE)
-                                .addComponent(title)
-                                .addGap(32, 32, 32))
+            titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, titlePanelLayout.createSequentialGroup()
+                .addContainerGap(34, Short.MAX_VALUE)
+                .addComponent(title)
+                .addGap(32, 32, 32))
         );
         titlePanelLayout.setVerticalGroup(
-                titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(titlePanelLayout.createSequentialGroup()
-                                .addGap(17, 17, 17)
-                                .addComponent(title)
-                                .addContainerGap(21, Short.MAX_VALUE))
+            titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(titlePanelLayout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addComponent(title)
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
-        loginPanel.add(titlePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 180, 930, 160));
+        loginPanel.add(titlePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 180, 930, 160));
 
         InputName.setFont(new java.awt.Font("Book Antiqua", 1, 30)); // NOI18N
         InputName.setMaximumSize(new java.awt.Dimension(400, 60));
         InputName.setMinimumSize(new java.awt.Dimension(400, 60));
-        loginPanel.add(InputName, new org.netbeans.lib.awtextra.AbsoluteConstraints(454, 441, 400, 60));
+        loginPanel.add(InputName, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 440, 400, 60));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
+        this.setResizable(false);
     }// </editor-fold>//GEN-END:initComponents
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
@@ -124,6 +128,7 @@ public class LoginDisplayGUI extends CustomFrame {
             System.out.println(e);
         }
     }//GEN-LAST:event_startButtonActionPerformed
+    
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
