@@ -2,17 +2,19 @@ package UI.Gameplay;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Line2D;
 
 public class ScoreBarPanel extends JPanel {
+    public ScoreBarPanel(){
+        this.setPreferredSize(new Dimension(122, 30));
+    }
     @Override
-    public void paintComponents(Graphics g) {
-        super.paintComponent(g);
-        this.setPreferredSize(new Dimension(200, 200));
+    public void paintComponent(Graphics g) {
+        super.paintComponents(g);
         System.out.println("Create Line");
         Graphics2D g2 = (Graphics2D) g;
-        g2.setStroke(new BasicStroke(15));
-        g2.draw(new Line2D.Float(30, 90, 10, 90));
+        g2.setColor(Color.GREEN);
+        g2.setStroke(new BasicStroke(30));
+        g2.drawLine(0, 0, 100, 0);
         System.out.println("Create Line1234");
     }
 }

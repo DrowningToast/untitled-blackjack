@@ -40,7 +40,6 @@ const createUser = asyncTransaction(async (args: FilterQuery<IUser>) => {
  */
 const updateUser = asyncTransaction(
   async (target: FilterQuery<IUser>, value: UpdateQuery<IUser>) => {
-    console.log(value);
     const _ = await User.updateOne(target, value);
     if (!_) {
       throw ERR_INVALID_USER;
@@ -163,19 +162,25 @@ const addCards = asyncTransaction(
 
 const removeCards = asyncTransaction(
   async (connectionId: string, cards: Card[]) => {
-    const [oldCards, err] = await getCards({ connectionId });
+    const [oldCards, err] = await getCards({ connectionId }, true, true);
     if (err) throw err;
+
+    console.log("old cards");
+    console.log(oldCards);
+    console.log("remove target cards");
+    console.log(cards);
 
     const newCards = oldCards.filter(
       (card) => !cards.map((c) => c.display).includes(card.display)
     );
 
+    console.log("new cards");
+    console.log(newCards);
+
     const [user, errSet] = await setCards(connectionId, newCards);
     if (errSet) throw errSet;
 
-    return oldCards.filter(
-      (card) => !cards.map((c) => c.display).includes(card.display)
-    );
+    return newCards;
   }
 );
 
@@ -224,32 +229,34 @@ const setStandState = asyncTransaction(
   }
 );
 
-const getCardsTotal = asyncTransaction(async (target: FilterQuery<IUser>) => {
-  const [cards, err] = await getCards(target, true);
-  if (err) throw err;
+const getCardsTotal = asyncTransaction(
+  async (target: FilterQuery<IUser>, bypassBlind: boolean = false) => {
+    const [cards, err] = await getCards(target, true, bypassBlind);
+    if (err) throw err;
 
-  const getSum = (getFirst: boolean = false) => {
-    return cards.reduce((acc, card) => {
-      return acc + card.values[getFirst ? 0 : card.values.length - 1];
-    }, 0);
-  };
+    const getSum = (getFirst: boolean = false) => {
+      return cards.reduce((acc, card) => {
+        return acc + card.values[getFirst ? 0 : card.values.length - 1];
+      }, 0);
+    };
 
-  const [user, errUser] = await UserController.getUserMeta(target);
-  if (errUser) throw errUser;
+    const [user, errUser] = await UserController.getUserMeta(target);
+    if (errUser) throw errUser;
 
-  const [game, errGame] = await GameController.getGame({
-    players: user._id,
-  });
-  if (errGame) throw errGame;
+    const [game, errGame] = await GameController.getGame({
+      players: user._id,
+    });
+    if (errGame) throw errGame;
 
-  const cardPointTarget = game.cardPointTarget;
-  const total = getSum(false);
+    const cardPointTarget = game.cardPointTarget;
+    const total = getSum(false);
 
-  if (total > cardPointTarget) {
-    return getSum(true);
+    if (total > cardPointTarget) {
+      return getSum(true);
+    }
+    return total;
   }
-  return total;
-});
+);
 
 const softResetPlayersState = asyncTransaction(
   async (target: FilterQuery<IUser>) => {
@@ -338,11 +345,6 @@ const addTrumpCards = asyncTransaction(
     )
       return ownedTrumpCardsAsDoc;
 
-    console.log("new");
-    console.log(cards);
-    console.log("owned");
-    console.log(ownedTrumpCardsAsDoc);
-
     const _ = await User.updateOne(
       {
         username: target.username,
@@ -356,9 +358,6 @@ const addTrumpCards = asyncTransaction(
 
     const [updated, err2] = await getTrumpCards(target);
     if (err2) throw err2;
-
-    console.log("updated");
-    console.log(updated);
 
     return updated;
   }
@@ -492,8 +491,12 @@ const useTrumpCard = asyncTransaction(
     const [user, errUser] = await getUserMeta({ username: trumpUser.username });
     if (errUser) throw errUser;
 
+    console.log("using trump card");
+
     const [cards, err] = await getTrumpCards(trumpUser);
     if (err) throw err;
+
+    console.log(cards);
 
     if (!trumpCardsAsArray.find((card) => card.handler === trumpCard.handler))
       throw insertErrorStack(ERR_INVALID_TRUMP_CARD);

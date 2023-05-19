@@ -1,12 +1,15 @@
 package GameContext.Sounds;
 
+import UI.Options.VolumeSetting;
 import java.io.File;
 import java.util.HashMap;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class SoundController {
-    private static HashMap<String, SoundPOJO> SOUNDS = new HashMap<>();
 
-    private SoundPOJO sound;
+    private static HashMap<String, SoundPOJO> SOUNDS = new HashMap<>();
+    private VolumeSetting volumeSetting = new VolumeSetting();
     private float volume = 0f;
     private boolean mute = false;
 
@@ -33,36 +36,45 @@ public class SoundController {
         thread.start();
     }
 
-    public void stop(String handler) {
-        if (mute == false) {
-            SOUNDS.get(handler).getGainControl().setValue(-1000);
-            mute = true;
-        }
-        else {
-            SOUNDS.get(handler).getGainControl().setValue(-15);
-            mute = false;
-        }
+    public void soundControl() {
+        volumeSetting.setVisible(true);
+        volumeSetting.getVolumeSlider().addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                volume = volumeSetting.getVolumeSlider().getValue();
+                SOUNDS.get("backgroundCasinoSound").getGainControl().setValue(volume);
+            }
+        });
     }
 
-    public void volumeDown(String handler) {
-        volume -= 1.0f;
-
-        if (volume <= -15f) {
-            volume = -15f;
-        }
-
-        SOUNDS.get(handler).getGainControl().setValue(volume);
-    }
-
-    public void volumeUp(String handler) {
-        volume += 1.0f;
-
-        if (volume >= 0f) {
-            volume = 0f;
-        }
-
-        SOUNDS.get(handler).getGainControl().setValue(volume);
-    }
-
-
+//    public void stop(String handler) {
+//        if (mute == false) {
+//            SOUNDS.get(handler).getGainControl().setValue(-1000);
+//            mute = true;
+//        }
+//        else {
+//            SOUNDS.get(handler).getGainControl().setValue(-15);
+//            mute = false;
+//        }
+//    }
+//
+//    public void volumeDown(String handler) {
+//        volume -= 1.0f;
+//
+//        if (volume <= -15f) {
+//            volume = -15f;
+//        }
+//
+//        SOUNDS.get(handler).getGainControl().setValue(volume);
+//    }
+//
+//    public void volumeUp(String handler) {
+//        volume += 1.0f;
+//
+//        if (volume >= 0f) {
+//            volume = 0f;
+//        }
+//
+//        SOUNDS.get(handler).getGainControl().setValue(volume);
+//    }
 }

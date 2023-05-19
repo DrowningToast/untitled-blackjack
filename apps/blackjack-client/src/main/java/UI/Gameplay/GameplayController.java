@@ -27,8 +27,6 @@ public class GameplayController {
     public CardDisplay cardPlayer;
     private GameContext ctx;
 
-    private SoundPOJO sound;
-
     public GameplayController(UIController uiController, WebsocketController wsController) {
         cardPlayer = new CardDisplay();
         trumpCard = new TrumpCardDisplay(wsController);
@@ -146,15 +144,14 @@ public class GameplayController {
         }
     }
 
-    public void updateScoreBar() {
-        JPanel scoreBarPanel = ui.getScoreBarPanel();
-        scoreBarPanel.removeAll();
-        scoreBarPanel = new ScoreBarPanel();
-        System.out.println("added shits");
-        scoreBarPanel.revalidate();
-        scoreBarPanel.repaint();
-        ui.pack();
-    }
+//    public void updateScoreBar(JPanel scoreBarPanel) {
+//        ScoreBarPanel line = new ScoreBarPanel();
+//        scoreBarPanel.removeAll();
+//        scoreBarPanel.add(line);
+//        System.out.println("added shits");
+//        scoreBarPanel.revalidate();
+//        scoreBarPanel.repaint();
+//    }
 
 
     public GameplayDisplayGUI getUi() {

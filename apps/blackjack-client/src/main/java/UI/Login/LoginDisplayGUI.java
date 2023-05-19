@@ -129,6 +129,7 @@ public class LoginDisplayGUI extends CustomFrame {
     }//GEN-LAST:event_startButtonActionPerformed
     
 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField InputName;
     private javax.swing.JPanel loginPanel;
@@ -177,8 +178,4 @@ public class LoginDisplayGUI extends CustomFrame {
         return username;
     }
 
-    @Override
-    public void onSwitch() {
-
-    }
 }

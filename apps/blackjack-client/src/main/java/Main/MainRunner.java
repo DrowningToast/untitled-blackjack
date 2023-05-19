@@ -23,13 +23,10 @@ import java.util.HashMap;
 public class MainRunner {
 
     static WebsocketController wsController;
-    static LoginDisplayGUI loginUI;
     static LobbyController lobbyController;
     static WaitingRoomController waitingRoomController;
     @Getter
     static GameplayController gamePlayController;
-    static PlayerPOJO playerPOJO;
-    static GamePOJO gameModel;
     static UIController uiController;
 
     /**
@@ -78,7 +75,7 @@ public class MainRunner {
                     eventHandlers.put("UPDATE_TRUMP_CARDS_STATE", new UpdateTrumpCardsState(uiController));
                     eventHandlers.put("UPDATE_TRUMP_STATUS", new UpdateTrumpStatus(uiController));
                     eventHandlers.put("HIT_EVENT", new HitEvent(uiController));
-                    eventHandlers.put("STAND_EVENT", new StandEvent(uiController));
+                    eventHandlers.put("STAND_EVENT", new StandEvent());
                     eventHandlers.put("USE_TRUMP", new UseTrump(uiController));
                     eventHandlers.put("SWITCH_TURN", new SwitchTurn(uiController));
                     eventHandlers.put("ROUND_WINNER", new RoundWinner(uiController));
@@ -93,8 +90,8 @@ public class MainRunner {
                     errorHandlers.put("trump-use-denied", new ExistedUser());
                     errorHandlers.put("opponent-invincibility", new ExistedUser());
 
-
                     gameContext.getSoundController().playSound("backgroundCasinoSound");
+
 
                 } catch (Exception e) {
                     System.out.println(e.toString());

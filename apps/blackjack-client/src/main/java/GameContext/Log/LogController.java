@@ -4,6 +4,8 @@ import Main.MainRunner;
 import lombok.Getter;
 
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class LogController {
@@ -11,7 +13,9 @@ public class LogController {
     private ArrayList<String> log = new ArrayList<>();
 
     public void addLog(String message){
-        log.add(message);
+        LocalTime time = LocalTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        log.add("[" + formatter.format(time) + "] " + message);
         MainRunner.getGamePlayController().updateChatLog();
     }
 
@@ -19,4 +23,5 @@ public class LogController {
         this.log.clear();
         MainRunner.getGamePlayController().clearLog();
     }
+
 }

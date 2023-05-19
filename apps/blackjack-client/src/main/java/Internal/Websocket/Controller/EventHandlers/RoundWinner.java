@@ -30,7 +30,6 @@ public class RoundWinner implements WebsocketEventHandler {
         String turnOwner = (String) turnOwnerObj.get("username");
         long roundCounter = (long) game.get("roundCounter");
         long cardPointTarget = (long) game.get("cardPointTarget");
-        CardPOJO cards = CardController.getCARDS().get(game.get("cards"));
         ctx.getGame().getPOJO().setGameState(gameState);
         ctx.getGame().getPOJO().setRoundCounter(roundCounter);
         ctx.getGame().getPOJO().setTurnOwner(turnOwner);

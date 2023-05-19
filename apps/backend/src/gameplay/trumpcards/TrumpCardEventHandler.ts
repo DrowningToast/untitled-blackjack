@@ -7,6 +7,7 @@ import {
   GameController,
   IGame,
   UserController,
+  insertErrorStack,
 } from "database";
 import { cardStateBroadcast } from "../../websocket/broadcast/cardStateBroadcast";
 import {
@@ -17,24 +18,16 @@ import {
 import { Card } from "database/src/utils/Card";
 import { hitBroadcast } from "../../websocket/broadcast/hitBroadcast";
 import { trumpStatusBroadcast } from "../../websocket/broadcast/trumpStatusBroadcast";
+import { ERR_INIT_GAME } from "../../websocket/utils/ErrorMessages";
 
 const _cardUpdateEventHandler = () =>
   AsyncExceptionHandler(async (api: APIG, game: IGame) => {
+    console.log("getting visible cards");
     // get visible cards and update everybody's card state
     const [visibleCards, err5] = await GameController.getCardsOnPerspectives(
       game.gameId
     );
     if (err5) throw err5;
-
-    // get cards from user respective pov
-    const [[cards_A, err4], [cards_B, err7]] = await Promise.all([
-      UserController.getCards({ username: game.players[0].username }, true),
-      UserController.getCards({ username: game.players[1].username }, true),
-    ]);
-
-    if (err4 || err7 || !cards_A || !cards_B || !visibleCards) {
-      throw ERR_INTERNAL;
-    }
 
     await cardStateBroadcast(api, visibleCards);
   });
@@ -252,6 +245,17 @@ export const invincibilityTrumpEventHandler = () =>
       game.gameId
     );
     if (err3) throw err3;
+
+    // update users cards in case they're blinded
+    const [GlobalCardsContext, errAll] =
+      await GameController.getCardsOnPerspectives(game.gameId);
+
+    if (errAll) throw errAll;
+    if (!GlobalCardsContext[0]) throw insertErrorStack(ERR_INIT_GAME);
+    if (!GlobalCardsContext[1]) throw insertErrorStack(ERR_INIT_GAME);
+
+    const [_2, error2] = await cardStateBroadcast(api, GlobalCardsContext);
+    if (error2) throw ERR_INIT_GAME;
 
     // broadcast user status
     await _trumpStatusUpdateEventHandler()(api, game);

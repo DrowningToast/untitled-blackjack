@@ -11,7 +11,6 @@ public class NextRound implements WebsocketEventHandler {
         this.uiController = uiController;
     }
 
-
     @Override
     public void handler(GameContext ctx, JSONObject body) {
         long roundCounter = (long) body.get("content");

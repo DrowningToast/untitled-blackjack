@@ -16,10 +16,6 @@ public class WaitingRoomController {
         this.ui = new WaitingRoomGUI(this);
     }
 
-    public void hostSendStart() {
-        wsController.setReady(true);
-    }
-
     public void startGame() {
         // START THE GAME WITH WEBSOCKET CONTROLLER .setReady(true) method
         wsController.setReady(true);

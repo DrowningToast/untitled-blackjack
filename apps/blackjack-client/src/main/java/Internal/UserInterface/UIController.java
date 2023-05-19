@@ -59,7 +59,6 @@ public class UIController {
     }
 
     public JFrame getFrame(String name) {
-
         JFrame frame = scenes.get(name);
         if (frame == null) {
             System.out.println("FATAL FAIL");
@@ -68,7 +67,7 @@ public class UIController {
         return frame;
     }
 
-    public void update(){
+    public void update() {
         activeFrame.onUpdate();
     }
 
