@@ -116,6 +116,7 @@ public class LoginDisplayGUI extends CustomFrame {
         );
 
         pack();
+        this.setResizable(false);
     }// </editor-fold>//GEN-END:initComponents
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed

@@ -95,6 +95,7 @@ public class VolumeSetting extends javax.swing.JFrame {
         );
 
         pack();
+        this.setResizable(false);
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 

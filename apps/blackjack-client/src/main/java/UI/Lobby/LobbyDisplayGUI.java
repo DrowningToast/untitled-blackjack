@@ -106,6 +106,7 @@ public class LobbyDisplayGUI extends CustomFrame {
         );
 
         pack();
+        this.setResizable(false);
     }// </editor-fold>//GEN-END:initComponents
 
     private void b_createLobbyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_createLobbyActionPerformed
