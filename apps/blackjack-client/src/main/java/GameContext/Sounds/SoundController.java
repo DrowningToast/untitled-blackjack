@@ -46,35 +46,4 @@ public class SoundController {
             }
         });
     }
-
-//    public void stop(String handler) {
-//        if (mute == false) {
-//            SOUNDS.get(handler).getGainControl().setValue(-1000);
-//            mute = true;
-//        }
-//        else {
-//            SOUNDS.get(handler).getGainControl().setValue(-15);
-//            mute = false;
-//        }
-//    }
-//
-//    public void volumeDown(String handler) {
-//        volume -= 1.0f;
-//
-//        if (volume <= -15f) {
-//            volume = -15f;
-//        }
-//
-//        SOUNDS.get(handler).getGainControl().setValue(volume);
-//    }
-//
-//    public void volumeUp(String handler) {
-//        volume += 1.0f;
-//
-//        if (volume >= 0f) {
-//            volume = 0f;
-//        }
-//
-//        SOUNDS.get(handler).getGainControl().setValue(volume);
-//    }
 }
