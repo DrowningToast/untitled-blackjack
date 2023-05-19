@@ -68,15 +68,28 @@ public class RoundWinner implements WebsocketEventHandler {
             long winnerCardPoint = ctx.getPlayer(username).getPOJO().getCardScore();
             long loserCardPoint = ctx.getAnotherPlayer(username).getPOJO().getCardScore();
             MainRunner.getGameContext().getSoundController().playSound("win");
-            JOptionPane.showMessageDialog(null, username + " won in round " + roundCounter + " with " + winnerCardPoint + " point over " + loserCardPoint + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
+            Thread dialogThread = new Thread(){
+                @Override
+                public void run(){
+                    JOptionPane.showMessageDialog(null, username + " won in round " + roundCounter + " with " + winnerCardPoint + " point over " + loserCardPoint + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
+                }
+            };
+            dialogThread.start();
             ctx.getLogController().addLog(username + " won in round " + roundCounter + " with " + winnerCardPoint + " point over " + loserCardPoint + " , Earning "+ pointsEarned +" point(s).");
         }else{
             //both win
             ctx.getPlayers()[0].getPOJO().addGameScore(pointsEarned);
             ctx.getPlayers()[1].getPOJO().addGameScore(pointsEarned);
-            JOptionPane.showMessageDialog(null, "Both player won in round" + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
+            Thread dialogThread = new Thread(){
+                @Override
+                public void run(){
+                    JOptionPane.showMessageDialog(null, "Both player won in round" + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
+                }
+            };
+            dialogThread.start();
             ctx.getLogController().addLog("Both player won in round" + " , Earning "+ pointsEarned +" point(s).");
         }
+
 
         // set attribute point card
         uiController.update();
