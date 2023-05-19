@@ -17,6 +17,8 @@ import GameContext.Player.PlayerPOJO;
 import UI.Gameplay.GameplayController;
 import UI.Waiting.WaitingRoomController;
 import lombok.Getter;
+import jakarta.websocket.DeploymentException;
+import javax.swing.*;
 
 import java.util.HashMap;
 
@@ -92,7 +94,14 @@ public class MainRunner {
 
                     gameContext.getSoundController().playSound("backgroundCasinoSound");
 
-
+                } catch (DeploymentException e){
+                    if (e.getMessage().contains("Handshake error")) {
+                        System.out.println("Handshake error occurred: " + e.getMessage());
+                        JOptionPane.showMessageDialog(null, "Program closed due to \"HandShake error\". Please rerun the program.", "HandShake err.", JOptionPane.INFORMATION_MESSAGE);
+                        System.exit(0);
+                    } else {
+                        e.printStackTrace();
+                    }
                 } catch (Exception e) {
                     System.out.println(e.toString());
                 }

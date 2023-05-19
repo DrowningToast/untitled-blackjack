@@ -7,10 +7,13 @@ import Internal.UserInterface.UIController;
 import Main.MainRunner;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
 import javax.swing.JOptionPane;
 
 public class RoundWinner implements WebsocketEventHandler {
     private UIController uiController;
+
+    private String dialog;
 
     public RoundWinner(UIController uiController) {
         this.uiController = uiController;
@@ -21,7 +24,6 @@ public class RoundWinner implements WebsocketEventHandler {
     public void handler(GameContext ctx, JSONObject body) {
         JSONObject content = (JSONObject) body.get("content");
         System.out.println(content.get("cards"));
-
 
         // IGame set value section
         JSONObject game = (JSONObject) content.get("game");
@@ -47,12 +49,12 @@ public class RoundWinner implements WebsocketEventHandler {
         // UPDATE PLAYER'S CARD WITHOUT HIDDEN CARD
         ctx.getPlayers()[0].getPOJO().getCardController().resetCards();
         ctx.getPlayers()[1].getPOJO().getCardController().resetCards();
-        for (Object c : hostCards){
+        for (Object c : hostCards) {
             JSONObject cardObject = (JSONObject) c;
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
             ctx.getPlayer(hostUsername).getPOJO().getCardController().addCards(card);
         }
-        for (Object c : guestCards){
+        for (Object c : guestCards) {
             JSONObject cardObject = (JSONObject) c;
             CardPOJO card = CardController.getCARDS().get(cardObject.get("display"));
             ctx.getPlayer(guestUsername).getPOJO().getCardController().addCards(card);
@@ -61,22 +63,30 @@ public class RoundWinner implements WebsocketEventHandler {
         // Winner and Score section
         JSONObject winner = (JSONObject) content.get("winner");
         long pointsEarned = (long) content.get("pointsEarned");
-        if (winner != null){
+        if (winner != null) {
             String username = (String) winner.get("username");
             ctx.getPlayer(username).getPOJO().addGameScore(pointsEarned);
             ctx.getLogController().addLog(username + " won in round " + roundCounter);
             long winnerCardPoint = ctx.getPlayer(username).getPOJO().getCardScore();
             long loserCardPoint = ctx.getAnotherPlayer(username).getPOJO().getCardScore();
             MainRunner.getGameContext().getSoundController().playSound("win");
-            JOptionPane.showMessageDialog(null, username + " won in round " + roundCounter + " with " + winnerCardPoint + " point over " + loserCardPoint + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
-            ctx.getLogController().addLog(username + " won in round " + roundCounter + " with " + winnerCardPoint + " point over " + loserCardPoint + " , Earning "+ pointsEarned +" point(s).");
-        }else{
+            dialog = username + " won in round " + roundCounter + " with " + winnerCardPoint + " point over " + loserCardPoint + " , Earning " + pointsEarned + " point(s).";
+            ctx.getLogController().addLog(dialog);
+        } else {
             //both win
             ctx.getPlayers()[0].getPOJO().addGameScore(pointsEarned);
             ctx.getPlayers()[1].getPOJO().addGameScore(pointsEarned);
-            JOptionPane.showMessageDialog(null, "Both player won in round" + " , Earning "+ pointsEarned +" point(s).", "The Winner", JOptionPane.INFORMATION_MESSAGE);
-            ctx.getLogController().addLog("Both player won in round" + " , Earning "+ pointsEarned +" point(s).");
+            MainRunner.getGameContext().getSoundController().playSound("win");
+            dialog = "Both player won in round" + " , Earning " + pointsEarned + " point(s).";
+            ctx.getLogController().addLog(dialog);
         }
+        Thread dialogThread = new Thread() {
+            @Override
+            public void run() {
+                JOptionPane.showMessageDialog(null, dialog, "The Winner", JOptionPane.INFORMATION_MESSAGE);
+            }
+        };
+        dialogThread.start();
 
         // set attribute point card
         uiController.update();
