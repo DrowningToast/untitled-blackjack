@@ -10,41 +10,55 @@ import lombok.Setter;
 public class GameContext {
     @Getter
     @Setter
-    GameModel game;
+    private GameModel game;
 
     @Getter
     @Setter
-    PlayerModel[] players;
+    private PlayerModel[] players;
     @Getter
     @Setter
-    SoundController soundController;
+    private SoundController soundController;
 
     @Getter
-    LogController logController;
-    public GameContext(GameModel game, PlayerModel[] players, LogController logController,SoundController soundController) {
+    private LogController logController;
+
+    private static GameContext instance;
+
+    private GameContext(GameModel game, PlayerModel[] players, LogController logController, SoundController soundController) {
         this.game = game;
         this.players = players;
         this.logController = logController;
         this.soundController = soundController;
     }
-    public PlayerModel getPlayer(String username){
-        if (username.equals(players[0].getPOJO().getUsername())){
+
+    public static GameContext getInstance() {
+        if (instance == null) {
+            PlayerModel[] players = {new PlayerModel(), new PlayerModel()};
+            GameModel game = new GameModel();
+            LogController log = new LogController();
+            SoundController soundController = new SoundController();
+            instance = new GameContext(game, players, log, soundController);
+        }
+        return instance;
+    }
+
+    public PlayerModel getPlayer(String username) {
+        if (username.equals(players[0].getPOJO().getUsername())) {
             return players[0];
-        }else if(username.equals(players[1].getPOJO().getUsername())){
+        } else if (username.equals(players[1].getPOJO().getUsername())) {
             return players[1];
-        }else{
+        } else {
             return null;
         }
     }
 
-    public PlayerModel getAnotherPlayer(String username){
-        if (username.equals(players[0].getPOJO().getUsername())){
+    public PlayerModel getAnotherPlayer(String username) {
+        if (username.equals(players[0].getPOJO().getUsername())) {
             return players[1];
-        }else if(username.equals(players[1].getPOJO().getUsername())){
+        } else if (username.equals(players[1].getPOJO().getUsername())) {
             return players[0];
-        }else{
+        } else {
             return null;
         }
-
     }
 }

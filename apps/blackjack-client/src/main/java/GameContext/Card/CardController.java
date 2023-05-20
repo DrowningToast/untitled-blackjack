@@ -43,7 +43,6 @@ public class CardController {
 
     public void resetCards() {
         this.POJOS.clear();
-        System.out.println("Clear Player's cards in hand");
     }
 
     // deprecated

@@ -3,6 +3,7 @@ package GameContext.Player;
 
 import GameContext.Card.CardController;
 import GameContext.Card.CardPOJO;
+import GameContext.GameContext;
 import GameContext.TrumpCard.TrumpCardController;
 import Main.MainRunner;
 import lombok.Getter;
@@ -33,7 +34,7 @@ public class PlayerPOJO {
         for (CardPOJO card : cardController.getPOJOS()) {
             total += card.getValue()[card.getValue().length - 1];
         }
-        if (total > MainRunner.getGameContext().getGame().getPOJO().getCardPointTarget()) {
+        if (total > GameContext.getInstance().getGame().getPOJO().getCardPointTarget()) {
             total = 0;
             for (CardPOJO card : cardController.getPOJOS()) {
                 total += card.getValue()[0];
@@ -44,7 +45,7 @@ public class PlayerPOJO {
     }
 
     public boolean checkCardLimit() {
-        return (this.cardScore > MainRunner.getGameContext().getGame().getPOJO().getCardPointTarget());
+        return (this.cardScore > GameContext.getInstance().getGame().getPOJO().getCardPointTarget());
     }
 
     public String getCardsFormattedString() {

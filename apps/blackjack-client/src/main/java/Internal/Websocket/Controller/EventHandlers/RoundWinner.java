@@ -23,7 +23,6 @@ public class RoundWinner implements WebsocketEventHandler {
     @Override
     public void handler(GameContext ctx, JSONObject body) {
         JSONObject content = (JSONObject) body.get("content");
-        System.out.println(content.get("cards"));
 
         // IGame set value section
         JSONObject game = (JSONObject) content.get("game");
@@ -69,14 +68,14 @@ public class RoundWinner implements WebsocketEventHandler {
             ctx.getLogController().addLog(username + " won in round " + roundCounter);
             long winnerCardPoint = ctx.getPlayer(username).getPOJO().getCardScore();
             long loserCardPoint = ctx.getAnotherPlayer(username).getPOJO().getCardScore();
-            MainRunner.getGameContext().getSoundController().playSound("win");
+            GameContext.getInstance().getSoundController().playSound("win");
             dialog = username + " won in round " + roundCounter + " with " + winnerCardPoint + " point over " + loserCardPoint + " , Earning " + pointsEarned + " point(s).";
             ctx.getLogController().addLog(dialog);
         } else {
             //both win
             ctx.getPlayers()[0].getPOJO().addGameScore(pointsEarned);
             ctx.getPlayers()[1].getPOJO().addGameScore(pointsEarned);
-            MainRunner.getGameContext().getSoundController().playSound("win");
+            GameContext.getInstance().getSoundController().playSound("win");
             dialog = "Both player won in round" + " , Earning " + pointsEarned + " point(s).";
             ctx.getLogController().addLog(dialog);
         }

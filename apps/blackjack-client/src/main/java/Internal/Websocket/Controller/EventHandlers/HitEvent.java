@@ -13,7 +13,6 @@ public class HitEvent implements WebsocketEventHandler {
     public HitEvent(UIController uiController) {
         this.uiController = uiController;
     }
-
     @Override
     public void handler(GameContext ctx, JSONObject body) {
         JSONObject content = (JSONObject) body.get("content");

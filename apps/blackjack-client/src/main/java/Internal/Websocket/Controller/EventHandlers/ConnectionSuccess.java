@@ -14,7 +14,6 @@ public class ConnectionSuccess implements WebsocketEventHandler {
 
     @Override
     public void handler(GameContext ctx, JSONObject body) {
-        System.out.println("Login success");
         ctx.getPlayers()[0].getPOJO().setConnectionId((String) body.get("content"));
     }
 

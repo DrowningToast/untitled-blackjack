@@ -25,7 +25,6 @@ public class TrumpCardDisplay {
         tCardLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println("trump clicked");
                 super.mouseClicked(e);
                 wsController.useTrump(tCard.getHandler());
             }

@@ -18,7 +18,7 @@ public class ReadyState implements WebsocketEventHandler {
         JSONObject content = (JSONObject) body.get("content");
         String username = (String) content.get("username");
         boolean ready = (boolean) content.get("ready");
-        boolean myMsg = MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername().equals(username);
+        boolean myMsg = GameContext.getInstance().getPlayers()[0].getPOJO().getUsername().equals(username);
         if (myMsg) {
             //for guest
             ctx.getPlayers()[0].getPOJO().setReady(ready);

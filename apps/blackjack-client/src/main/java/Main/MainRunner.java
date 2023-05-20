@@ -1,19 +1,11 @@
 package Main;
 
-import GameContext.Game.GameModel;
 import GameContext.GameContext;
-import GameContext.Log.LogController;
-import GameContext.Player.PlayerModel;
-import GameContext.Sounds.SoundController;
-import GameContext.Sounds.SoundPOJO;
 import Internal.Websocket.Controller.Errorhandlers.*;
 import Internal.Websocket.Controller.EventHandlers.*;
 import Internal.Websocket.Controller.WebsocketController;
-import GameContext.Game.GamePOJO;
 import Internal.UserInterface.UIController;
 import UI.Lobby.LobbyController;
-import UI.Login.LoginDisplayGUI;
-import GameContext.Player.PlayerPOJO;
 import UI.Gameplay.GameplayController;
 import UI.Waiting.WaitingRoomController;
 import lombok.Getter;
@@ -35,7 +27,7 @@ public class MainRunner {
      * GAME CONTEXT
      */
     @Getter
-    private static GameContext gameContext;
+    private static GameContext gameContext = GameContext.getInstance();
 
     public static void main(String[] args) throws Exception {
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -43,10 +35,6 @@ public class MainRunner {
             @Override
             public void run() {
                 try {
-                    // init game context
-                    initGameContext();
-                    System.out.println(gameContext.getPlayers()[0].getPOJO());
-
                     // Init ws event handlers and error handlers
                     HashMap<String, WebsocketEventHandler> eventHandlers = new HashMap();
                     HashMap<String, WebsocketErrorHandler> errorHandlers = new HashMap();
@@ -94,7 +82,7 @@ public class MainRunner {
 
                     gameContext.getSoundController().playSound("backgroundCasinoSound");
 
-                } catch (DeploymentException e){
+                } catch (DeploymentException e) {
                     if (e.getMessage().contains("Handshake error")) {
                         System.out.println("Handshake error occurred: " + e.getMessage());
                         JOptionPane.showMessageDialog(null, "Program closed due to \"HandShake error\". Please rerun the program.", "HandShake err.", JOptionPane.INFORMATION_MESSAGE);
@@ -107,15 +95,5 @@ public class MainRunner {
                 }
             }
         });
-    }
-
-    // INIT GAME CONTEXT
-    public static void initGameContext() {
-        PlayerModel[] players = {new PlayerModel(), new PlayerModel()};
-        GameModel game = new GameModel();
-        LogController log = new LogController();
-        SoundController soundController = new SoundController();
-
-        gameContext = new GameContext(game, players, log, soundController);
     }
 }

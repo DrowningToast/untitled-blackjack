@@ -33,27 +33,27 @@ public class GameplayController {
         trumpStatus = new TrumpStatusDisplay();
         this.wsController = wsController;
         this.uiController = uiController;
-        this.ctx = MainRunner.getGameContext();
+        this.ctx = GameContext.getInstance();
         ui = new GameplayDisplayGUI(this, wsController);
     }
 
     // update status Button
     public void updateStatusButton() {
-        String myUsername = MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername();
-        String opponentUsername = MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername();
-        String checker = MainRunner.getGameContext().getGame().getPOJO().getTurnOwner();
+        String myUsername = GameContext.getInstance().getPlayers()[0].getPOJO().getUsername();
+        String opponentUsername = GameContext.getInstance().getPlayers()[1].getPOJO().getUsername();
+        String checker = GameContext.getInstance().getGame().getPOJO().getTurnOwner();
         if (myUsername.equals(checker)) {
             // MY TURN
             // check player's card value if it's more than 21 or not
             ui.getHitButtonPlayerOne().setEnabled(true);
             ui.getStandButtonPlayerOne().setEnabled(true);
-            if (MainRunner.getGameContext().getPlayers()[0].getPOJO().checkCardLimit()) {
+            if (GameContext.getInstance().getPlayers()[0].getPOJO().checkCardLimit()) {
                 disableHit();
             }
             if (ctx.getPlayers()[0].getPOJO().getTrumpCardController().checkStatus()) {
                 disableHit();
             }
-        } else if (opponentUsername.equals(MainRunner.getGameContext().getGame().getPOJO().getTurnOwner())) {
+        } else if (opponentUsername.equals(GameContext.getInstance().getGame().getPOJO().getTurnOwner())) {
             // THEIR TURN
             ui.getHitButtonPlayerOne().setEnabled(false);
             ui.getStandButtonPlayerOne().setEnabled(false);
@@ -63,8 +63,8 @@ public class GameplayController {
     }
 
     public void showTurn(JLabel showPlayerTurn, JPanel showTurn) {
-        String checker = MainRunner.getGameContext().getGame().getPOJO().getTurnOwner();
-        String myTurn = MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername();
+        String checker = GameContext.getInstance().getGame().getPOJO().getTurnOwner();
+        String myTurn = GameContext.getInstance().getPlayers()[0].getPOJO().getUsername();
         if (checker.equals(myTurn)) {
             showPlayerTurn.setText("Your turn");
             showPlayerTurn.setForeground(Color.black);
@@ -77,7 +77,7 @@ public class GameplayController {
     }
 
     public void showCard(JPanel playerTable, JLabel playerCardScore, PlayerPOJO player) {
-        long cardPointTarget = MainRunner.getGameContext().getGame().getPOJO().getCardPointTarget();
+        long cardPointTarget = GameContext.getInstance().getGame().getPOJO().getCardPointTarget();
         playerTable.removeAll();
         playerTable.revalidate();
         playerTable.repaint();
@@ -103,7 +103,6 @@ public class GameplayController {
         String oldText = ui.getGameplayTextArea().getText();
         String newText = ctx.getLogController().getLog().get(ctx.getLogController().getLog().size() - 1);
         ui.getGameplayTextArea().setText(newText + "\n" + oldText);
-        System.out.println(newText);
     }
 
     public void clearLog() {
@@ -137,7 +136,7 @@ public class GameplayController {
     public void updateCardScoreColor(JLabel playerCardScore, PlayerPOJO player) {
         if (player.checkCardLimit()) {
             playerCardScore.setForeground(Color.RED);
-        } else if (player.getCardScore() == MainRunner.getGameContext().getGame().getPOJO().getCardPointTarget()) {
+        } else if (player.getCardScore() == GameContext.getInstance().getGame().getPOJO().getCardPointTarget()) {
             playerCardScore.setForeground(Color.GREEN);
         } else {
             playerCardScore.setForeground(Color.WHITE);
@@ -145,7 +144,7 @@ public class GameplayController {
     }
 
     public void showSoundSettings() {
-        MainRunner.getGameContext().getSoundController().soundControl();
+        GameContext.getInstance().getSoundController().soundControl();
     }
 
     public GameplayDisplayGUI getUi() {

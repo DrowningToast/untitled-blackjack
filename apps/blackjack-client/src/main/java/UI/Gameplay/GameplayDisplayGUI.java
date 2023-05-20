@@ -1,6 +1,7 @@
 
 package UI.Gameplay;
 
+import GameContext.GameContext;
 import Internal.Websocket.Controller.WebsocketController;
 import Main.MainRunner;
 import Internal.UserInterface.CustomFrame;
@@ -682,24 +683,24 @@ public class GameplayDisplayGUI extends CustomFrame {
 //        wsController.dev_trumpCheat();
 
 //        controller.updateScoreBar(scoreBarPanel);
-        playerOneNameLabel.setText(MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername());
-        playerOneNameScoreLabel.setText(MainRunner.getGameContext().getPlayers()[0].getPOJO().getUsername());
-        playerTwoNameLabel.setText(MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername());
-        playerTwoNameScoreLabel.setText(MainRunner.getGameContext().getPlayers()[1].getPOJO().getUsername());
+        playerOneNameLabel.setText(GameContext.getInstance().getPlayers()[0].getPOJO().getUsername());
+        playerOneNameScoreLabel.setText(GameContext.getInstance().getPlayers()[0].getPOJO().getUsername());
+        playerTwoNameLabel.setText(GameContext.getInstance().getPlayers()[1].getPOJO().getUsername());
+        playerTwoNameScoreLabel.setText(GameContext.getInstance().getPlayers()[1].getPOJO().getUsername());
     }
 
     @Override
     public void onUpdate() {
         controller.updateStatusButton();
-        controller.showCard(playerOneTable, scoreCardOneLabel, MainRunner.getGameContext().getPlayers()[0].getPOJO());
-        controller.showCard(playerTwoTable, scoreCardTwoLabel, MainRunner.getGameContext().getPlayers()[1].getPOJO());
-        controller.showTrumpCard(trumpHoldChipPlayerOnePanel, MainRunner.getGameContext().getPlayers()[0].getPOJO());
+        controller.showCard(playerOneTable, scoreCardOneLabel, GameContext.getInstance().getPlayers()[0].getPOJO());
+        controller.showCard(playerTwoTable, scoreCardTwoLabel, GameContext.getInstance().getPlayers()[1].getPOJO());
+        controller.showTrumpCard(trumpHoldChipPlayerOnePanel, GameContext.getInstance().getPlayers()[0].getPOJO());
         controller.updateTitleGamePlay();
 //        controller.updateScoreBar(scoreBarPanel);
         controller.updatePlayerScore();
-        controller.updateCardScoreColor(scoreCardOneLabel, MainRunner.getGameContext().getPlayers()[0].getPOJO());
+        controller.updateCardScoreColor(scoreCardOneLabel, GameContext.getInstance().getPlayers()[0].getPOJO());
         controller.showTurn(showPlayerTurnLabel, showTurn);
-        controller.showStatus(trumpStatusPlayerOnePanel, MainRunner.getGameContext().getPlayers()[0].getPOJO());
-        controller.showStatus(trumpStatusPlayerTwoPanel, MainRunner.getGameContext().getPlayers()[1].getPOJO());
+        controller.showStatus(trumpStatusPlayerOnePanel, GameContext.getInstance().getPlayers()[0].getPOJO());
+        controller.showStatus(trumpStatusPlayerTwoPanel, GameContext.getInstance().getPlayers()[1].getPOJO());
     }
 }

@@ -49,7 +49,6 @@ public class WebsocketClientEndpoint {
     @OnMessage
     public void onMessage(String message) throws Exception {
         JSONObject jsonMsg = (JSONObject) new JSONParser().parse(message);
-        System.out.println(message);
         if (jsonMsg.containsKey("handler")) {
             controller.handleMessage(message);
         } else if (jsonMsg.containsKey("error")) {

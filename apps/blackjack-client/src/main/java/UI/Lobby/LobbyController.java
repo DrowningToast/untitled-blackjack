@@ -1,5 +1,6 @@
 package UI.Lobby;
 
+import GameContext.GameContext;
 import Internal.Websocket.Controller.WebsocketController;
 import Internal.HTTP.Base.HttpRequestEventHandler;
 import Internal.HTTP.Base.HttpResponse;
@@ -46,24 +47,20 @@ public class LobbyController {
             @Override
             public HttpResponse executeRequest(URL baseURL) throws IOException {
                 HashMap<String, String> body = new HashMap();
-                body.put("connectionId", MainRunner.getGameContext().getPlayers()[0].getPOJO().getConnectionId());
+                body.put("connectionId", GameContext.getInstance().getPlayers()[0].getPOJO().getConnectionId());
                 body.put("passcode", passcode);
                 return client.post("/game/create", body);
             }
 
             @Override
             public void onSuccess(HttpResponse response) {
-                System.out.println(response.getRawBody());
-                System.out.println("CREATED ROOM!!!");
-                MainRunner.getGameContext().getGame().getPOJO().setPasscode(passcode);
-                MainRunner.getGameContext().getGame().getPOJO().setGameId((String) response.getMap().get("gameId"));
-                System.out.println((String) response.getMap().get("gameId"));
+                GameContext.getInstance().getGame().getPOJO().setPasscode(passcode);
+                GameContext.getInstance().getGame().getPOJO().setGameId((String) response.getMap().get("gameId"));
                 changeToWaiting();
             }
 
             @Override
             public void onFail(HttpResponse response, Exception e) {
-                System.out.println("CREATE ROOM FAILED");
                 JOptionPane.showMessageDialog(null, "a room this the same passcode had already been created.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -75,28 +72,24 @@ public class LobbyController {
             @Override
             public HttpResponse executeRequest(URL baseURL) throws IOException {
                 HashMap<String, String> body = new HashMap<>();
-                body.put("connectionId", MainRunner.getGameContext().getPlayers()[0].getPOJO().getConnectionId());
+                body.put("connectionId", GameContext.getInstance().getPlayers()[0].getPOJO().getConnectionId());
                 body.put("passcode", passcode);
-                System.out.println("Handle Join run");
                 return client.post("/game/join", body);
             }
 
             @Override
             public void onSuccess(HttpResponse response) {
-                System.out.println((String) response.getMap().get("gameId"));
                 JSONParser parser = new JSONParser();
                 try {
                     JSONObject responseBody = (JSONObject) parser.parse(response.getRawBody());
                     JSONArray rawPlayers = (JSONArray) responseBody.get("players");
                     // GET WHO IS IN THE ROOM FIRST, PROBABLY NOT ME
-                    System.out.println(rawPlayers.get(0));
                     JSONObject host = (JSONObject) rawPlayers.get(0);
                     String hostUsername = (String) host.get("username");
-                    System.out.println(hostUsername);
-                    MainRunner.getGameContext().getPlayers()[1].getPOJO().setUsername(hostUsername);
+                    GameContext.getInstance().getPlayers()[1].getPOJO().setUsername(hostUsername);
                     // SEND READY MESSAGE
-                    MainRunner.getGameContext().getGame().getPOJO().setPasscode(passcode);
-                    MainRunner.getGameContext().getGame().getPOJO().setGameId((String) response.getMap().get("gameId"));
+                    GameContext.getInstance().getGame().getPOJO().setPasscode(passcode);
+                    GameContext.getInstance().getGame().getPOJO().setGameId((String) response.getMap().get("gameId"));
                     wsController.setReady(true);
                     changeToWaiting();
                     uiController.update();
@@ -110,9 +103,7 @@ public class LobbyController {
             @Override
             public void onFail(HttpResponse response, Exception e) {
                 System.out.println(e.toString());
-                System.out.println(response.getRawBody());
                 e.printStackTrace();
-                System.out.println("JOIN ROOM FAILED");
                 JOptionPane.showMessageDialog(null, "Room not found.","Error", JOptionPane.ERROR_MESSAGE);
             }
         });

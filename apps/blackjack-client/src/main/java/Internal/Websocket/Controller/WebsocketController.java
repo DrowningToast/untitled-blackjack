@@ -18,8 +18,8 @@ import java.util.HashMap;
 
 public class WebsocketController {
     private WebsocketClientEndpoint client;
-    private HashMap eventHandlers;
-    private HashMap errorHandlers;
+    private HashMap<String, WebsocketEventHandler> eventHandlers;
+    private HashMap<String, WebsocketErrorHandler> errorHandlers;
 
     private GameContext ctx;
 
@@ -37,7 +37,6 @@ public class WebsocketController {
             HashMap body = new HashMap();
             body.put("username", username);
 
-            System.out.println(username);
 
             MessageBuilder message = new MessageBuilder(client);
             message.setHandler("auth").setContent(body).send();
@@ -49,17 +48,14 @@ public class WebsocketController {
 
     public void setReady(boolean ready) {
         try {
-            System.out.println("send ready");
             MessageBuilder message = new MessageBuilder(client);
             message.setHandler("ready");
             HashMap content = new HashMap();
             content.put("ready", true);
             // SET GAME ID TO THE CONTENT
-            String gameId = MainRunner.getGameContext().getGame().getPOJO().getGameId();
-            System.out.println(gameId);
+            String gameId = GameContext.getInstance().getGame().getPOJO().getGameId();
 
             content.put("gameId", gameId);
-            System.out.println(content);
 
             message.setContent(content).send();
 
@@ -72,7 +68,6 @@ public class WebsocketController {
         try {
             MessageBuilder message = new MessageBuilder(client);
             message.setHandler("hit").send();
-            System.out.println(message);
         } catch (IOException e) {
             System.out.println(e.toString());
             e.printStackTrace();
@@ -83,7 +78,6 @@ public class WebsocketController {
         try {
             MessageBuilder message = new MessageBuilder(client);
             message.setHandler("stand").send();
-            System.out.println(message);
         } catch (IOException e) {
             System.out.println(e);
             e.printStackTrace();
@@ -93,11 +87,9 @@ public class WebsocketController {
 
     public void useTrump(String tHandler) {
         try {
-            System.out.println("send trump use : " + tHandler);
             MessageBuilder message = new MessageBuilder(client);
             HashMap content = new HashMap();
             content.put("trumpCard", tHandler);
-            System.out.println(content);
 
             message.setHandler("useTrump").setContent(content).send();
         } catch (Exception e) {
@@ -123,17 +115,14 @@ public class WebsocketController {
             // find out what handler it is
             String handler = (String) body.get("handler");
 
-            System.out.println(handler);
-
-            WebsocketEventHandler eventHandler = (WebsocketEventHandler) eventHandlers.get(handler);
+            WebsocketEventHandler eventHandler = eventHandlers.get(handler);
             if (eventHandler == null)
-
                 return;
+
             eventHandler.handler(ctx, body);
         } catch (ParseException e) {
             System.out.println(e.toString());
             e.printStackTrace();
-            System.out.println("No handler");
         }
     }
 
@@ -143,13 +132,11 @@ public class WebsocketController {
         try {
             // Convert json string to hashmap
             JSONObject body = (JSONObject) parser.parse(raw);
-            System.out.println("get msg");
             // convert Error json to hashmaps
             JSONObject errJson = (JSONObject) body.get("error");
             JSONObject err_body = (JSONObject) parser.parse(String.valueOf(errJson));
             // find out what error it is
             String err = (String) err_body.get("error");
-            System.out.println("get error msg(?)");
 
             System.out.println(err);
 
@@ -163,14 +150,12 @@ public class WebsocketController {
         } catch (ParseException e) {
             System.out.println(e.toString());
             e.printStackTrace();
-            System.out.println("No err");
         }
     }
 
     public void handleDisconnect() {
         int input = JOptionPane.showOptionDialog(null, "You're being idle for too long.", "Timed out", JOptionPane.PLAIN_MESSAGE, JOptionPane.INFORMATION_MESSAGE, null, null, null);
         if (input == JOptionPane.OK_OPTION) {
-            System.out.println("yes");
             System.exit(0);
         }
     }
@@ -178,5 +163,4 @@ public class WebsocketController {
     public WebsocketClientEndpoint getClient() {
         return client;
     }
-
 }

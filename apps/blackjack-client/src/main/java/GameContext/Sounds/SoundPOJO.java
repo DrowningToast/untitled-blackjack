@@ -63,7 +63,6 @@ public class SoundPOJO implements Runnable {
                 clip.open(audioInputStream);
                 gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
                 gainControl.setValue(-15.0f);
-                System.out.println(gainControl.toString());
 
                 if (loop) {
                     clip.loop(-1);

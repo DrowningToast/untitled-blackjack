@@ -7,7 +7,6 @@ public class ExistedUser implements WebsocketErrorHandler {
     public void handler(JSONObject error) {
         JSONObject newObj = (JSONObject) error.get("error");
         String description = (String) newObj.get("description");
-        System.out.println(description);
         new ErrorPane(description,error);
     }
 }

@@ -10,14 +10,26 @@ public class MessageBuilder {
 
     private String message;
     private Session session;
-    private WebsocketClientEndpoint rfc;
+    private WebsocketClientEndpoint client;
 
     private String handler;
     private HashMap content = new HashMap();
 
+
+    public MessageBuilder(WebsocketClientEndpoint client) {
+        this.client = client;
+        this.session = client.getSession();
+    }
+
     // set handler method, returns this
     public MessageBuilder setHandler(String handler) {
         this.handler = handler;
+        return this;
+    }
+
+    // send content, accepts hashmap, returns this
+    public MessageBuilder setContent(HashMap map) {
+        this.content = map;
         return this;
     }
 
@@ -28,18 +40,4 @@ public class MessageBuilder {
         String rawMessage = JSON.parseHashMaptoString(content);
         session.getBasicRemote().sendText(rawMessage);
     }
-
-
-    // send content, accepts hashmap, returns this
-    public MessageBuilder setContent(HashMap map) {
-        this.content = map;
-        return this;
-    }
-
-
-    public MessageBuilder(WebsocketClientEndpoint client) {
-        this.rfc = client;
-        this.session = client.getSession();
-    }
-
 }

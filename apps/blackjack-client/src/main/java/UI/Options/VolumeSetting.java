@@ -5,6 +5,8 @@
 package UI.Options;
 
 import javax.swing.JSlider;
+
+import GameContext.GameContext;
 import Main.MainRunner;
 
 /**
@@ -18,7 +20,6 @@ public class VolumeSetting extends javax.swing.JFrame {
      */
     public VolumeSetting() {
         initComponents();
-        System.out.println("Setting");
         this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
     }
 
@@ -51,7 +52,7 @@ public class VolumeSetting extends javax.swing.JFrame {
         volumeSlider.setMinimum(-80);
         volumeSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                MainRunner.getGameContext().getSoundController().soundControl();
+                GameContext.getInstance().getSoundController().soundControl();
             }
         });
 

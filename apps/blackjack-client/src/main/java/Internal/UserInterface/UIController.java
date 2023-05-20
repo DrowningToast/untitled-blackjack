@@ -17,7 +17,6 @@ public class UIController {
     // Methods for switching active windows
     public void switchActiveWindow(CustomFrame frame) {
         activeFrame.dispose();
-        System.out.println(frame);
         frame.pack();
         frame.setVisible(true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

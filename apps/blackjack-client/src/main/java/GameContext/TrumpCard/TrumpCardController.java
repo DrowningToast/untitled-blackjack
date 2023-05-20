@@ -62,7 +62,6 @@ public class TrumpCardController {
 
     public void resetStatus() {
         this.status.clear();
-        System.out.println("Reset player's status");
     }
 //
     public boolean checkStatus() {
