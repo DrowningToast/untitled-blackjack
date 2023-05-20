@@ -144,15 +144,9 @@ public class GameplayController {
         }
     }
 
-//    public void updateScoreBar(JPanel scoreBarPanel) {
-//        ScoreBarPanel line = new ScoreBarPanel();
-//        scoreBarPanel.removeAll();
-//        scoreBarPanel.add(line);
-//        System.out.println("added shits");
-//        scoreBarPanel.revalidate();
-//        scoreBarPanel.repaint();
-//    }
-
+    public void showSoundSettings() {
+        MainRunner.getGameContext().getSoundController().soundControl();
+    }
 
     public GameplayDisplayGUI getUi() {
         return this.ui;

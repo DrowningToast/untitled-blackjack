@@ -68,16 +68,27 @@ public class WebsocketController {
         }
     }
 
-    public void sendHit() throws IOException {
-        MessageBuilder message = new MessageBuilder(client);
-        message.setHandler("hit").send();
-        System.out.println(message);
+    public void sendHit() {
+        try {
+            MessageBuilder message = new MessageBuilder(client);
+            message.setHandler("hit").send();
+            System.out.println(message);
+        } catch (IOException e) {
+            System.out.println(e.toString());
+            e.printStackTrace();
+        }
     }
 
-    public void sendStand() throws IOException {
-        MessageBuilder message = new MessageBuilder(client);
-        message.setHandler("stand").send();
-        System.out.println(message);
+    public void sendStand() {
+        try {
+            MessageBuilder message = new MessageBuilder(client);
+            message.setHandler("stand").send();
+            System.out.println(message);
+        } catch (IOException e) {
+            System.out.println(e);
+            e.printStackTrace();
+        }
+
     }
 
     public void useTrump(String tHandler) {

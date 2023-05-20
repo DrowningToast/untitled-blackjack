@@ -3,8 +3,8 @@ package UI.Gameplay;
 import javax.swing.*;
 import java.awt.*;
 
-public class ScoreBarPanel extends JPanel {
-    public ScoreBarPanel(){
+public class ScoreBar extends JPanel {
+    public ScoreBar(){
         this.setPreferredSize(new Dimension(122, 30));
     }
     @Override
