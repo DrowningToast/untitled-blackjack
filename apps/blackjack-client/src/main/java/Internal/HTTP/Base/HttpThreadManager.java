@@ -2,7 +2,7 @@ package Internal.HTTP.Base;
 
 import java.net.URL;
 
-public class HttpThreadManager extends HttpController {
+public class HttpThreadManager extends HttpClient {
 
     private String httpURLPath;
 

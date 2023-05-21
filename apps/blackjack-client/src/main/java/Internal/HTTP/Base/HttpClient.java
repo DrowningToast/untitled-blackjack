@@ -10,7 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 
-public abstract class HttpController {
+public abstract class HttpClient {
 
     protected HttpResponse httpGET(URL url) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();

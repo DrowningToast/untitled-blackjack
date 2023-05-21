@@ -16,7 +16,6 @@ public class HttpRequest implements Runnable {
 
     @Override
     public void run() {
-
         HttpResponse response;
 
         // Execute the function
