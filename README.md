@@ -8,13 +8,15 @@ This turborepo uses [Yarn](https://classic.yarnpkg.com/) as a package manager. I
 
 ### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+- `backend`: a serverless backend on AWS Lambda
+- `blackjack-client`: a blackjack game client built with JSwing
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+Frontend is built entirely with Java.
+
+## Useful Resources
+
+- `Backend Documentation`: API routing for HTTP and Websocket services for backend in [gitbook](https://untitled-blackjack.gitbook.io/untitled-blackjack-project/)
+- `Github Repository`: (repo)[https://github.com/DrowningToast/untitled-blackjack]
 
 ### Utilities
 
@@ -26,7 +28,7 @@ This turborepo has some additional tools already setup for you:
 
 ### Build
 
-To build all apps and packages, run the following command:
+To build the backend and packages, run the following command:
 
 ```
 cd my-turborepo
@@ -35,7 +37,7 @@ yarn run build
 
 ### Develop
 
-To develop all apps and packages, run the following command:
+To locally develop backend and packages, run the following command:
 
 ```
 cd my-turborepo
