@@ -9,11 +9,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
-public class HttpClientClient extends HttpThreadManager {
+public class HttpClientController extends HttpThreadManager {
 
     private URL url;
 
-    public HttpClientClient(String urlAsString) {
+    public HttpClientController(String urlAsString) {
         super(urlAsString);
         try {
             this.url = new URL(urlAsString);
@@ -32,7 +32,7 @@ public class HttpClientClient extends HttpThreadManager {
      * การหลีกเลี่ยงการใช้งาน htppGET กับ httpPOST เองโดยตรงไม่ผ่าน makeRequest จะป้องกันการ block main thread
      */
 
-    public HttpClientClient asyncProcess(HttpRequestEventHandler eventHandler) {
+    public HttpClientController asyncProcess(HttpRequestEventHandler eventHandler) {
         makeRequest(eventHandler);
         return this;
     }

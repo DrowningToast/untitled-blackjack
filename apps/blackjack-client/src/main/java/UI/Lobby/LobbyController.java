@@ -4,7 +4,7 @@ import GameContext.GameContext;
 import Internal.Websocket.Controller.WebsocketController;
 import Internal.HTTP.Base.HttpRequestEventHandler;
 import Internal.HTTP.Base.HttpResponse;
-import Internal.HTTP.HttpClientClient;
+import Internal.HTTP.HttpClientController;
 import Internal.UserInterface.UIController;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 
 
 public class LobbyController {
-    private final HttpClientClient client = new HttpClientClient("https://tnjylm3on5.execute-api.ap-southeast-1.amazonaws.com");
+    private final HttpClientController client = new HttpClientController("https://tnjylm3on5.execute-api.ap-southeast-1.amazonaws.com");
     private LobbyDisplayGUI ui = new LobbyDisplayGUI(this);
     private WebsocketController wsController;
     private UIController uiController;
