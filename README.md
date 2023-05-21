@@ -1,6 +1,6 @@
-# Turborepo starter
+# Untitled-Blackjack Project
 
-This is an official Yarn v1 starter turborepo.
+This is a project for a Year 1 Object Oriented Programming class in School of Information Technology @ King Mongkut's Institute of Technology Ladkrabang
 
 ## What's inside?
 
