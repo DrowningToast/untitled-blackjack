@@ -54,6 +54,7 @@ const websocket: Handler<
   switch (routeKey) {
     case "$connect":
       await getEvents("$connect")(event, { connectionId });
+      console.log('connecting')
 
       return {
         statusCode: 200,
