@@ -5,12 +5,12 @@ import Internal.Websocket.Controller.Errorhandlers.WebsocketErrorHandler;
 import Internal.Websocket.Controller.EventHandlers.WebsocketEventHandler;
 import Internal.Websocket.Base.MessageBuilder;
 import Internal.Websocket.Base.WebsocketClientEndpoint;
-import jakarta.websocket.DeploymentException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
+import javax.websocket.DeploymentException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -22,14 +22,23 @@ public class WebsocketController {
 
     private GameContext ctx;
 
-    public WebsocketController(GameContext ctx, HashMap<String, WebsocketEventHandler> eventHandlers, HashMap<String, WebsocketErrorHandler> errorHandlers)
-            throws IOException, DeploymentException, URISyntaxException {
-        this.client = new WebsocketClientEndpoint(this);
-        this.ctx = ctx;
-        client.connect();
+    public WebsocketController(GameContext ctx, HashMap<String, WebsocketEventHandler> eventHandlers, HashMap<String, WebsocketErrorHandler> errorHandlers) {
         this.eventHandlers = eventHandlers;
         this.errorHandlers = errorHandlers;
+        this.client = new WebsocketClientEndpoint(this);
+        this.ctx = ctx;
+        try {
+            client.connect();
+        } catch (IOException | DeploymentException | URISyntaxException e) {
+            System.out.println("An exception has occurred while trying to connect the backend server.");
+            if (e.getMessage().contains("Handshake error")) {
+                System.out.println("Handshake error occurred: " + e.getMessage());
+                JOptionPane.showMessageDialog(null, "Program closed due to \"HandShake error\". Please rerun the program.", "HandShake err.", JOptionPane.INFORMATION_MESSAGE);
+                System.exit(0);
+            }
+        }
     }
+
 
     public void sendAuth(String username) {
         try {

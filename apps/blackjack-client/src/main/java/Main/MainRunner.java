@@ -10,7 +10,7 @@ public class MainRunner {
     @Getter
     private static GameContext gameContext = GameContext.getInstance();
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
     }
 }

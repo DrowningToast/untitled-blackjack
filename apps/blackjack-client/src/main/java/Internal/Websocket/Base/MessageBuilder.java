@@ -1,8 +1,8 @@
 package Internal.Websocket.Base;
 
 import Internal.JSON.JSON;
-import jakarta.websocket.Session;
 
+import javax.websocket.Session;
 import java.io.IOException;
 import java.util.HashMap;
 
