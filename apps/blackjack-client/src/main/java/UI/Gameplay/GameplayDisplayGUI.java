@@ -30,10 +30,6 @@ public class GameplayDisplayGUI extends CustomFrame {
         initComponents();
         settingLabel.setIcon((new javax.swing.ImageIcon("resources/SettingIcon.PNG")));
 
-        playerTwoTable.add(new ScoreBar());
-        scoreBarPanel.add(new ScoreBar());
-
-
         playerTwoTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30,
                 new javax.swing.ImageIcon("resources/Table.PNG")));
         playerOneTable.setBorder(javax.swing.BorderFactory.createMatteBorder(30, 30, 30, 30,
@@ -417,11 +413,16 @@ public class GameplayDisplayGUI extends CustomFrame {
 
     private void hitButtonPlayerOneActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_hitButtonPlayerOneActionPerformed
         wsController.sendHit();
+        MainRunner.getGameContext().getSoundController().playSound("drawCard");
     }// GEN-LAST:event_hitButtonPlayerOneActionPerformed
 
     private void standButtonPlayerOneActionPerformed(java.awt.event.ActionEvent evt) {
+
         wsController.sendStand();
+        MainRunner.getGameContext().getSoundController().playSound("stand");
+
     }
+
 
 
     private void settingLabelMouseClicked(MouseEvent evt) {
@@ -682,7 +683,6 @@ public class GameplayDisplayGUI extends CustomFrame {
         // REMOVE LATER
 //        wsController.dev_trumpCheat();
 
-//        controller.updateScoreBar(scoreBarPanel);
         playerOneNameLabel.setText(GameContext.getInstance().getPlayers()[0].getPOJO().getUsername());
         playerOneNameScoreLabel.setText(GameContext.getInstance().getPlayers()[0].getPOJO().getUsername());
         playerTwoNameLabel.setText(GameContext.getInstance().getPlayers()[1].getPOJO().getUsername());
@@ -692,11 +692,11 @@ public class GameplayDisplayGUI extends CustomFrame {
     @Override
     public void onUpdate() {
         controller.updateStatusButton();
+        controller.updateScoreBar(scoreBarPanel, GameContext.getInstance().getPlayers()[0].getPOJO());
         controller.showCard(playerOneTable, scoreCardOneLabel, GameContext.getInstance().getPlayers()[0].getPOJO());
         controller.showCard(playerTwoTable, scoreCardTwoLabel, GameContext.getInstance().getPlayers()[1].getPOJO());
         controller.showTrumpCard(trumpHoldChipPlayerOnePanel, GameContext.getInstance().getPlayers()[0].getPOJO());
         controller.updateTitleGamePlay();
-//        controller.updateScoreBar(scoreBarPanel);
         controller.updatePlayerScore();
         controller.updateCardScoreColor(scoreCardOneLabel, GameContext.getInstance().getPlayers()[0].getPOJO());
         controller.showTurn(showPlayerTurnLabel, showTurn);
