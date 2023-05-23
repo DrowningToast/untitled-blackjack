@@ -132,7 +132,12 @@ public class GameplayController {
         ui.setTitle("Untitled-BlackJack [" + playerNameOne + "] " + playerScoreGameOne + " VS " + playerScoreGameTwo
                 + " [" + playerNameTwo + "]");
     }
-
+    public void updateScoreBar(JPanel scoreBarPanel, PlayerPOJO player){
+        scoreBarPanel.removeAll();
+        scoreBarPanel.add(new ScoreBar(player));
+        scoreBarPanel.revalidate();
+        scoreBarPanel.repaint();
+    }
     public void updateCardScoreColor(JLabel playerCardScore, PlayerPOJO player) {
         if (player.checkCardLimit()) {
             playerCardScore.setForeground(Color.RED);
