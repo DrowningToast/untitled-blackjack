@@ -161,7 +161,8 @@ public class WaitingRoomGUI extends CustomFrame {
     public void onSwitch() {
         String pass = GameContext.getInstance().getGame().getPOJO().getPasscode();
         passcodeLabel.setText("Passcode : " + pass);
-        playerOneLabel.setText("Player : " + GameContext.getInstance().getPlayers()[0].getPOJO().getUsername());
+        playerOneLabel.setText("Player1 : " + GameContext.getInstance().getPlayers()[0].getPOJO().getUsername());
+        playerTwoLabel.setText("Player2 : waiting...");
         this.setTitle("Passcode : " + GameContext.getInstance().getGame().getPOJO().getPasscode());
     }
 
