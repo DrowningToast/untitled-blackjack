@@ -15,8 +15,6 @@ public class ScoreBar extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponents(g);
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.GREEN);
-        g2.setStroke(new BasicStroke(30));
         int x_2 = (int) (player.getCardScore()*4.5);
         if (!player.checkCardLimit()){
             g2.setColor(Color.GREEN);
