@@ -5,7 +5,6 @@ import Internal.Websocket.Controller.Errorhandlers.WebsocketErrorHandler;
 import Internal.Websocket.Controller.EventHandlers.WebsocketEventHandler;
 import Internal.Websocket.Base.MessageBuilder;
 import Internal.Websocket.Base.WebsocketClientEndpoint;
-import Main.MainRunner;
 import jakarta.websocket.DeploymentException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

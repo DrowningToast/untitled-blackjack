@@ -5,12 +5,10 @@ import GameContext.GameContext;
 import Internal.Websocket.Controller.WebsocketController;
 import Main.MainRunner;
 import Internal.UserInterface.CustomFrame;
-import UI.Options.VolumeSetting;
 
 import java.awt.*;
 
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
