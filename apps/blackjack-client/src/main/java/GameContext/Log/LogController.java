@@ -1,5 +1,6 @@
 package GameContext.Log;
 
+import GameContext.GameContext;
 import Main.MainRunner;
 import lombok.Getter;
 
@@ -12,16 +13,16 @@ public class LogController {
     @Getter
     private ArrayList<String> log = new ArrayList<>();
 
-    public void addLog(String message){
+    public void addLog(String message) {
         LocalTime time = LocalTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         log.add("[" + formatter.format(time) + "] " + message);
-        MainRunner.getGamePlayController().updateChatLog();
+        GameContext.getInstance().getGamePlayController().updateChatLog();
     }
 
-    public void clearLog(){
+    public void clearLog() {
         this.log.clear();
-        MainRunner.getGamePlayController().clearLog();
+        GameContext.getInstance().getGamePlayController().clearLog();
     }
 
 }

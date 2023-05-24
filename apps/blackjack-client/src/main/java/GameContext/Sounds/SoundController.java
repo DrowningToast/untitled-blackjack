@@ -1,6 +1,7 @@
 package GameContext.Sounds;
 
 import UI.Options.VolumeSetting;
+
 import java.io.File;
 import java.util.HashMap;
 import javax.swing.event.ChangeEvent;
@@ -24,6 +25,9 @@ public class SoundController {
 
         SOUNDS.put("shuffleCard", new SoundPOJO("shuffleCard", new File("sounds/shuffleCard.wav")));
         SOUNDS.put("backgroundCasinoSound", new SoundPOJO("backgroundCasinoSound", new File("sounds/backgroundCasinoSound.wav"), true));
+
+        // play background music
+        playSound("backgroundCasinoSound");
 
     }
 
