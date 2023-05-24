@@ -1,11 +1,12 @@
 package Internal.Websocket.Base;
 
 import Internal.Websocket.Controller.WebsocketController;
-import jakarta.websocket.*;
+
+import javax.websocket.*;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,6 +24,8 @@ public class WebsocketClientEndpoint {
     }
 
     public void connect() throws DeploymentException, IOException, URISyntaxException {
+
+
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         WebsocketClientEndpoint client = new WebsocketClientEndpoint(controller);
         session = container.connectToServer(client,
@@ -57,7 +60,7 @@ public class WebsocketClientEndpoint {
     }
 
     @OnClose
-    public void onClose(){
+    public void onClose() {
         controller.handleDisconnect();
     }
 
